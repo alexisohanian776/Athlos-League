@@ -1,0 +1,215 @@
+/* ATHLOS League — the season schedule, which is the home page (bone editorial). */
+
+.sc-head { max-width: 1280px; margin: 0 auto; padding: 72px var(--gutter) 44px; }
+.sc-title { font-size: 88px; margin: 16px 0 0; }
+.sc-intro { font-size: 21px; line-height: 1.55; color: var(--ink-2); max-width: 920px; margin: 24px 0 0; }
+
+/* ---------- Upcoming cards ---------- */
+.sc-upcoming {
+  max-width: 1280px; margin: 0 auto; padding: 0 var(--gutter) 24px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 28px;
+}
+.sc-card { background: var(--paper); border: 1px solid var(--rule-soft); display: flex; flex-direction: column; }
+
+.sc-card-photo { position: relative; height: 280px; }
+.sc-card-photo-shade {
+  position: absolute; inset: 0; z-index: 2;
+  background: linear-gradient(0deg, rgba(13,4,11,.85) 0%, rgba(13,4,11,0) 55%);
+}
+.sc-card-photo-top {
+  position: absolute; top: 20px; left: 20px; right: 20px; z-index: 3;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+}
+.sc-soon {
+  display: inline-flex; align-items: center; height: 26px; padding: 0 12px;
+  border-radius: var(--r-pill); background: rgba(255,255,255,.18);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  color: #fff; font-size: 10px; letter-spacing: .12em; font-weight: 600;
+}
+.sc-count { display: flex; flex-direction: column; align-items: flex-end; color: #fff; }
+.sc-count-n { font-size: 40px; font-weight: 500; letter-spacing: -.03em; line-height: .9; }
+.sc-count .lg-mono { color: rgba(255,255,255,.7); font-size: 10px; margin-top: 4px; }
+.sc-card-photo-name { position: absolute; left: 24px; bottom: 22px; z-index: 3; }
+.sc-card-kicker { color: rgba(255,255,255,.75); display: block; margin-bottom: 8px; }
+.sc-card-city { font-size: 44px; color: #fff; line-height: .9; margin: 0; }
+
+.sc-card-body { padding: 28px 28px 32px; display: flex; flex-direction: column; flex: 1; }
+.sc-when {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding-bottom: 18px; border-bottom: 1px solid var(--rule-soft);
+}
+.sc-when-date { font-size: 17px; font-weight: 500; letter-spacing: -.01em; }
+.sc-when-time { color: var(--accent); font-weight: 600; }
+.sc-venue { padding: 18px 0; border-bottom: 1px solid var(--rule-soft); }
+.sc-venue-name { font-size: 20px; font-weight: 600; letter-spacing: -.01em; }
+.sc-venue-link { display: inline-flex; align-items: center; gap: 6px; transition: color var(--dur-micro) var(--ease-out); }
+.sc-venue-link:hover { color: var(--accent); }
+.sc-pin { opacity: .55; flex-shrink: 0; }
+.sc-venue-link:hover .sc-pin { opacity: 1; }
+.sc-past-venue .sc-venue-link { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--rule); }
+.sc-past-venue .sc-venue-link:hover { text-decoration-color: var(--accent); }
+.sc-venue-area { color: var(--ink-3); margin-top: 6px; }
+.sc-events { display: flex; flex-wrap: wrap; gap: 7px; padding: 20px 0; }
+.sc-event-chip {
+  display: inline-flex; align-items: center; height: 28px; padding: 0 11px;
+  border-radius: var(--r-pill); background: var(--bone);
+  border: 1px solid var(--rule); color: var(--ink-2);
+  font-size: 10px; letter-spacing: .08em;
+}
+
+/* confirmed athletes */
+.sc-confirmed { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 0 22px; }
+.sc-avatars { display: flex; }
+.sc-avatar-wrap { margin-right: -10px; position: relative; border-radius: var(--r-pill); box-shadow: 0 0 0 2px var(--paper); }
+.sc-confirmed-link { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); font-weight: 600; }
+.sc-confirmed-link:hover { color: var(--accent); }
+
+.sc-card-cta { margin-top: auto; display: flex; align-items: center; gap: 18px; }
+.sc-card-cta .lg-btn { flex: 1; }
+
+/* ---------- Archive ---------- */
+.sc-archive { max-width: 1280px; margin: 0 auto; padding: 56px var(--gutter) 80px; }
+.sc-archive-head { margin-bottom: 28px; }
+.sc-archive-title { font-size: 40px; margin: 12px 0 0; }
+.sc-past-list { border-top: 1px solid var(--rule); }
+
+.sc-meet { border-bottom: 1px solid var(--rule); }
+.sc-meet.is-open { background: var(--paper); }
+.sc-meet-head {
+  width: 100%; background: none; border: 0; cursor: pointer; text-align: left;
+  display: grid; grid-template-columns: 280px 1fr 230px; gap: 40px; align-items: center;
+  padding: 34px 16px;
+  transition: background var(--dur-micro) var(--ease-out), padding var(--dur-state) var(--ease-out);
+  color: inherit; font: inherit;
+}
+.sc-meet:not(.is-open) .sc-meet-head:hover { background: var(--paper); padding-left: 28px; padding-right: 28px; }
+.sc-meet-head:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.sc-past-year { font-size: 52px; line-height: .85; }
+.sc-past-date { display: block; font-size: 14px; color: var(--ink-2); margin-top: 12px; }
+.sc-past-venue { display: block; color: var(--ink-3); margin-top: 6px; }
+.sc-past-label { color: var(--accent); margin-bottom: 14px; }
+.sc-past-marks { display: flex; flex-direction: column; gap: 10px; }
+.sc-mark-row { display: grid; grid-template-columns: 1fr 110px 90px 36px; gap: 12px; align-items: center; }
+.sc-mark-who { font-size: 16px; font-weight: 600; letter-spacing: -.01em; }
+.sc-mark-ev { color: var(--ink-3); }
+.sc-mark-time { font-size: 16px; text-align: right; letter-spacing: -.01em; }
+.sc-past-go { display: flex; flex-direction: column; align-items: flex-end; gap: 16px; }
+.sc-toggle { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); }
+.sc-meet-head:hover .sc-toggle { color: var(--accent); }
+.sc-chev { transition: transform var(--dur-state) var(--ease-out); }
+.sc-meet.is-open .sc-chev { transform: rotate(180deg); }
+
+/* fan attendance stack */
+.sc-fanstack { display: flex; align-items: center; gap: 10px; }
+.sc-fanstack.is-cta {
+  background: none; border: 0; cursor: pointer; padding: 6px; margin: -6px;
+  border-radius: var(--r-tiny); text-align: left;
+  transition: background var(--dur-micro) var(--ease-out);
+}
+.sc-fanstack.is-cta:hover { background: var(--stone); }
+.sc-fanstack-text { display: flex; flex-direction: column; gap: 2px; }
+.sc-fanstack.is-cta .sc-fanstack-count { font-size: 14px; color: var(--ink-2); margin-left: 0; }
+.sc-fanstack-cta { color: var(--accent); font-weight: 600; }
+.sc-fanstack .sc-avatars { display: flex; }
+.sc-fanstack .sc-avatar-wrap { margin-right: -9px; border-radius: var(--r-pill); box-shadow: 0 0 0 2px var(--bone); }
+.sc-meet.is-open .sc-fanstack .sc-avatar-wrap { box-shadow: 0 0 0 2px var(--paper); }
+.sc-fanstack.is-cta:hover .sc-avatar-wrap { box-shadow: 0 0 0 2px var(--stone); }
+.sc-fanstack-count { font-size: 18px; font-weight: 600; margin-left: 4px; }
+.sc-fanstack-label { color: var(--ink-3); }
+
+/* athlete name links */
+.sc-alink { transition: color var(--dur-micro) var(--ease-out); }
+.sc-alink:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+
+/* expanded panel */
+.sc-meet-panel { padding: 8px 16px 44px; }
+
+.sc-attend {
+  display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap;
+  background: var(--green); border: 1px solid #D5E0C8;
+  padding: 24px 28px; margin-bottom: 36px;
+}
+.sc-attend-left { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.sc-attend-left .sc-fanstack-count { color: var(--green-ink); }
+.sc-attend-title { font-size: 18px; font-weight: 700; letter-spacing: -.01em; color: var(--green-ink); }
+.sc-attend-sub { font-size: 15px; line-height: 1.5; color: var(--ink-2); max-width: 520px; margin: 5px 0 0; }
+
+/* results grid */
+.sc-results { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 40px; }
+.sc-ev { padding: 18px 0 8px; }
+.sc-ev-head { display: flex; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 2px solid var(--ink); margin-bottom: 4px; }
+.sc-ev-name { font-size: 22px; }
+.sc-res {
+  display: grid; grid-template-columns: 26px 1fr 42px 78px 60px; gap: 12px; align-items: center;
+  padding: 11px 0; border-bottom: 1px solid var(--rule-soft);
+}
+.sc-res.is-win .sc-res-who { font-weight: 700; }
+.sc-res-place { font-size: 14px; color: var(--ink-3); text-align: center; }
+.sc-res.is-win .sc-res-place { color: var(--accent); font-weight: 700; }
+.sc-res-who { font-size: 15px; letter-spacing: -.01em; }
+.sc-res-code { color: var(--ink-3); font-size: 10px; }
+.sc-res-time { font-size: 15px; text-align: right; letter-spacing: -.01em; }
+.sc-res-marks { display: flex; gap: 3px; justify-content: flex-end; }
+
+/* claim modal */
+.sc-modal-backdrop {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(13,4,11,.6);
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+  overflow-y: auto;
+}
+.sc-modal {
+  position: relative; background: var(--bone); width: 100%; max-width: 540px;
+  padding: 48px 48px 40px; box-shadow: var(--shadow-modal);
+  margin: auto;
+}
+.sc-modal-x {
+  position: absolute; top: 20px; right: 20px; width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: 0; color: var(--ink-2); cursor: pointer; border-radius: var(--r-pill);
+  transition: background var(--dur-micro) var(--ease-out);
+}
+.sc-modal-x:hover { background: var(--stone); color: var(--ink); }
+.sc-modal-title { font-size: 44px; margin: 14px 0 16px; }
+.sc-modal-intro { font-size: 17px; line-height: 1.5; color: var(--ink-2); margin: 0 0 28px; }
+.sc-steps { list-style: none; margin: 0 0 30px; padding: 0; display: flex; flex-direction: column; gap: 20px; }
+.sc-steps li { display: flex; gap: 16px; align-items: flex-start; }
+.sc-step-n {
+  flex-shrink: 0; width: 30px; height: 30px; border-radius: var(--r-pill);
+  background: var(--ink); color: var(--bone);
+  display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;
+}
+.sc-step-t { font-size: 16px; font-weight: 600; letter-spacing: -.01em; }
+.sc-step-d { font-size: 15px; line-height: 1.5; color: var(--ink-2); margin-top: 3px; }
+.sc-mail { font-family: var(--font-mono); font-size: 13px; color: var(--accent); letter-spacing: .01em; }
+.sc-modal-form { display: flex; flex-direction: column; gap: 10px; }
+.sc-modal-input {
+  height: 52px; padding: 0 18px; border: 1px solid var(--rule); border-radius: var(--r-tiny);
+  background: var(--paper); color: var(--ink); font-family: var(--font-ui); font-size: 15px;
+}
+.sc-modal-input:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sc-modal-form .lg-btn { width: 100%; }
+
+/* ---------- Responsive: the fixed 1440px canvas becomes fluid ---------- */
+@media (max-width: 1100px) {
+  .sc-title { font-size: 60px; }
+  .sc-intro { font-size: 18px; }
+  .sc-upcoming { grid-template-columns: 1fr; }
+  .sc-meet-head { grid-template-columns: 200px 1fr; gap: 28px; }
+  .sc-past-go { grid-column: 1 / -1; align-items: flex-start; }
+  .sc-results { grid-template-columns: 1fr; }
+}
+@media (max-width: 700px) {
+  .sc-title { font-size: 40px; }
+  .sc-card-city { font-size: 32px; }
+  .sc-archive-title { font-size: 30px; }
+  .sc-meet-head { grid-template-columns: 1fr; gap: 20px; padding: 24px 8px; }
+  .sc-past-year { font-size: 40px; }
+  .sc-mark-row { grid-template-columns: 1fr 70px 30px; }
+  .sc-mark-ev { display: none; }
+  .sc-meet-panel { padding: 8px 8px 32px; }
+  .sc-res { grid-template-columns: 22px 1fr 62px; gap: 8px; }
+  .sc-res-code, .sc-res-marks { display: none; }
+  .sc-modal { padding: 40px 24px 32px; }
+  .sc-modal-title { font-size: 32px; }
+}

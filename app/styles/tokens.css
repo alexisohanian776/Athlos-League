@@ -1,0 +1,403 @@
+/* =================================================================
+   ATHLOS DESIGN SYSTEM — colors_and_type.css
+   The single source of truth for tokens, type ramp, and base styles.
+   Substituted families flagged with /* SUB */
+/* ================================================================= */
+
+/* ---- Local brand font: Basement Grotesque Black (Display) ---- */
+@font-face {
+  font-family: 'Basement Grotesque';
+  src: url('/fonts/BasementGrotesque-Black_v1.202.otf') format('opentype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---- Font imports ---- */
+/* Display = Basement Grotesque Black (LOCAL — uploaded) */
+/* SUB: UI = Inter (Google) — confirm or replace */
+/* SUB: Mono = JetBrains Mono (Google) — confirm or replace */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  /* ========================================================
+     BASE COLOR TOKENS (mapped from the Figma playbook)
+     Original Figma vars retained for traceability — DO NOT reference these directly
+     in product code; use the semantic tokens below instead.
+     ======================================================== */
+  --athlos-dark-plum:   #0D040B;
+  --athlos-plum-deep:   #1F0219;
+  --athlos-hyper-red:   #FF0044;
+  --athlos-bone:        #F2F0EC;
+  --athlos-stone:       #E4E2DF;
+  --athlos-field:       #EEF3E8;   /* tertiary, faint green */
+  --athlos-white:       #FFFFFF;
+  --athlos-black:       #000000;
+  --athlos-mid-gray:    #93989A;
+  --athlos-cool-gray-1: #CCCCCC;
+  --athlos-cool-gray-2: #CFCDCE;
+  --athlos-cool-gray-3: #CCC8C3;
+  --athlos-white-80:    rgba(255,255,255,0.8);
+  --athlos-white-60:    rgba(255,255,255,0.6);
+
+  /* ========================================================
+     SEMANTIC COLOR TOKENS — use these in product code
+     ======================================================== */
+
+  /* Surfaces */
+  --bg-canvas:        var(--athlos-dark-plum);      /* default app background (dark) */
+  --bg-elevated:      var(--athlos-plum-deep);      /* cards / modals on dark */
+  --bg-canvas-light:  var(--athlos-bone);           /* default light background */
+  --bg-elevated-light:#FFFFFF;                       /* cards on light */
+  --bg-subtle:        var(--athlos-stone);          /* hover on light, alt rows */
+  --bg-field:         var(--athlos-field);          /* tertiary tinted surface */
+  --bg-overlay:       rgba(13, 4, 11, 0.6);         /* modal/sheet backdrop */
+  --bg-glass:         rgba(13, 4, 11, 0.72);        /* scrolled-nav glass */
+
+  /* Foreground (text/icon) — for use ON dark canvas */
+  --fg-1:             var(--athlos-white);          /* primary */
+  --fg-2:             var(--athlos-white-80);       /* body */
+  --fg-3:             var(--athlos-white-60);       /* tertiary / metadata */
+  --fg-disabled:      rgba(255,255,255,0.32);
+
+  /* Foreground (text/icon) — for use ON light canvas */
+  --fg-1-light:       var(--athlos-dark-plum);
+  --fg-2-light:       #2A1F26;
+  --fg-3-light:       var(--athlos-mid-gray);
+  --fg-disabled-light:rgba(13, 4, 11, 0.32);
+
+  /* Accent — the brand red. Use sparingly. */
+  --accent:           var(--athlos-hyper-red);
+  --accent-hover:     #FF1F5C;
+  --accent-press:     #E5003E;
+  --accent-faded:     rgba(255, 0, 68, 0.18);       /* live halo, faint chart fills */
+
+  /* Borders */
+  --border-hairline:        rgba(255, 255, 255, 0.12);
+  --border-hairline-strong: rgba(255, 255, 255, 0.24);
+  --border-hairline-light:  var(--athlos-cool-gray-2);
+  --border-emphasis:        var(--accent);
+
+  /* Status — minimal palette, repurposes brand colors */
+  --status-live:    var(--accent);                  /* red, currently happening */
+  --status-positive:#3A8C5C;                        /* personal best / win — desaturated green */
+  --status-neutral: var(--athlos-mid-gray);
+  --status-warn:    #C77A3A;                        /* false start / yellow card */
+
+  /* ========================================================
+     TYPOGRAPHY
+     ======================================================== */
+  --font-display: 'Basement Grotesque', 'Archivo Black', 'Helvetica Neue', system-ui, sans-serif;
+  --font-ui:      'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono:    'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, monospace;
+
+  /* Type scale (semantic — see utility classes below) */
+  --t-hero-size:        96px;
+  --t-hero-line:        0.92;
+  --t-hero-track:       -0.02em;
+
+  --t-display-size:     64px;
+  --t-display-line:     0.96;
+  --t-display-track:    -0.01em;
+
+  --t-h1-size:          40px;
+  --t-h1-line:          1.05;
+  --t-h1-track:         -0.01em;
+
+  --t-h2-size:          28px;
+  --t-h2-line:          1.15;
+  --t-h2-track:         0;
+
+  --t-h3-size:          20px;
+  --t-h3-line:          1.25;
+  --t-h3-track:         0;
+
+  --t-body-size:        16px;
+  --t-body-line:        1.5;
+
+  --t-small-size:       14px;
+  --t-small-line:       1.45;
+
+  --t-micro-size:       12px;
+  --t-micro-line:       1.35;
+
+  /* Mono captions / data labels */
+  --t-mono-cap-size:    11px;
+  --t-mono-cap-track:   0.08em;
+  --t-mono-data-size:   14px;
+
+  /* ========================================================
+     SPACING (4px grid)
+     ======================================================== */
+  --s-1:  4px;
+  --s-2:  8px;
+  --s-3:  12px;
+  --s-4:  16px;
+  --s-5:  24px;
+  --s-6:  32px;
+  --s-7:  48px;
+  --s-8:  64px;
+  --s-9:  96px;
+  --s-10:128px;
+
+  /* ========================================================
+     RADII
+     ======================================================== */
+  --r-sharp: 0px;        /* cards, panels — default */
+  --r-tiny:  4px;        /* inputs */
+  --r-pill:  999px;      /* buttons, chips, avatars */
+
+  /* ========================================================
+     SHADOWS / EFFECTS
+     ======================================================== */
+  --shadow-soft:    0 12px 32px rgba(13, 4, 11, 0.12);
+  --shadow-modal:   0 32px 64px rgba(13, 4, 11, 0.32);
+  --halo-live:      0 0 0 4px rgba(255, 0, 68, 0.18);
+  --gradient-protect:linear-gradient(180deg, rgba(13,4,11,0) 0%, rgba(13,4,11,0.85) 100%);
+
+  /* ========================================================
+     MOTION
+     ======================================================== */
+  --ease-out:  cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in:   cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-emph: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  --dur-micro:  160ms;
+  --dur-state:  240ms;
+  --dur-route:  360ms;
+  --dur-hero:   600ms;
+}
+
+/* ====================================================================
+   BASE STYLES — apply on body or scope
+   ==================================================================== */
+.athlos {
+  font-family: var(--font-ui);
+  font-size: var(--t-body-size);
+  line-height: var(--t-body-line);
+  color: var(--fg-1);
+  background: var(--bg-canvas);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'ss01', 'cv11';
+}
+
+.athlos-light {
+  color: var(--fg-1-light);
+  background: var(--bg-canvas-light);
+}
+
+/* ====================================================================
+   SEMANTIC TYPE UTILITIES — apply to elements directly
+   ==================================================================== */
+.t-hero,
+.t-display,
+.t-h1 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.t-hero    { font-size: var(--t-hero-size);    line-height: var(--t-hero-line);    letter-spacing: var(--t-hero-track); }
+.t-display { font-size: var(--t-display-size); line-height: var(--t-display-line); letter-spacing: var(--t-display-track); }
+.t-h1      { font-size: var(--t-h1-size);      line-height: var(--t-h1-line);      letter-spacing: var(--t-h1-track); }
+
+.t-h2 {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: var(--t-h2-size);
+  line-height: var(--t-h2-line);
+  letter-spacing: var(--t-h2-track);
+}
+
+.t-h3 {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: var(--t-h3-size);
+  line-height: var(--t-h3-line);
+}
+
+.t-body { font-family: var(--font-ui); font-size: var(--t-body-size); line-height: var(--t-body-line); }
+.t-small{ font-family: var(--font-ui); font-size: var(--t-small-size); line-height: var(--t-small-line); }
+.t-micro{ font-family: var(--font-ui); font-size: var(--t-micro-size); line-height: var(--t-micro-line); }
+
+/* Mono — data, captions, technical labels */
+.t-mono-cap {
+  font-family: var(--font-mono);
+  font-size: var(--t-mono-cap-size);
+  letter-spacing: var(--t-mono-cap-track);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.t-mono-data {
+  font-family: var(--font-mono);
+  font-size: var(--t-mono-data-size);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' on;
+}
+.t-mono-big {
+  font-family: var(--font-mono);
+  font-size: 32px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' on;
+  letter-spacing: -0.02em;
+}
+
+/* ====================================================================
+   FOREGROUND COLOR UTILITIES
+   ==================================================================== */
+.fg-1 { color: var(--fg-1); }
+.fg-2 { color: var(--fg-2); }
+.fg-3 { color: var(--fg-3); }
+.fg-1-light { color: var(--fg-1-light); }
+.fg-2-light { color: var(--fg-2-light); }
+.fg-3-light { color: var(--fg-3-light); }
+.fg-accent  { color: var(--accent); }
+
+/* ====================================================================
+   BUTTONS (canonical primitives)
+   ==================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  height: 44px;
+  padding: 0 var(--s-5);
+  border-radius: var(--r-pill);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  border: 0;
+  cursor: pointer;
+  transition: background var(--dur-micro) var(--ease-out),
+              color var(--dur-micro) var(--ease-out),
+              transform var(--dur-micro) var(--ease-out),
+              opacity var(--dur-micro) var(--ease-out);
+  white-space: nowrap;
+}
+.btn:active { transform: scale(0.98); }
+.btn:disabled { opacity: 0.4; pointer-events: none; }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Variants */
+.btn-primary {
+  background: var(--accent);
+  color: var(--athlos-white);
+}
+.btn-primary:hover { background: var(--accent-hover); }
+
+.btn-secondary {
+  background: var(--athlos-white);
+  color: var(--fg-1-light);
+}
+.btn-secondary:hover { background: var(--athlos-stone); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--fg-1);
+  border: 1px solid var(--border-hairline-strong);
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.08); }
+
+.btn-ghost-light {
+  background: transparent;
+  color: var(--fg-1-light);
+  border: 1px solid var(--border-hairline-light);
+}
+.btn-ghost-light:hover { background: var(--athlos-stone); }
+
+/* Sizes */
+.btn-sm { height: 32px; padding: 0 var(--s-4); font-size: 12px; }
+.btn-lg { height: 56px; padding: 0 var(--s-6); font-size: 16px; }
+
+/* ====================================================================
+   CHIP / TAG (small pill)
+   ==================================================================== */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  height: 28px;
+  padding: 0 var(--s-3);
+  border-radius: var(--r-pill);
+  background: rgba(255,255,255,0.08);
+  color: var(--fg-2);
+  font-family: var(--font-mono);
+  font-size: var(--t-mono-cap-size);
+  letter-spacing: var(--t-mono-cap-track);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.chip-live {
+  background: var(--accent);
+  color: var(--athlos-white);
+}
+.chip-live::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--athlos-white);
+  animation: athlos-pulse 1.2s var(--ease-out) infinite;
+}
+@keyframes athlos-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ====================================================================
+   CARDS
+   ==================================================================== */
+.card {
+  background: var(--bg-elevated);
+  padding: var(--s-6);
+  border-radius: var(--r-sharp);
+  border: 1px solid transparent;
+}
+.card-light {
+  background: var(--bg-elevated-light);
+  color: var(--fg-1-light);
+}
+.card-bordered { border-color: var(--border-hairline); }
+.card-compact  { padding: var(--s-5); }
+.card-marquee  { padding: var(--s-7); }
+
+/* ====================================================================
+   INPUT
+   ==================================================================== */
+.input {
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--s-4);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--r-tiny);
+  color: var(--fg-1);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  transition: border-color var(--dur-micro) var(--ease-out),
+              background var(--dur-micro) var(--ease-out);
+}
+.input::placeholder { color: var(--fg-3); }
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: rgba(255,255,255,0.06);
+}
+
+/* ====================================================================
+   DIVIDER
+   ==================================================================== */
+.divider { border-top: 1px solid var(--border-hairline); }
+.divider-light { border-top: 1px solid var(--border-hairline-light); }
+
+/* ====================================================================
+   PROTECTION GRADIENT (use as ::after on full-bleed image hero)
+   ==================================================================== */
+.protect-gradient {
+  position: absolute; inset: 0;
+  background: var(--gradient-protect);
+  pointer-events: none;
+}

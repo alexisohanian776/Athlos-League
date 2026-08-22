@@ -1,0 +1,13 @@
+@import url('./styles/tokens.css');
+@import url('./styles/league.css');
+@import url('./styles/cards.css');
+@import url('./styles/footer.css');
+@import url('./styles/home.css');
+@import url('./styles/schedule.css');
+@import url('./styles/athletes.css');
+@import url('./styles/profile.css');
+@import url('./styles/clubs.css');
+@import url('./styles/vip.css');
+@import url('./styles/admin.css');
+
+html, body { margin: 0; background: var(--bone); }

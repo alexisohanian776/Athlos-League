@@ -1,0 +1,293 @@
+/* =================================================================
+   ATHLOS LEAGUE — fan-magazine theme layer
+   Inverts the dark Rewards product UI: bone canvas, white cards,
+   near-black ink, editorial serif body. Hyper-red one-moment-per-screen.
+   Builds on the shared ATHLOS tokens.
+   ================================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+
+:root {
+  --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --ink:        #0D040B;        /* near-black plum — primary ink on bone */
+  --ink-2:      #4A3A44;        /* secondary ink */
+  --ink-3:      #8A8086;        /* tertiary / metadata */
+  --rule:       #D8D4CE;        /* hairline on bone */
+  --rule-soft:  #E6E2DC;        /* faint hairline */
+  --bone:       #F2F0EC;
+  --paper:      #FFFFFF;
+  --stone:      #E4E2DF;
+  --green:      #EEF3E8;        /* run-clubs tint */
+  --green-ink:  #2C4A33;
+
+  --gutter:     56px;           /* page gutter — narrows on small screens */
+}
+
+/* ---------- Root surface ---------- */
+.league {
+  font-family: var(--font-ui);
+  background: var(--bone);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'ss01','cv11';
+  position: relative;
+}
+.league *, .league *::before, .league *::after { box-sizing: border-box; }
+.league a:not(.lg-btn) { color: inherit; text-decoration: none; }
+.league a.lg-btn { text-decoration: none; }
+
+/* ---------- Display / type helpers ---------- */
+.lg-display {
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.015em;
+  line-height: 0.9;
+}
+.lg-serif { font-family: var(--font-serif); }
+.lg-mono {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 11px;
+  font-weight: 500;
+}
+.lg-mono-data {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' on;
+}
+.lg-section-eyebrow {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+/* ---------- Top nav ---------- */
+.lg-nav {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  height: 72px;
+  padding: 0 var(--gutter);
+  border-bottom: 1px solid var(--rule);
+  background: var(--bone);
+}
+.lg-nav-links { display: flex; gap: 30px; align-items: center; }
+.lg-nav-link {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-2);
+  transition: color var(--dur-micro) var(--ease-out);
+  letter-spacing: 0.01em;
+}
+.lg-nav-link:hover { color: var(--ink); }
+.lg-nav-link.is-active { color: var(--ink); font-weight: 600; }
+.lg-nav-spacer { flex: 1; }
+/* keep the two auth buttons tight together (counteract the nav's flex gap) */
+.lg-nav > .lg-btn + .lg-btn { margin-left: -30px; }
+
+/* ---------- Buttons (light theme) ---------- */
+.lg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 24px;
+  border-radius: var(--r-pill);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+  border: 0;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+}
+.lg-btn-red   { background: var(--accent); color: #fff; }
+.lg-btn-red:hover { background: var(--accent-hover); }
+.lg-btn-ink   { background: var(--ink); color: var(--bone); }
+.lg-btn-ink:hover { background: #1F0219; }
+.lg-btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--rule); }
+.lg-btn-ghost:hover { background: var(--stone); }
+.lg-btn-sm { height: 36px; padding: 0 16px; font-size: 13px; }
+.lg-btn-lg { height: 52px; padding: 0 30px; font-size: 15px; }
+
+/* ---------- Chips / filter tabs ---------- */
+.lg-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 16px;
+  border-radius: var(--r-pill);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+}
+.lg-chip:hover { background: var(--stone); }
+.lg-chip.is-active { background: var(--ink); color: var(--bone); border-color: var(--ink); }
+
+/* ---------- Live indicator ---------- */
+.lg-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px 5px 11px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.lg-live::before {
+  content: '';
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #fff;
+  animation: lg-pulse 1.3s var(--ease-out) infinite;
+}
+@keyframes lg-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.35;transform:scale(.8)} }
+
+/* ---------- Cards ---------- */
+.lg-card {
+  background: var(--paper);
+  border: 1px solid var(--rule-soft);
+}
+
+/* =================================================================
+   PHOTO PLACEHOLDERS — tasteful brand-styled duotone crops.
+   Not illustration: an abstract duotone field + grain + mono caption,
+   reading clearly as "athlete photo goes here", styled to brand.
+   Replaced by real imagery as the media library is wired up.
+   ================================================================= */
+.lg-photo {
+  position: relative;
+  overflow: hidden;
+  background: #1F0219;
+  isolation: isolate;
+}
+/* duotone base + warm "key light" where a face would sit (upper third) */
+.lg-photo::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(120% 90% at 50% 8%, rgba(255,255,255,.16), rgba(255,255,255,0) 45%),
+    radial-gradient(140% 120% at 70% 120%, var(--ph-2, #3A0A1E), rgba(0,0,0,0) 70%),
+    linear-gradient(150deg, var(--ph-1, #1F0219) 0%, var(--ph-2, #3A0A1E) 100%);
+  z-index: 0;
+}
+/* film grain */
+.lg-photo::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+  opacity: 0.5;
+  z-index: 1;
+  pointer-events: none;
+}
+.lg-photo img { position: relative; z-index: 1; display: block; width: 100%; height: 100%; object-fit: cover; }
+/* ghosted monogram for athlete identity */
+.lg-photo-monogram {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.10);
+  letter-spacing: -0.04em;
+  line-height: 0.8;
+  z-index: 2;
+  user-select: none;
+}
+.lg-photo-caption {
+  position: absolute;
+  left: 14px; bottom: 12px;
+  z-index: 3;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.78);
+}
+.lg-photo-tag { position: absolute; left: 12px; top: 12px; z-index: 3; }
+/* protection gradient for type over image */
+.lg-photo-protect {
+  position: absolute; inset: 0; z-index: 2;
+  background: linear-gradient(180deg, rgba(13,4,11,0) 30%, rgba(13,4,11,0.82) 100%);
+  pointer-events: none;
+}
+
+/* avatar (small round photo) */
+.lg-avatar {
+  border-radius: var(--r-pill);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #1F0219;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lg-avatar::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(100% 80% at 50% 10%, rgba(255,255,255,.18), transparent 55%),
+              linear-gradient(150deg, var(--ph-1,#1F0219), var(--ph-2,#3A0A1E));
+}
+.lg-avatar span {
+  position: relative; z-index: 1;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.82);
+  letter-spacing: -0.02em;
+}
+
+/* ---------- MR / PB / SB mark pills ---------- */
+.lg-mark {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.lg-mark-mr { background: var(--accent); color: #fff; }
+.lg-mark-pb { background: rgba(13,4,11,0.08); color: var(--ink-2); }
+.lg-mark-sb { background: rgba(13,4,11,0.06); color: var(--ink-3); }
+
+/* ---------- Duotone photo palettes — brand-harmonious dark pairs ---------- */
+.ph-wine   { --ph-1:#1F0219; --ph-2:#4A0A22; }
+.ph-plum   { --ph-1:#0D040B; --ph-2:#2A0A2E; }
+.ph-ember  { --ph-1:#15080A; --ph-2:#3A1410; }
+.ph-field  { --ph-1:#0A140F; --ph-2:#1E3A2A; }
+.ph-dusk   { --ph-1:#100A1E; --ph-2:#2E1840; }
+.ph-clay   { --ph-1:#160B08; --ph-2:#40231A; }
+
+@media (max-width: 900px) {
+  :root { --gutter: 20px; }
+  .lg-nav { gap: 20px; }
+  .lg-nav-links { gap: 18px; }
+  .lg-nav > .lg-btn + .lg-btn { margin-left: -12px; }
+}

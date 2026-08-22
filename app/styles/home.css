@@ -1,0 +1,138 @@
+/* ATHLOS League — Home, direction C ("Hybrid"): dark split hero with a live
+   ticket countdown, holographic athlete feed, numbered updates wire, meet
+   records scoreboard, newsletter, run clubs, light footer. */
+
+.hm-wrap { max-width: 1328px; margin: 0 auto; }
+
+/* ---------- Nav search (home variant) ---------- */
+.hm-search {
+  display: flex; align-items: center; gap: 8px;
+  height: 38px; padding: 0 14px; width: 240px;
+  background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r-pill);
+  color: var(--ink-3); font-size: 13px;
+}
+@media (max-width: 1100px) { .hm-search { display: none; } }
+
+/* ---------- Hero ---------- */
+.hm-hero { background: var(--ink); padding: 40px var(--gutter) 48px; }
+.hm-hero-grid { display: grid; grid-template-columns: 1fr 416px; gap: 28px; align-items: stretch; }
+
+.hm-feature { position: relative; min-height: 560px; }
+.hm-feature-photo { position: absolute; inset: 0; }
+.hm-feature-body { position: absolute; left: 36px; right: 36px; bottom: 36px; z-index: 4; color: #fff; }
+.hm-feature-kicker { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+.hm-tag-red { color: #fff; background: var(--accent); padding: 5px 10px; border-radius: 3px; }
+.hm-feature-title { font-size: 72px; margin: 0; color: #fff; max-width: 760px; }
+.hm-feature-title em { font-style: normal; color: var(--accent); }
+.hm-feature-note { font-family: var(--font-serif); font-size: 19px; line-height: 1.45; max-width: 540px; margin: 18px 0 24px; color: rgba(255,255,255,.85); }
+
+.hm-side { display: flex; flex-direction: column; gap: 16px; }
+.hm-panel { background: var(--athlos-plum-deep); border: 1px solid var(--border-hairline); }
+.hm-count { flex: 1; padding: 28px 30px; display: flex; flex-direction: column; }
+.hm-count-label { color: rgba(255,255,255,.55); margin-top: 22px; }
+.hm-count-meet { font-size: 40px; color: #fff; margin-top: 6px; line-height: .95; }
+.hm-count-num { display: flex; align-items: baseline; gap: 14px; margin-top: 26px; }
+.hm-count-num b { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 96px; font-weight: 500; color: var(--accent); line-height: .8; letter-spacing: -.04em; }
+.hm-count-num span { font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .1em; font-size: 12px; color: rgba(255,255,255,.6); }
+.hm-count-rows { margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--border-hairline); display: grid; gap: 12px; }
+.hm-count-row { display: flex; justify-content: space-between; gap: 12px; }
+.hm-count-row dt { font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .1em; font-size: 11px; font-weight: 500; color: rgba(255,255,255,.5); }
+.hm-count-row dd { margin: 0; font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: #fff; font-size: 13px; text-align: right; }
+.hm-count .lg-btn { margin-top: 24px; width: 100%; }
+
+.hm-next { padding: 18px 30px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.hm-next-label { color: rgba(255,255,255,.5); margin-bottom: 4px; }
+.hm-next-name { color: #fff; font-weight: 600; font-size: 15px; }
+.hm-next-date { font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: #fff; font-size: 13px; }
+.hm-next-days { font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .1em; color: rgba(255,255,255,.5); font-size: 10px; }
+
+/* ---------- Section heads ---------- */
+.hm-sec { padding: 80px var(--gutter); }
+.hm-sec-head { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 24px; margin-bottom: 14px; }
+.hm-sec-title { font-size: 48px; margin: 0; }
+.hm-sec-note { font-family: var(--font-serif); font-size: 18px; color: var(--ink-2); max-width: 360px; margin: 0; line-height: 1.5; }
+.hm-chips { display: flex; gap: 8px; flex-wrap: wrap; margin: 28px 0 40px; }
+
+/* ---------- Updates wire ---------- */
+.hm-wire { padding: 0 var(--gutter) 76px; }
+.hm-wire-head { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; margin-bottom: 22px; padding-bottom: 18px; border-bottom: 2px solid var(--ink); }
+.hm-wire-head h2 { font-size: 28px; margin: 0; }
+.hm-wire-list { display: grid; grid-template-columns: 1fr 1fr; gap: 0 56px; }
+.hm-wire-item { display: grid; grid-template-columns: 54px 1fr; gap: 18px; align-items: start; padding: 22px 0; border-bottom: 1px solid var(--rule); }
+.hm-wire-num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 26px; color: var(--ink-3); font-weight: 500; line-height: 1; }
+.hm-wire-cat { margin-bottom: 8px; }
+.hm-wire-cat.is-brand { color: var(--green-ink); }
+.hm-wire-cat.is-meet { color: var(--accent); }
+.hm-wire-cat.is-athlete { color: var(--ink-2); }
+.hm-wire-item h3 { font-weight: 600; font-size: 18px; line-height: 1.25; margin: 0 0 7px; letter-spacing: -.01em; }
+.hm-wire-teaser { font-family: var(--font-serif); font-size: 15px; line-height: 1.45; margin: 0 0 10px; color: var(--ink-2); }
+.hm-wire-meta { display: flex; gap: 12px; font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 11px; color: var(--ink-3); }
+
+/* ---------- Records scoreboard ---------- */
+.hm-records { background: var(--ink); color: var(--bone); padding: 40px var(--gutter); }
+.hm-records-head { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+.hm-records-head h2 { font-size: 22px; margin: 0; color: #fff; }
+.hm-records-grid { display: grid; grid-template-columns: repeat(7, 1fr); border: 1px solid var(--border-hairline); }
+.hm-record { padding: 18px 18px 20px; border-right: 1px solid var(--border-hairline); }
+.hm-record:last-child { border-right: 0; }
+.hm-record-ev { color: rgba(255,255,255,.5); margin-bottom: 12px; }
+.hm-record-mark { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 24px; color: var(--accent); font-weight: 500; letter-spacing: -.02em; }
+.hm-record-who { font-size: 13px; font-weight: 500; color: #fff; margin-top: 10px; }
+.hm-record-yr { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 11px; color: rgba(255,255,255,.45); margin-top: 2px; }
+
+/* ---------- Newsletter ---------- */
+.hm-news { background: var(--athlos-plum-deep); border-top: 4px solid var(--accent); padding: 84px var(--gutter); text-align: center; color: var(--bone); }
+.hm-news-title { font-size: 88px; margin: 0 auto; color: #fff; max-width: 1000px; }
+.hm-news-note { font-family: var(--font-serif); font-size: 21px; line-height: 1.5; margin: 22px auto 32px; color: rgba(255,255,255,.82); max-width: 600px; }
+.hm-news-form { display: flex; gap: 10px; max-width: 520px; margin: 0 auto; }
+.hm-news-form .input { flex: 1; min-width: 0; height: 52px; font-size: 15px; }
+.hm-news-fine { font-family: var(--font-mono); text-transform: uppercase; font-size: 11px; font-weight: 500; color: rgba(255,255,255,.5); margin-top: 16px; letter-spacing: .06em; }
+
+/* ---------- Run clubs ---------- */
+.hm-clubs { background: var(--green); padding: 72px var(--gutter); }
+.hm-clubs-grid { display: grid; grid-template-columns: 440px 1fr; gap: 48px; align-items: start; }
+.hm-clubs-eyebrow { color: var(--green-ink); margin-bottom: 10px; }
+.hm-clubs-title { font-size: 42px; margin: 0; }
+.hm-clubs-note { font-family: var(--font-serif); font-size: 18px; color: var(--ink-2); margin: 16px 0 24px; line-height: 1.5; }
+.hm-clubs-map { margin-top: 28px; position: relative; }
+.hm-clubs-map .lg-photo { height: 220px; border-radius: 2px; }
+.hm-clubs-map-label { position: absolute; inset: 0; z-index: 4; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,.75); }
+.hm-clubs-pin { position: absolute; z-index: 5; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(255,0,68,.25); transform: translate(-50%, -50%); }
+.hm-clubs-list { padding: 8px 28px; }
+.hm-club { display: grid; grid-template-columns: 48px 1fr auto auto; gap: 18px; align-items: center; padding: 18px 0; border-bottom: 1px solid var(--rule); }
+.hm-club:last-child { border-bottom: 0; }
+.hm-club-name { font-weight: 600; font-size: 17px; }
+.hm-club-next { color: var(--green-ink); font-size: 10px; margin-top: 3px; }
+.hm-club-count { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 15px; color: var(--ink); text-align: right; }
+.hm-club-count span { display: block; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .1em; color: var(--ink-3); font-size: 9px; margin-top: 2px; }
+.hm-club-view { color: var(--ink-2); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1180px) {
+  .hm-hero-grid { grid-template-columns: 1fr; }
+  .hm-feature { min-height: 420px; }
+  .hm-feature-title { font-size: 52px; }
+  .hm-records-grid { grid-template-columns: repeat(4, 1fr); }
+  .hm-record:nth-child(4n) { border-right: 0; }
+  .hm-record { border-top: 1px solid var(--border-hairline); }
+  .hm-record:nth-child(-n+4) { border-top: 0; }
+  .hm-news-title { font-size: 60px; }
+  .hm-clubs-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 860px) {
+  .hm-wire-list { grid-template-columns: 1fr; }
+  .hm-records-grid { grid-template-columns: repeat(2, 1fr); }
+  .hm-record:nth-child(2n) { border-right: 0; }
+  .hm-record:nth-child(-n+2) { border-top: 0; }
+  .hm-record:nth-child(n+3) { border-top: 1px solid var(--border-hairline); }
+}
+@media (max-width: 620px) {
+  .hm-feature-title { font-size: 38px; }
+  .hm-feature-body { left: 20px; right: 20px; bottom: 20px; }
+  .hm-sec-title { font-size: 34px; }
+  .hm-news-title { font-size: 40px; }
+  .hm-news-form { flex-direction: column; }
+  .hm-clubs-title { font-size: 32px; }
+  .hm-club { grid-template-columns: 40px 1fr auto; }
+  .hm-club-view { display: none; }
+}

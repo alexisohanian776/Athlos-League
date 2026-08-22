@@ -1,0 +1,126 @@
+/* ATHLOS League — holographic photo-post cards for the athlete feed.
+   Foil and glare use mix-blend-mode: screen; tilt vars are set per card
+   from pointer position. */
+
+.cards-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
+@media (max-width: 1100px) { .cards-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 760px)  { .cards-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* perspective stage — keeps tilt math independent per card */
+.card-scene { perspective: 1100px; display: block; }
+
+.tcard {
+  --rx: 0deg; --ry: 0deg; --mx: 50%; --my: 50%;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 5 / 7;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #14060F;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform .45s var(--ease-out), box-shadow .45s var(--ease-out);
+  box-shadow: 0 6px 18px rgba(13,4,11,.16);
+  cursor: pointer;
+  will-change: transform;
+}
+.card-scene:hover .tcard,
+.card-scene:focus-visible .tcard {
+  transform: translateY(-18px) scale(1.05) rotateX(var(--rx)) rotateY(var(--ry));
+  box-shadow: 0 40px 70px rgba(13,4,11,.42), 0 0 0 1px rgba(255,255,255,.06);
+  transition: transform .12s var(--ease-out), box-shadow .3s var(--ease-out);
+}
+.card-scene:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; border-radius: 12px; }
+
+.tcard-photo { z-index: 0; }
+/* shading so type reads over the photo */
+.tcard-shade {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(13,4,11,.5) 0%, rgba(13,4,11,0) 24%),
+    linear-gradient(0deg, rgba(13,4,11,.92) 0%, rgba(13,4,11,.2) 42%, rgba(13,4,11,0) 64%);
+}
+
+/* holographic foil — hidden until hover, follows the cursor */
+.tcard-holo {
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  opacity: 0;
+  transition: opacity .3s var(--ease-out);
+  background-image:
+    repeating-linear-gradient(110deg,
+      rgba(255,0,68,.95) 0%, rgba(255,176,0,.85) 8%, rgba(0,224,150,.8) 16%,
+      rgba(0,150,255,.9) 25%, rgba(190,0,255,.95) 33%, rgba(255,0,68,.95) 42%);
+  background-size: 190% 190%;
+  background-position: var(--mx) var(--my);
+  mix-blend-mode: screen;
+  filter: brightness(1.1) contrast(1.2) saturate(1.7);
+}
+/* sparkle/texture layer over the foil */
+.tcard-holo::after {
+  content: ''; position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)' opacity='0.6'/%3E%3C/svg%3E");
+  mix-blend-mode: screen; opacity: .35;
+}
+.card-scene:hover .tcard-holo,
+.card-scene:focus-visible .tcard-holo { opacity: .58; }
+
+/* specular glare following the cursor */
+.tcard-glare {
+  position: absolute; inset: 0; z-index: 4; pointer-events: none;
+  opacity: 0; transition: opacity .3s var(--ease-out);
+  background: radial-gradient(circle at var(--mx) var(--my),
+    rgba(255,255,255,.8), rgba(255,255,255,.15) 22%, transparent 44%);
+  mix-blend-mode: screen;
+}
+.card-scene:hover .tcard-glare { opacity: 1; }
+
+/* inner frame line */
+.tcard-frame {
+  position: absolute; inset: 9px; z-index: 5; pointer-events: none;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 6px;
+}
+
+/* top row — source + recency */
+.tcard-top {
+  position: absolute; top: 16px; left: 16px; right: 16px; z-index: 6;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.tcard-source {
+  display: inline-flex; align-items: center; height: 22px; padding: 0 10px;
+  border-radius: 999px; background: rgba(255,255,255,.18);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  color: #fff; font-family: var(--font-mono); font-size: 9px;
+  letter-spacing: .12em; text-transform: uppercase; font-weight: 600;
+}
+.tcard-source.is-team { background: var(--accent); }
+.tcard-time { color: rgba(255,255,255,.78); font-size: 11px; letter-spacing: .04em; }
+
+/* category tag */
+.tcard-cat {
+  position: absolute; left: 16px; top: 50px; z-index: 6;
+  display: inline-flex; align-items: center; height: 22px; padding: 0 10px;
+  border-radius: 999px; background: rgba(13,4,11,.42);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  color: #fff; font-family: var(--font-mono); font-size: 9px;
+  letter-spacing: .12em; text-transform: uppercase; font-weight: 600;
+}
+
+/* byline + caption */
+.tcard-body { position: absolute; left: 20px; right: 20px; bottom: 20px; z-index: 6; color: #fff; }
+.tcard-byline { display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap; margin-bottom: 9px; }
+.tcard-name {
+  font-family: var(--font-display); text-transform: uppercase;
+  font-size: 19px; letter-spacing: -.01em; line-height: 1; color: #fff;
+}
+.tcard-handle { color: rgba(255,255,255,.6); font-size: 10px; }
+.tcard-caption {
+  font-size: 15px; line-height: 1.45; color: rgba(255,255,255,.92); margin: 0 0 12px;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.tcard-view {
+  color: rgba(255,255,255,.9); opacity: 0; transform: translateY(4px);
+  transition: opacity .25s var(--ease-out), transform .25s var(--ease-out);
+}
+.card-scene:hover .tcard-view,
+.card-scene:focus-visible .tcard-view { opacity: 1; transform: translateY(0); }

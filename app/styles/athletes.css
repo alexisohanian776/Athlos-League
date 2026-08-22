@@ -1,0 +1,107 @@
+/* ATHLOS League — Athletes page. Holographic flip cards: front is the athlete
+   frame, back is that season's mark. Builds on league.css. */
+
+.at-head { padding: 64px var(--gutter) 0; max-width: 1328px; margin: 0 auto; }
+.at-head-row { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 24px; }
+.at-head-title { font-size: 64px; margin: 0; }
+.at-head-note { font-family: var(--font-serif); font-size: 18px; color: var(--ink-2); max-width: 380px; margin: 0; line-height: 1.5; }
+.at-filters { display: flex; gap: 8px; flex-wrap: wrap; margin: 28px 0 0; }
+.at-actions { display: flex; align-items: center; gap: 16px; margin-top: 18px; }
+.at-count { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+
+.at-season { padding: 48px var(--gutter) 0; max-width: 1328px; margin: 0 auto; }
+.at-season-bar { display: flex; align-items: center; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid var(--rule); margin-bottom: 32px; }
+.at-season-year { font-family: var(--font-display); text-transform: uppercase; font-size: 40px; line-height: 1; color: var(--ink); }
+.at-season-meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); }
+.at-upcoming { display: inline-flex; align-items: center; height: 22px; padding: 0 10px; border-radius: 999px; background: var(--accent); color: #fff; font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; font-weight: 600; }
+
+/* 5 columns desktop → 3 tablet → 2 mobile. Never apply content-visibility or
+   contain here: it clips the cards mid-flip. */
+.at-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 24px; padding-bottom: 72px; }
+@media (max-width: 1100px) { .at-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 760px)  { .at-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* ---- flip scene ---- */
+.at-scene { perspective: 1400px; display: block; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+.at-flip {
+  position: relative; width: 100%; aspect-ratio: 5 / 7;
+  transform-style: preserve-3d;
+  transition: transform .62s var(--ease-out), box-shadow .3s var(--ease-out);
+  border-radius: 12px;
+}
+.at-scene:hover .at-flip,
+.at-scene:focus-visible .at-flip,
+.at-scene.is-flipped .at-flip { transform: rotateY(180deg) translateZ(6px); }
+.at-scene:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; border-radius: 12px; }
+.at-face {
+  position: absolute; inset: 0; border-radius: 12px; overflow: hidden;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  background: #14060F; box-shadow: 0 8px 24px rgba(13,4,11,.18);
+}
+.at-back { transform: rotateY(180deg); background: var(--athlos-plum-deep); }
+
+/* rainbow foil — static until the card turns, then it drifts */
+.at-foil {
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  opacity: .38; mix-blend-mode: screen;
+  background-image: repeating-linear-gradient(112deg,
+    rgba(255,0,68,.95) 0%, rgba(255,176,0,.85) 8%, rgba(0,224,150,.8) 16%,
+    rgba(0,150,255,.9) 25%, rgba(190,0,255,.95) 33%, rgba(255,0,68,.95) 42%);
+  background-size: 220% 220%;
+  background-position: 30% 50%;
+  transition: opacity .4s var(--ease-out);
+}
+.at-foil::after {
+  content: ''; position: absolute; inset: 0; opacity: .16;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)' opacity='0.6'/%3E%3C/svg%3E");
+}
+.at-scene:hover .at-foil,
+.at-scene:focus-visible .at-foil,
+.at-scene.is-flipped .at-foil { opacity: .55; animation: at-drift 9s linear infinite; }
+@keyframes at-drift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+.at-shade {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(13,4,11,.55) 0%, rgba(13,4,11,0) 26%),
+    linear-gradient(0deg, rgba(13,4,11,.94) 0%, rgba(13,4,11,.24) 44%, rgba(13,4,11,0) 66%);
+}
+.at-frameline { position: absolute; inset: 9px; z-index: 6; pointer-events: none; border: 1px solid rgba(255,255,255,.16); border-radius: 6px; }
+
+.at-photo { position: absolute; inset: 0; background: linear-gradient(150deg, var(--ph-1, #1F0219), var(--ph-2, #3A0A1E)); }
+.at-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* ---- front content ---- */
+.at-top { position: absolute; top: 16px; left: 16px; right: 16px; z-index: 7; display: flex; align-items: center; justify-content: space-between; }
+.at-chip {
+  display: inline-flex; align-items: center; height: 22px; padding: 0 10px; border-radius: 999px;
+  background: rgba(13,4,11,.55);
+  color: #fff; font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; font-weight: 600;
+}
+.at-chip.is-win { background: var(--accent); }
+.at-chip.is-new { background: var(--accent); }
+.at-place { color: rgba(255,255,255,.82); font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; }
+.at-front-body { position: absolute; left: 18px; right: 18px; bottom: 18px; z-index: 7; color: #fff; }
+.at-name { font-family: var(--font-display); text-transform: uppercase; font-size: 17px; line-height: 1.05; letter-spacing: -.01em; }
+.at-event { font-family: var(--font-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.66); margin-top: 7px; }
+
+/* ---- back content ---- */
+.at-back-inner { position: absolute; inset: 0; z-index: 7; display: flex; flex-direction: column; justify-content: space-between; padding: 24px 20px; color: #fff; }
+.at-back-name { font-family: var(--font-display); text-transform: uppercase; font-size: 15px; line-height: 1.05; margin-bottom: 4px; }
+.at-back-ev { font-family: var(--font-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.6); }
+.at-mark { font-family: var(--font-mono); font-size: 40px; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.at-mark-soft { font-family: var(--font-display); text-transform: uppercase; font-size: 30px; letter-spacing: -.01em; }
+.at-mark-unit { font-size: 18px; color: rgba(255,255,255,.6); }
+.at-mark-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.5); margin-top: 10px; }
+.at-back-rows { display: flex; flex-direction: column; gap: 8px; margin-top: 18px; }
+.at-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+.at-row span:first-child { color: rgba(255,255,255,.5); }
+.at-back-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.at-badges { display: flex; gap: 6px; }
+.at-badge { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; background: var(--accent); color: #fff; font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em; font-weight: 600; }
+.at-cta { font-family: var(--font-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #fff; }
+
+@media (max-width: 760px) {
+  .at-head-title { font-size: 44px; }
+  .at-season-year { font-size: 32px; }
+}
