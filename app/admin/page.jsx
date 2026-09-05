@@ -6,6 +6,7 @@ import DeleteClubButton from '@/components/admin/delete-club-button';
 import PeoplePanel from '@/components/admin/people-panel';
 import { listClubs } from '@/lib/clubs-db';
 import { getUserById, listUsers } from '@/lib/users-db';
+import { emailConfigured } from '@/lib/email';
 import { currentUser } from '@/lib/current-user';
 import { addClubAction, deleteClubAction, updateClubAction } from './actions';
 
@@ -58,7 +59,8 @@ export default async function AdminPage() {
         {/* People and usage are super-admin only. */}
         {me?.isSuper && !me.disabled && (
           <>
-            <PeoplePanel users={users} clubs={clubs} origin={origin} meId={me.id} />
+            <PeoplePanel users={users} clubs={clubs} origin={origin} meId={me.id}
+              mailOn={emailConfigured()} />
             <p className="dash-hint" style={{ marginTop: 22 }}>
               <Link href="/admin/metrics" className="dash-btn dash-btn-ghost">Usage metrics →</Link>
             </p>

@@ -4,6 +4,8 @@ import { revalidatePath } from 'next/cache';
 import { currentUser } from '@/lib/current-user';
 import { createClub, deleteClub, updateClub } from '@/lib/clubs-db';
 import { deleteUser, getUserById, inviteUser, reissueInvite, setDisabled, setRole } from '@/lib/users-db';
+import { sendInviteEmail, sendResetEmail } from '@/lib/email';
+import { headers } from 'next/headers';
 
 /* Server actions are directly callable endpoints, so each one re-checks the
    session rather than trusting that middleware ran. */
@@ -22,6 +24,13 @@ async function assertSuperAdmin() {
   const user = await getUserById(session.id);
   if (!user || !user.isSuper || user.disabled) throw new Error('Not authorised.');
   return user;
+}
+
+/* Links in email must be absolute, and the host differs between the
+   preview deployments and athlosleague.com. */
+function originFromRequest() {
+  const h = headers();
+  return `${h.get('x-forwarded-proto') || 'https'}://${h.get('host')}`;
 }
 
 const TONES = ['ph-wine', 'ph-plum', 'ph-ember', 'ph-field', 'ph-dusk', 'ph-clay'];
@@ -113,7 +122,11 @@ export async function inviteUserAction(formData) {
   const clubId = role === 'leader' && rawClub ? Number(rawClub) : null;
   if (role === 'leader' && !Number.isInteger(clubId)) throw new Error('Pick a club for this leader.');
 
-  await inviteUser({ email, name: String(formData.get('name') || '').trim() || null, role, clubId });
+  const name = String(formData.get('name') || '').trim() || null;
+  const { user, token } = await inviteUser({ email, name, role, clubId });
+  /* Best effort: the invite link is still shown in the panel, so a mail
+     failure never blocks getting someone in. */
+  await sendInviteEmail({ to: user.email, name, role, url: `${originFromRequest()}/invite/${token}` });
   refreshPeople();
 }
 
@@ -121,7 +134,14 @@ export async function reissueInviteAction(formData) {
   await assertSuperAdmin();
   const id = Number(formData.get('id'));
   if (!Number.isInteger(id)) throw new Error('Bad user id.');
-  await reissueInvite(id);
+  const result = await reissueInvite(id);
+  if (result) {
+    const { user, token } = result;
+    const url = `${originFromRequest()}/invite/${token}`;
+    await (user.hasPassword
+      ? sendResetEmail({ to: user.email, name: user.name, url })
+      : sendInviteEmail({ to: user.email, name: user.name, role: user.role, url }));
+  }
   refreshPeople();
 }
 

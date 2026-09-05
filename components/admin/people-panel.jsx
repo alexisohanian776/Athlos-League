@@ -8,12 +8,13 @@ import InviteLinkRow from './invite-link-row';
 const formatDay = (value) =>
   new Intl.DateTimeFormat('en-GB', { timeZone: 'UTC' }).format(new Date(value));
 
-export default function PeoplePanel({ users, clubs, origin, meId }) {
+export default function PeoplePanel({ users, clubs, origin, meId, mailOn }) {
   return (
     <>
       <div className="dash-head" style={{ marginTop: 48 }}>
         <h1 className="dash-title">People</h1>
         <span className="dash-count">
+          {mailOn ? 'Email on · invites are sent automatically' : 'Email off · copy the link and send it yourself'}{' · '}
           {users.filter((u) => u.role === 'admin').length} admins ·{' '}
           {users.filter((u) => u.role === 'leader').length} club leaders
         </span>
