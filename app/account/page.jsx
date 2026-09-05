@@ -55,6 +55,7 @@ export default async function AccountPage({ searchParams }) {
 
             <form action={updateProfileAction} className="ac-form">
               <AvatarField
+                userId={user?.id}
                 initialUrl={user?.avatarUrl}
                 fallback={<Avatar name={fullName || user?.email || '?'} size={72} tone="ph-plum" />}
               />

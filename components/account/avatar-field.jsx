@@ -6,7 +6,7 @@ import { useRef, useState } from 'react';
 /* The file goes straight from the browser to Blob, and only the resulting
    URL travels with the form. The <img> and the hidden input are both plain
    markup, so the field still shows the current photo with no JS at all. */
-export default function AvatarField({ initialUrl, fallback }) {
+export default function AvatarField({ initialUrl, fallback, userId }) {
   const [url, setUrl] = useState(initialUrl || '');
   const [state, setState] = useState('idle'); // idle | uploading | done | error
   const [error, setError] = useState('');
@@ -19,8 +19,10 @@ export default function AvatarField({ initialUrl, fallback }) {
     setError('');
     setState('uploading');
     try {
+      /* The id prefix has to match what /api/avatar-upload will accept —
+         it scopes the upload to this account before minting a token. */
       const safeName = file.name.replace(/[^a-zA-Z0-9.]+/g, '-').slice(-40);
-      const blob = await upload(`avatars/${Date.now()}-${safeName}`, file, {
+      const blob = await upload(`avatars/${userId}-${Date.now()}-${safeName}`, file, {
         access: 'public',
         handleUploadUrl: '/api/avatar-upload',
       });
