@@ -213,3 +213,45 @@
   .sc-modal { padding: 40px 24px 32px; }
   .sc-modal-title { font-size: 32px; }
 }
+
+/* A single-city season gets the full width of the shell: a banner frame with
+   the details laid out in a row beneath it, rather than one narrow column. */
+.sc-upcoming.is-single { grid-template-columns: minmax(0, 1fr); }
+
+@media (min-width: 900px) {
+  .sc-upcoming.is-single .sc-card-photo { height: 460px; }
+  .sc-upcoming.is-single .sc-card-city { font-size: 68px; }
+  .sc-upcoming.is-single .sc-card-photo-name { left: 40px; bottom: 34px; }
+  .sc-upcoming.is-single .sc-card-photo-top { top: 28px; left: 32px; right: 32px; }
+  .sc-upcoming.is-single .sc-count-n { font-size: 52px; }
+
+  .sc-upcoming.is-single .sc-card-body {
+    display: grid;
+    grid-template-columns: minmax(250px, 1fr) minmax(280px, 1.25fr) auto;
+    grid-template-areas:
+      "when  events    cta"
+      "venue confirmed cta";
+    column-gap: 48px;
+    align-items: center;
+    padding: 30px 36px 32px;
+  }
+  /* Stacked here: side by side, the date and time collide in this column. */
+  .sc-upcoming.is-single .sc-when {
+    grid-area: when; border-bottom: 0; padding-bottom: 8px;
+    flex-direction: column; align-items: flex-start; gap: 4px;
+  }
+  .sc-upcoming.is-single .sc-venue     { grid-area: venue;     border-bottom: 0; padding: 0; }
+  .sc-upcoming.is-single .sc-events    { grid-area: events;    padding: 0 0 12px; }
+  .sc-upcoming.is-single .sc-confirmed { grid-area: confirmed; padding: 0; }
+  .sc-upcoming.is-single .sc-card-cta  { grid-area: cta;       margin-top: 0; }
+  /* The CTA sizes to its label here instead of stretching the whole row. */
+  .sc-upcoming.is-single .sc-card-cta .lg-btn { flex: 0 0 auto; min-width: 210px; }
+}
+
+/* The London frame is pre-cropped to the card's ratio around the crown, so it
+   needs no further repositioning — just sit it slightly high. */
+.sc-card-img img { object-position: center 42%; }
+
+.sc-modal-label { font-family: var(--font-ui); font-size: 13px; font-weight: 600; color: var(--ink); }
+.sc-modal-fine { font-size: 12px; line-height: 1.5; color: var(--ink-3); margin: 2px 0 0; }
+.sc-modal-form .lg-btn:disabled { opacity: .38; pointer-events: none; }

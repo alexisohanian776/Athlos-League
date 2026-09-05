@@ -177,9 +177,8 @@ body:has(.vip) { background: var(--athlos-dark-plum); }
 }
 
 /* ===== VIP gate (password screen) ===== */
-.vip-gate { display: flex; align-items: center; justify-content: center; padding: 48px var(--gutter); }
+.vip-gate { display: flex; align-items: center; justify-content: center; padding: 96px var(--gutter); min-height: 70vh; }
 .vip-gate-inner { width: 100%; max-width: 460px; }
-.vip-gate-eyebrow { margin-top: 40px; }
 .vip-gate-title { font-size: 56px; margin: 14px 0 0; }
 .vip-gate-note { margin-top: 18px; font-size: 17px; }
 .vip-gate-form { display: flex; flex-direction: column; gap: 10px; margin-top: 32px; }

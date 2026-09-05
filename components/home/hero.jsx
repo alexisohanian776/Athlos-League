@@ -3,7 +3,7 @@ import PhotoCrop from '../photo-crop';
 /* Dark split hero: the feature story on the left, the next meet's live
    ticket countdown on the right. `days` is computed by the page. */
 export default function HomeHero({ meets }) {
-  const [next, then] = meets;
+  const [next, then] = meets;   // `then` is undefined in a single-city season
   return (
     <section className="hm-hero">
       <div className="hm-hero-grid">
@@ -62,6 +62,7 @@ export default function HomeHero({ meets }) {
             </a>
           </div>
 
+          {then && (
           <div className="hm-panel hm-next">
             <div>
               <div className="lg-mono hm-next-label">Then</div>
@@ -72,6 +73,7 @@ export default function HomeHero({ meets }) {
               <div className="hm-next-days">{then.days} days out</div>
             </div>
           </div>
+          )}
         </div>
       </div>
     </section>

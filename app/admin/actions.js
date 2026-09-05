@@ -1,17 +1,16 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { cookies } from 'next/headers';
-import { adminGate } from '@/lib/admin-auth';
+import { currentUser } from '@/lib/current-user';
 import { createClub, deleteClub, updateClub } from '@/lib/clubs-db';
+import { deleteUser, inviteUser, reissueInvite } from '@/lib/users-db';
 
 /* Server actions are directly callable endpoints, so each one re-checks the
-   admin cookie rather than trusting that middleware ran. */
+   session rather than trusting that middleware ran. */
 async function assertAdmin() {
-  const value = cookies().get(adminGate.cookie)?.value;
-  if (!(await adminGate.isValidCookie(value))) {
-    throw new Error('Not authorised.');
-  }
+  const user = await currentUser();
+  if (!user || user.role !== 'admin') throw new Error('Not authorised.');
+  return user;
 }
 
 const TONES = ['ph-wine', 'ph-plum', 'ph-ember', 'ph-field', 'ph-dusk', 'ph-clay'];
@@ -52,6 +51,9 @@ function parseClub(formData) {
     mapX: num('mapX', 0, 100),
     mapY: num('mapY', 0, 100),
     photo: str('photo', 500) || null,
+    website: str('website', 300) || null,
+    instagram: str('instagram', 80) || null,
+    about: String(formData.get('about') ?? '').trim().slice(0, 4000) || null,
   };
 }
 
@@ -82,4 +84,41 @@ export async function deleteClubAction(formData) {
   if (!Number.isInteger(id)) throw new Error('Bad club id.');
   const slug = await deleteClub(id);
   refresh(slug);
+}
+
+/* ---------- people ---------- */
+
+function refreshPeople() {
+  revalidatePath('/admin');
+}
+
+export async function inviteUserAction(formData) {
+  await assertAdmin();
+  const email = String(formData.get('email') || '').trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('Enter a valid email address.');
+
+  const role = formData.get('role') === 'admin' ? 'admin' : 'leader';
+  const rawClub = formData.get('clubId');
+  const clubId = role === 'leader' && rawClub ? Number(rawClub) : null;
+  if (role === 'leader' && !Number.isInteger(clubId)) throw new Error('Pick a club for this leader.');
+
+  await inviteUser({ email, name: String(formData.get('name') || '').trim() || null, role, clubId });
+  refreshPeople();
+}
+
+export async function reissueInviteAction(formData) {
+  await assertAdmin();
+  const id = Number(formData.get('id'));
+  if (!Number.isInteger(id)) throw new Error('Bad user id.');
+  await reissueInvite(id);
+  refreshPeople();
+}
+
+export async function removeUserAction(formData) {
+  const me = await assertAdmin();
+  const id = Number(formData.get('id'));
+  if (!Number.isInteger(id)) throw new Error('Bad user id.');
+  if (id === me.id) throw new Error('You cannot remove your own account.');
+  await deleteUser(id);
+  refreshPeople();
 }

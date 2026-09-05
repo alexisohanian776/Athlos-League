@@ -27,8 +27,11 @@ export default function UpcomingCard({ meet: m }) {
       <div className="sc-card-photo">
         <PhotoCrop
           tone={m.tone}
+          src={m.photo}
+          alt={`${m.name} — ${m.venue}`}
           mono={MONO[m.city]}
           monoSize={120}
+          className="sc-card-img"
           style={{ position: 'absolute', inset: 0 }}
         />
         <div className="sc-card-photo-shade" />

@@ -1,18 +1,25 @@
-import AdminBar from '@/components/admin/admin-bar';
+import { headers } from 'next/headers';
+import AccountBar from '@/components/account/account-bar';
 import ClubForm from '@/components/admin/club-form';
 import DeleteClubButton from '@/components/admin/delete-club-button';
+import PeoplePanel from '@/components/admin/people-panel';
 import { listClubs } from '@/lib/clubs-db';
+import { listUsers } from '@/lib/users-db';
+import { currentUser } from '@/lib/current-user';
 import { addClubAction, deleteClubAction, updateClubAction } from './actions';
 
 export const metadata = { title: 'ATHLOS admin — Run clubs' };
 export const dynamic = 'force-dynamic';
 
 export default async function AdminPage() {
-  const clubs = await listClubs();
+  const session = await currentUser();
+  const [clubs, users] = await Promise.all([listClubs(), listUsers()]);
+  const h = headers();
+  const origin = `${h.get('x-forwarded-proto') || 'https'}://${h.get('host')}`;
 
   return (
     <div className="ad">
-      <AdminBar />
+      <AccountBar email={session?.email} role="admin" />
       <div className="ad-wrap">
         <div className="ad-head">
           <h1 className="ad-title">Run clubs</h1>
@@ -45,6 +52,7 @@ export default async function AdminPage() {
             </form>
           </div>
         ))}
+        <PeoplePanel users={users} clubs={clubs} origin={origin} />
       </div>
     </div>
   );

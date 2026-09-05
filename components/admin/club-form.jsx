@@ -1,7 +1,7 @@
 const TONES = ['ph-wine', 'ph-plum', 'ph-ember', 'ph-field', 'ph-dusk', 'ph-clay'];
 
 /* One form shape for both add and edit. `club` is null when adding. */
-export default function ClubForm({ club, action, submitLabel }) {
+export default function ClubForm({ club, action, submitLabel, leaderView = false }) {
   const v = club || {};
   return (
     <form action={action}>
@@ -11,9 +11,13 @@ export default function ClubForm({ club, action, submitLabel }) {
         <Field label="City" name="city" defaultValue={v.city} required />
         <Field label="Neighbourhood" name="hood" defaultValue={v.hood} />
 
-        <Select label="Type" name="type" defaultValue={v.type || 'Official'} options={['Official', 'Partner']} />
-        <Select label="Region" name="region" defaultValue={v.region || 'North America'} options={['North America', 'Europe']} />
-        <Field label="Country code" name="code" defaultValue={v.code || 'USA'} maxLength={3} />
+        {!leaderView && (
+          <>
+            <Select label="Type" name="type" defaultValue={v.type || 'Official'} options={['Official', 'Partner']} />
+            <Select label="Region" name="region" defaultValue={v.region || 'North America'} options={['North America', 'Europe']} />
+            <Field label="Country code" name="code" defaultValue={v.code || 'USA'} maxLength={3} />
+          </>
+        )}
         <Field label="Founded" name="founded" defaultValue={v.founded} maxLength={4} />
 
         <Field label="Organizer" name="organizer" defaultValue={v.organizer} />
@@ -21,13 +25,25 @@ export default function ClubForm({ club, action, submitLabel }) {
         <Field label="Next run" name="next" defaultValue={v.next} placeholder="Sat 9:00 AM" />
         <Select label="Duotone" name="tone" defaultValue={v.tone || 'ph-wine'} options={TONES} />
 
-        <Field label="Map X %" name="mapX" defaultValue={v.mapX ?? ''} type="number" step="0.1" />
-        <Field label="Map Y %" name="mapY" defaultValue={v.mapY ?? ''} type="number" step="0.1" />
-        <Field label="Photo URL" name="photo" defaultValue={v.photo} wide placeholder="Blob URL — optional" />
+        {!leaderView && (
+          <>
+            <Field label="Map X %" name="mapX" defaultValue={v.mapX ?? ''} type="number" step="0.1" />
+            <Field label="Map Y %" name="mapY" defaultValue={v.mapY ?? ''} type="number" step="0.1" />
+          </>
+        )}
+        <Field label="Photo URL" name="photo" defaultValue={v.photo} wide placeholder="Image URL — optional" />
+        <Field label="Website" name="website" defaultValue={v.website} placeholder="https://" />
+        <Field label="Instagram" name="instagram" defaultValue={v.instagram} placeholder="@handle" />
+        <label className="ad-field is-wide" style={{ gridColumn: '1 / -1' }}>
+          <span className="ad-label">About — one paragraph per blank line</span>
+          <textarea className="ad-input ad-textarea" name="about" rows={5} defaultValue={v.about ?? ''} />
+        </label>
       </div>
       <div className="ad-actions">
         <button className="ad-btn ad-btn-ink" type="submit">{submitLabel}</button>
-        <p className="ad-hint">Map X/Y are percentages across the locator map.</p>
+        <p className="ad-hint">
+          {leaderView ? 'Changes go live on your public club page.' : 'Map X/Y are percentages across the locator map.'}
+        </p>
       </div>
     </form>
   );

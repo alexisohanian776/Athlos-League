@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import AthleteFlipCard from './athlete-flip-card';
+import AthleteCard from './athlete-card';
 import { ALL_EVENTS, EVENT_OPTIONS, SEASONS, seasonMeta } from '@/lib/season-cards';
 
 export default function AthletesIndex() {
@@ -29,8 +29,8 @@ export default function AthletesIndex() {
             <h1 className="lg-display at-head-title">Athletes</h1>
           </div>
           <p className="at-head-note">
-            Every card the league has minted, season by season. Hover to turn one
-            over for the mark. Click through for the full profile.
+            Every card the league has minted, season by season. Tilt one to catch
+            the light. Click through for the full profile.
           </p>
         </div>
 
@@ -64,7 +64,7 @@ export default function AthletesIndex() {
           </div>
           <div className="at-grid">
             {s.cards.map((c, i) => (
-              <AthleteFlipCard key={`${c.slug}-${c.event}-${i}`} card={c} />
+              <AthleteCard key={`${c.slug}-${c.event}-${i}`} card={c} />
             ))}
           </div>
         </section>

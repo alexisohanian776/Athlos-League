@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Wordmark from '../wordmark';
 import { NAV, NAV_HREF } from '@/lib/league';
 
-export default function VipNav() {
+export default function VipNav({ cta = true }) {
   return (
     <nav className="vip-nav">
       <Link href="/" aria-label="ATHLOS home">
@@ -21,7 +21,7 @@ export default function VipNav() {
         ))}
       </div>
       <div className="vip-nav-spacer" />
-      <a href="#details" className="vip-btn vip-btn-red vip-btn-sm">Your evening</a>
+      {cta && <a href="#details" className="vip-btn vip-btn-red vip-btn-sm">Your evening</a>}
     </nav>
   );
 }

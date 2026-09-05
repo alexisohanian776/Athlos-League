@@ -1,0 +1,24 @@
+'use client';
+
+import { useState } from 'react';
+
+/* The invite link is shown once so it can be copied and sent manually. */
+export default function InviteLinkRow({ url }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <div className="ad-actions" style={{ paddingTop: 0 }}>
+      <code className="ad-invite">{url}</code>
+      <button
+        className="ad-btn ad-btn-ghost"
+        type="button"
+        onClick={async () => {
+          await navigator.clipboard.writeText(url);
+          setCopied(true);
+          setTimeout(() => setCopied(false), 1600);
+        }}
+      >
+        {copied ? 'Copied' : 'Copy link'}
+      </button>
+    </div>
+  );
+}

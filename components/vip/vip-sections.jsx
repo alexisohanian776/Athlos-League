@@ -125,16 +125,6 @@ export function VipGallery() {
 export function VipFoot() {
   return (
     <div className="vip-shell">
-      <div className="vip-next">
-        <div>
-          <div className="vip-eyebrow">Next city</div>
-          <div className="vip-display vip-next-title">New York · VIP</div>
-          <p className="vip-body" style={{ marginTop: 10, fontSize: 16 }}>
-            Icahn Stadium, October 2026. Details to come.
-          </p>
-        </div>
-        <Link href={NAV_HREF.Schedule} className="vip-btn vip-btn-line">See the schedule</Link>
-      </div>
       <div className="vip-foot">
         <Wordmark size={22} light />
         <div className="vip-foot-links">

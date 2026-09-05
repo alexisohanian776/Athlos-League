@@ -138,7 +138,25 @@ function PastMeet({ meet: p, open, onToggle, onClaim }) {
   );
 }
 
+/* Verification is handled by the ops team over email, so the button composes
+   the message rather than posting to an endpoint that does not exist. */
+function sendProof(meet, email) {
+  const label = `ATHLOS New York ${meet.year}`;
+  const subject = `ATHLOS verified — ${label}`;
+  const body = [
+    `I was at ${label} (${meet.date}, ${meet.venue}).`,
+    '',
+    'Proof is attached — please attach a photo of your ticket or a selfie from the stands before sending.',
+    '',
+    `Contact email: ${email}`,
+  ].join('\n');
+  window.location.href =
+    `mailto:${VERIFY_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
 function ClaimModal({ meet, onClose }) {
+  const [email, setEmail] = useState('');
+
   useEffect(() => {
     if (!meet) return undefined;
     const onKey = (e) => { if (e.key === 'Escape') onClose(); };
@@ -172,17 +190,18 @@ function ClaimModal({ meet, onClose }) {
           <li>
             <span className="sc-step-n lg-mono-data">1</span>
             <div>
-              <div className="sc-step-t">Create a free ATHLOS account</div>
-              <div className="lg-serif sc-step-d">Same login works across the league. Already have one? Sign in.</div>
+              <div className="sc-step-t">Tell us where to reach you</div>
+              <div className="lg-serif sc-step-d">Your email, so the league can confirm your badge.</div>
             </div>
           </li>
           <li>
             <span className="sc-step-n lg-mono-data">2</span>
             <div>
-              <div className="sc-step-t">Email your proof</div>
+              <div className="sc-step-t">Attach your proof and send</div>
               <div className="lg-serif sc-step-d">
-                Send a photo of your ticket — or a selfie from the stands — to{' '}
-                <span className="sc-mail">{VERIFY_EMAIL}</span>.
+                The button opens an email to{' '}
+                <span className="sc-mail">{VERIFY_EMAIL}</span> — attach a photo of
+                your ticket, or a selfie from the stands.
               </div>
             </div>
           </li>
@@ -194,10 +213,24 @@ function ClaimModal({ meet, onClose }) {
             </div>
           </li>
         </ol>
-        <div className="sc-modal-form">
-          <input className="sc-modal-input" type="email" placeholder="you@email.com" aria-label="Email address" />
-          <button type="button" className="lg-btn lg-btn-red lg-btn-lg">Create account &amp; send proof</button>
-        </div>
+        <form className="sc-modal-form" onSubmit={(e) => { e.preventDefault(); sendProof(meet, email); }}>
+          <label className="sc-modal-label" htmlFor="sc-claim-email">Your email</label>
+          <input
+            id="sc-claim-email"
+            className="sc-modal-input"
+            type="email"
+            required
+            placeholder="you@email.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <button type="submit" className="lg-btn lg-btn-red lg-btn-lg" disabled={!email}>
+            Email my proof →
+          </button>
+          <p className="sc-modal-fine">
+            Opens your mail app with the message ready. Attach the photo and hit send.
+          </p>
+        </form>
       </div>
     </div>
   );

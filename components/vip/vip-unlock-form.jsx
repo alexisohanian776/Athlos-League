@@ -1,11 +1,8 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import Wordmark from '../wordmark';
 
 export default function VipUnlockForm() {
-  const router = useRouter();
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [pending, setPending] = useState(false);
@@ -20,7 +17,10 @@ export default function VipUnlockForm() {
       body: JSON.stringify({ password }),
     });
     if (res.ok) {
-      router.replace('/vip');
+      /* Hard navigation, not router.replace: the gate cookie was only just
+         set, and Next's client router would serve /vip from a cache created
+         before it existed — bouncing straight back here. */
+      window.location.assign('/vip');
       return;
     }
     const body = await res.json().catch(() => ({}));
@@ -30,8 +30,7 @@ export default function VipUnlockForm() {
 
   return (
     <div className="vip-gate-inner">
-      <Wordmark size={30} light />
-      <div className="vip-eyebrow vip-gate-eyebrow">ATHLOS London · VIP</div>
+      <div className="vip-eyebrow">ATHLOS London · VIP</div>
       <h1 className="vip-display vip-gate-title">Invite only.</h1>
       <p className="vip-body vip-gate-note">
         The VIP evening is capacity-limited and confirmed by the league. Enter the

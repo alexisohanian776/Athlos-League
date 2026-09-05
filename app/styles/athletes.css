@@ -1,5 +1,6 @@
-/* ATHLOS League — Athletes page. Holographic flip cards: front is the athlete
-   frame, back is that season's mark. Builds on league.css. */
+/* ATHLOS League — Athletes page. Collectible cards: the athlete's frame for
+   that season, with a foil that catches the light as the card tilts.
+   Builds on league.css. */
 
 .at-head { padding: 64px var(--gutter) 0; max-width: 1328px; margin: 0 auto; }
 .at-head-row { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 24px; }
@@ -16,92 +17,159 @@
 .at-upcoming { display: inline-flex; align-items: center; height: 22px; padding: 0 10px; border-radius: 999px; background: var(--accent); color: #fff; font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; font-weight: 600; }
 
 /* 5 columns desktop → 3 tablet → 2 mobile. Never apply content-visibility or
-   contain here: it clips the cards mid-flip. */
+   contain here: it clips the cards as they tilt out of the grid. */
 .at-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 24px; padding-bottom: 72px; }
 @media (max-width: 1100px) { .at-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 760px)  { .at-grid { grid-template-columns: repeat(2, 1fr); } }
 
-/* ---- flip scene ---- */
-.at-scene { perspective: 1400px; display: block; text-decoration: none; -webkit-tap-highlight-color: transparent; }
-.at-flip {
+/* ---- card: 3D tilt, real-feeling shine ---- */
+.at-scene {
+  perspective: 900px; display: block; text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  /* Set per card from a hash of the athlete and season, so the scatter is
+     deterministic — it must match between server and client render. */
+  --spin: 0deg; --dx: 0px; --dy: 0px;
+  transform: rotate(var(--spin)) translate(var(--dx), var(--dy));
+  transition: transform .35s var(--ease-out), z-index 0s;
+  position: relative;
+  z-index: 1;
+}
+/* The card being handled comes forward and straightens up a little. */
+.at-scene:hover, .at-scene:focus-visible {
+  z-index: 3;
+  transform: rotate(calc(var(--spin) * .35)) translate(var(--dx), calc(var(--dy) - 4px));
+}
+.at-card {
+  --rx: 0deg; --ry: 0deg; --mx: 50%; --my: 50%; --lift: 0;
   position: relative; width: 100%; aspect-ratio: 5 / 7;
+  overflow: hidden;
+  background: #14060F;
   transform-style: preserve-3d;
-  transition: transform .62s var(--ease-out), box-shadow .3s var(--ease-out);
-  border-radius: 12px;
+  transform:
+    rotateX(var(--rx)) rotateY(var(--ry))
+    translateY(calc(var(--lift) * -6px))
+    scale(calc(1 + var(--lift) * 0.015));
+  box-shadow:
+    0 8px 24px rgba(13,4,11,.18),
+    0 calc(var(--lift) * 26px) calc(var(--lift) * 44px) rgba(13,4,11,calc(var(--lift) * 0.34));
+  transition: transform .34s var(--ease-out), box-shadow .34s var(--ease-out);
+  will-change: transform;
 }
-.at-scene:hover .at-flip,
-.at-scene:focus-visible .at-flip,
-.at-scene.is-flipped .at-flip { transform: rotateY(180deg) translateZ(6px); }
-.at-scene:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; border-radius: 12px; }
-.at-face {
-  position: absolute; inset: 0; border-radius: 12px; overflow: hidden;
-  backface-visibility: hidden; -webkit-backface-visibility: hidden;
-  background: #14060F; box-shadow: 0 8px 24px rgba(13,4,11,.18);
-}
-.at-back { transform: rotateY(180deg); background: var(--athlos-plum-deep); }
+.at-scene:hover .at-card { transition: transform .1s var(--ease-out), box-shadow .3s var(--ease-out); }
+.at-scene:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
 
-/* rainbow foil — static until the card turns, then it drifts */
-.at-foil {
-  position: absolute; inset: 0; z-index: 3; pointer-events: none;
-  opacity: .38; mix-blend-mode: screen;
-  background-image: repeating-linear-gradient(112deg,
-    rgba(255,0,68,.95) 0%, rgba(255,176,0,.85) 8%, rgba(0,224,150,.8) 16%,
-    rgba(0,150,255,.9) 25%, rgba(190,0,255,.95) 33%, rgba(255,0,68,.95) 42%);
-  background-size: 220% 220%;
-  background-position: 30% 50%;
-  transition: opacity .4s var(--ease-out);
-}
-.at-foil::after {
-  content: ''; position: absolute; inset: 0; opacity: .16;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)' opacity='0.6'/%3E%3C/svg%3E");
-}
-.at-scene:hover .at-foil,
-.at-scene:focus-visible .at-foil,
-.at-scene.is-flipped .at-foil { opacity: .55; animation: at-drift 9s linear infinite; }
-@keyframes at-drift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+.at-photo { position: absolute; inset: 0; z-index: 0; background: linear-gradient(150deg, var(--ph-1, #1F0219), var(--ph-2, #3A0A1E)); }
+.at-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
 .at-shade {
   position: absolute; inset: 0; z-index: 2; pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(13,4,11,.55) 0%, rgba(13,4,11,0) 26%),
-    linear-gradient(0deg, rgba(13,4,11,.94) 0%, rgba(13,4,11,.24) 44%, rgba(13,4,11,0) 66%);
+    linear-gradient(180deg, rgba(13,4,11,.5) 0%, rgba(13,4,11,0) 28%),
+    linear-gradient(0deg, rgba(13,4,11,.95) 0%, rgba(13,4,11,.34) 46%, rgba(13,4,11,0) 70%);
 }
-.at-frameline { position: absolute; inset: 9px; z-index: 6; pointer-events: none; border: 1px solid rgba(255,255,255,.16); border-radius: 6px; }
 
-.at-photo { position: absolute; inset: 0; background: linear-gradient(150deg, var(--ph-1, #1F0219), var(--ph-2, #3A0A1E)); }
-.at-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* Iridescence. Visible at rest, and it blooms as the card turns.
+   `overlay` keeps the photograph's midtones where `screen` used to bleach
+   them out. */
+.at-foil {
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  opacity: calc(.17 + var(--lift) * .12);
+  mix-blend-mode: overlay;
+  background-image: repeating-linear-gradient(108deg,
+    rgba(255,0,68,.9) 0%, rgba(255,176,0,.8) 7%, rgba(0,224,150,.75) 14%,
+    rgba(0,150,255,.85) 21%, rgba(190,0,255,.9) 28%, rgba(255,0,68,.9) 35%);
+  background-size: 185% 185%;
+  background-position: calc(var(--mx) * .7 + 15%) calc(var(--my) * .7 + 15%);
+  filter: saturate(1.45) contrast(1.08);
+  transition: opacity .3s var(--ease-out);
+}
+/* Fine grain so the foil reads as a printed surface rather than a gradient. */
+.at-foil::after {
+  content: ''; position: absolute; inset: 0; opacity: .12;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)' opacity='0.6'/%3E%3C/svg%3E");
+}
 
-/* ---- front content ---- */
-.at-top { position: absolute; top: 16px; left: 16px; right: 16px; z-index: 7; display: flex; align-items: center; justify-content: space-between; }
+/* The specular highlight — a real card catching a light source. */
+.at-sheen {
+  position: absolute; inset: 0; z-index: 4; pointer-events: none;
+  opacity: calc(var(--lift) * .42);
+  background:
+    radial-gradient(480px circle at var(--mx) var(--my),
+      rgba(255,255,255,.46) 0%, rgba(255,255,255,.12) 22%, rgba(255,255,255,0) 44%);
+  mix-blend-mode: screen;
+  transition: opacity .3s var(--ease-out);
+}
+
+/* Dispersion: the colour bands bloom inside the highlight only, masked to a
+   pool around the cursor. This is what makes it read as foil rather than a
+   coloured overlay. */
+.at-holo {
+  position: absolute; inset: 0; z-index: 5; pointer-events: none;
+  opacity: calc(var(--lift) * .26);
+  background-image: repeating-linear-gradient(98deg,
+    rgba(255,0,68,.95) 0%, rgba(255,190,0,.9) 6%, rgba(0,255,170,.85) 12%,
+    rgba(0,160,255,.9) 18%, rgba(200,0,255,.95) 24%, rgba(255,0,68,.95) 30%);
+  background-size: 140% 140%;
+  background-position: calc(var(--mx) * 1.3 - 15%) calc(var(--my) * 1.3 - 15%);
+  mix-blend-mode: color-dodge;
+  filter: saturate(1.7) brightness(1.05);
+  -webkit-mask-image: radial-gradient(300px circle at var(--mx) var(--my), #000 0%, rgba(0,0,0,.35) 26%, transparent 50%);
+  mask-image: radial-gradient(300px circle at var(--mx) var(--my), #000 0%, rgba(0,0,0,.35) 26%, transparent 50%);
+  transition: opacity .3s var(--ease-out);
+}
+
+.at-frameline { position: absolute; inset: 9px; z-index: 6; pointer-events: none; border: 1px solid rgba(255,255,255,.16); }
+
+/* Winner ring: replaces the inner frame line on a first-place card and spells
+   WINNER around the whole perimeter. */
+.at-winner { position: absolute; inset: 0; z-index: 6; pointer-events: none; width: 100%; height: 100%; }
+.at-winner-ring { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+.at-winner-text {
+  fill: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2.6px;
+}
+/* A faint dark halo so the ring reads over a bright photo too. */
+.at-winner { filter: drop-shadow(0 0 3px rgba(13,4,11,.55)); }
+.at-scene:hover .at-winner-ring { stroke-width: 3; }
+/* Pull the card's own content clear of the ring text so the two never
+   overlap. */
+.at-card.is-winner .at-top { top: 30px; left: 30px; right: 30px; }
+.at-card.is-winner .at-front-body { left: 30px; right: 30px; bottom: 34px; }
+
+/* ---- content on the face ---- */
+.at-top { position: absolute; top: 16px; left: 16px; right: 16px; z-index: 7; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .at-chip {
   display: inline-flex; align-items: center; height: 22px; padding: 0 10px; border-radius: 999px;
   background: rgba(13,4,11,.55);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
   color: #fff; font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; font-weight: 600;
 }
-.at-chip.is-win { background: var(--accent); }
-.at-chip.is-new { background: var(--accent); }
+.at-chip.is-win, .at-chip.is-new { background: var(--accent); -webkit-backdrop-filter: none; backdrop-filter: none; }
 .at-place { color: rgba(255,255,255,.82); font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; }
 .at-front-body { position: absolute; left: 18px; right: 18px; bottom: 18px; z-index: 7; color: #fff; }
 .at-name { font-family: var(--font-display); text-transform: uppercase; font-size: 17px; line-height: 1.05; letter-spacing: -.01em; }
 .at-event { font-family: var(--font-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.66); margin-top: 7px; }
 
-/* ---- back content ---- */
-.at-back-inner { position: absolute; inset: 0; z-index: 7; display: flex; flex-direction: column; justify-content: space-between; padding: 24px 20px; color: #fff; }
-.at-back-name { font-family: var(--font-display); text-transform: uppercase; font-size: 15px; line-height: 1.05; margin-bottom: 4px; }
-.at-back-ev { font-family: var(--font-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.6); }
-.at-mark { font-family: var(--font-mono); font-size: 40px; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
-.at-mark-soft { font-family: var(--font-display); text-transform: uppercase; font-size: 30px; letter-spacing: -.01em; }
-.at-mark-unit { font-size: 18px; color: rgba(255,255,255,.6); }
-.at-mark-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.5); margin-top: 10px; }
-.at-back-rows { display: flex; flex-direction: column; gap: 8px; margin-top: 18px; }
-.at-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
-.at-row span:first-child { color: rgba(255,255,255,.5); }
-.at-back-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.at-badges { display: flex; gap: 6px; }
-.at-badge { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 999px; background: var(--accent); color: #fff; font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em; font-weight: 600; }
-.at-cta { font-family: var(--font-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #fff; }
+/* ---- mark on the face ---- */
+.at-face-mark { display: flex; align-items: baseline; gap: 8px; margin-top: 9px; flex-wrap: wrap; }
+.at-mark-value { font-family: var(--font-mono); font-size: 21px; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: #fff; }
+.at-mark-unit { font-size: 12px; color: rgba(255,255,255,.65); }
+.at-mark-soft { font-family: var(--font-display); text-transform: uppercase; font-size: 17px; letter-spacing: -.01em; color: #fff; }
+.at-sub { font-family: var(--font-mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.6); margin-top: 7px; }
+.at-badges { display: inline-flex; gap: 5px; }
+.at-badge { display: inline-flex; align-items: center; height: 17px; padding: 0 6px; border-radius: 999px; background: var(--accent); color: #fff; font-family: var(--font-mono); font-size: 8px; letter-spacing: .1em; font-weight: 600; }
 
 @media (max-width: 760px) {
   .at-head-title { font-size: 44px; }
   .at-season-year { font-size: 32px; }
+}
+
+/* Someone who has asked for less motion gets a flat, still card. */
+@media (prefers-reduced-motion: reduce) {
+  .at-scene, .at-scene:hover { transform: none; transition: none; }
+  .at-card { transform: none; transition: none; }
+  .at-sheen, .at-holo { opacity: 0; }
 }

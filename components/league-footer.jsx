@@ -10,7 +10,7 @@ export default function LeagueFooter() {
         <div>
           <Wordmark size={30} />
           <p className="lg-foot-blurb">
-            The fastest women on Earth.<br />Two cities. One season.
+            The fastest women on Earth.<br />One night. London.
           </p>
         </div>
         <div>

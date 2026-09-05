@@ -31,7 +31,17 @@ export default async function ClubPage({ params }) {
   /* Only RUNPAC has authored page content in the design; the rest render
      from their directory record until their content lands. */
   const detail = CLUB_DETAIL[club.slug] || {};
-  const { about = [], socials = [], photos = [], runs = [], roster = [] } = detail;
+  const { photos = [], runs = [], roster = [] } = detail;
+
+  /* Bio and links come from the database so club leaders can edit them; the
+     authored map is the fallback for clubs seeded before those columns. */
+  const about = club.about ? club.about.split(/\n\s*\n/).filter(Boolean) : (detail.about || []);
+  const socials = [
+    club.instagram && { net: 'Instagram', handle: club.instagram, icon: 'ig' },
+    club.strava && { net: 'Strava', handle: club.strava },
+    club.website && { net: 'Website', handle: club.website.replace(/^https?:\/\//, '') },
+  ].filter(Boolean);
+  const links = socials.length ? socials : (detail.socials || []);
 
   return (
     <div className="league">
@@ -66,18 +76,27 @@ export default async function ClubPage({ params }) {
               </div>
               <div>
                 <div className="lg-mono cp-k">Members</div>
-                <div className="cp-v">{club.members}</div>
+                <div className="cp-v">{club.members.toLocaleString('en-US')}</div>
               </div>
-              <div>
-                <div className="lg-mono cp-k">Organizer</div>
-                <div className="cp-v">{club.organizer}</div>
-              </div>
+              {/* Only shown when we actually know who runs the club. */}
+              {club.organizer && (
+                <div>
+                  <div className="lg-mono cp-k">Organizer</div>
+                  <div className="cp-v">{club.organizer}</div>
+                </div>
+              )}
+              {club.next && (
+                <div>
+                  <div className="lg-mono cp-k">Next run</div>
+                  <div className="cp-v">{club.next}</div>
+                </div>
+              )}
             </div>
             <div className="cp-hero-actions">
               <a href="#" className="lg-btn lg-btn-red lg-btn-lg">Join this club →</a>
-              {socials.length > 0 && (
+              {links.length > 0 && (
                 <div className="cp-socials">
-                  {socials.map((s) => (
+                  {links.map((s) => (
                     <a key={s.net} href="#" className="cp-social lg-mono" target="_blank" rel="noopener noreferrer">
                       {s.net}
                     </a>
@@ -136,9 +155,9 @@ export default async function ClubPage({ params }) {
             <section className="cp-about">
               <h2 className="lg-display cp-sec-title">About</h2>
               {about.map((p) => <p className="lg-serif cp-about-p" key={p.slice(0, 24)}>{p}</p>)}
-              {socials.length > 0 && (
+              {links.length > 0 && (
                 <div className="cp-about-socials">
-                  {socials.map((s) => (
+                  {links.map((s) => (
                     <a key={s.net} href="#" className="cp-about-social" target="_blank" rel="noopener noreferrer">
                       <span className="lg-mono cp-about-net">{s.net}</span>
                       <span className="cp-about-handle">{s.handle}</span>

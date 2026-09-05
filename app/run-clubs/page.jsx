@@ -20,7 +20,7 @@ export default async function RunClubsPage() {
       <header className="cl-hero">
         <div className="cl-hero-inner">
           <div className="lg-section-eyebrow" style={{ color: 'var(--green-ink)' }}>Community</div>
-          <h1 className="lg-display cl-title">Official ATHLOS<br />Run Clubs</h1>
+          <h1 className="lg-display cl-title">ATHLOS<br />Run Clubs</h1>
           <p className="lg-serif cl-pitch">
             The track meet you watch on TV. The crew you run with on Saturday.
           </p>

@@ -9,11 +9,10 @@ export default async function RunClubs() {
     <section className="hm-clubs">
       <div className="hm-wrap hm-clubs-grid">
         <div>
-          <div className="lg-section-eyebrow hm-clubs-eyebrow">Official ATHLOS Run Clubs</div>
+          <div className="lg-section-eyebrow hm-clubs-eyebrow">ATHLOS Run Clubs</div>
           <h2 className="lg-display hm-clubs-title">The crew you<br />run with.</h2>
           <p className="hm-clubs-note">
             The track meet you watch on TV. The crew you run with on Saturday.
-            Six cities and counting.
           </p>
           <Link href="/run-clubs" className="lg-btn lg-btn-ink">Start a club</Link>
           <div className="hm-clubs-map">

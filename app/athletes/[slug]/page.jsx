@@ -40,6 +40,8 @@ export default function AthleteProfilePage({ params }) {
         <div className="pf-hero-photo">
           <PhotoCrop
             tone={a.tone}
+            src={a.photo}
+            alt={a.name}
             mono={initials(a.name)}
             monoSize={260}
             style={{ position: 'absolute', inset: 0 }}

@@ -12,7 +12,7 @@ export const revalidate = 3600;
 
 export const metadata = {
   title: 'ATHLOS League',
-  description: 'The fastest women on Earth line up twice this year — London in September, New York in October.',
+  description: 'The fastest women on Earth line up in London this September. Seven events in one night.',
 };
 
 export default function HomePage() {
@@ -24,15 +24,15 @@ export default function HomePage() {
       <LeagueNav />
 
       <header className="sc-head">
-        <div className="lg-section-eyebrow">Two cities · One season</div>
+        <div className="lg-section-eyebrow">One city · One night</div>
         <h1 className="lg-display sc-title">The 2026 season</h1>
         <p className="lg-serif sc-intro">
-          The fastest women on Earth line up twice this year — London in September,
-          New York in October. Seven events a night. Here is where and when.
+          The fastest women on Earth line up in London this September. Seven
+          events in one night. Here is where and when.
         </p>
       </header>
 
-      <section className="sc-upcoming">
+      <section className={`sc-upcoming ${meets.length === 1 ? 'is-single' : ''}`}>
         {meets.map((m) => <UpcomingCard key={m.city} meet={m} />)}
       </section>
 

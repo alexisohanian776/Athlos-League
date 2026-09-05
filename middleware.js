@@ -1,23 +1,37 @@
 import { NextResponse } from 'next/server';
 import { vipGate } from '@/lib/vip-auth';
-import { adminGate } from '@/lib/admin-auth';
+import { SESSION_COOKIE, readSession } from '@/lib/session';
 
-/* Two gates. /vip is invite-only for guests; /admin edits live content. */
-export const config = { matcher: ['/vip', '/admin', '/admin/:path*'] };
+/* /vip is a shared-password guest gate. /admin and /club need real accounts. */
+export const config = { matcher: ['/vip', '/admin', '/admin/:path*', '/club', '/club/:path*'] };
 
 export async function middleware(request) {
   const { pathname } = request.nextUrl;
-  const isAdmin = pathname.startsWith('/admin');
-  const gate = isAdmin ? adminGate : vipGate;
-  const loginPath = isAdmin ? '/admin/login' : '/vip/unlock';
 
-  if (pathname === loginPath) return NextResponse.next();
-
-  if (await gate.isValidCookie(request.cookies.get(gate.cookie)?.value)) {
-    return NextResponse.next();
+  if (pathname === '/vip') {
+    if (await vipGate.isValidCookie(request.cookies.get(vipGate.cookie)?.value)) {
+      return NextResponse.next();
+    }
+    const url = request.nextUrl.clone();
+    url.pathname = '/vip/unlock';
+    return NextResponse.redirect(url);
   }
 
-  const url = request.nextUrl.clone();
-  url.pathname = loginPath;
-  return NextResponse.redirect(url);
+  const session = await readSession(request.cookies.get(SESSION_COOKIE)?.value);
+  if (!session) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/login';
+    url.searchParams.set('next', pathname);
+    return NextResponse.redirect(url);
+  }
+
+  /* Leaders have no business in /admin. */
+  if (pathname.startsWith('/admin') && session.role !== 'admin') {
+    const url = request.nextUrl.clone();
+    url.pathname = '/club';
+    url.search = '';
+    return NextResponse.redirect(url);
+  }
+
+  return NextResponse.next();
 }

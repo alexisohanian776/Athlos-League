@@ -4,7 +4,7 @@ import { NAV, NAV_HREF } from '@/lib/league';
 
 /* Two variants in the design: the home nav carries a search field and a red
    sign-up; interior pages mark the active section and use the ink sign-up. */
-export default function LeagueNav({ active, search = false, signup = 'ink', navClassName = '' }) {
+export default function LeagueNav({ active, search = false, signInTone = 'ink', navClassName = '' }) {
   return (
     <nav className={`lg-nav ${navClassName}`} style={search ? { gap: 36 } : undefined}>
       <Link href="/" aria-label="ATHLOS home">
@@ -32,8 +32,9 @@ export default function LeagueNav({ active, search = false, signup = 'ink', navC
           <span>Search athletes, events…</span>
         </div>
       )}
-      <a href="#" className="lg-btn lg-btn-ghost lg-btn-sm">Sign in</a>
-      <a href="#" className={`lg-btn lg-btn-${signup} lg-btn-sm`}>Sign up</a>
+      {/* Accounts are invite-only (league staff and run club leaders), so
+          there is no public sign-up to link to yet. */}
+      <Link href="/login" className={`lg-btn lg-btn-${signInTone} lg-btn-sm`}>Sign in</Link>
     </nav>
   );
 }

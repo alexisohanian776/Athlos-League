@@ -1,3 +1,4 @@
+import VipNav from '@/components/vip/vip-nav';
 import VipUnlockForm from '@/components/vip/vip-unlock-form';
 
 export const metadata = {
@@ -7,8 +8,11 @@ export const metadata = {
 
 export default function VipUnlockPage() {
   return (
-    <div className="vip vip-gate">
-      <VipUnlockForm />
+    <div className="vip">
+      <VipNav cta={false} />
+      <div className="vip-gate">
+        <VipUnlockForm />
+      </div>
     </div>
   );
 }
