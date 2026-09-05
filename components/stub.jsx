@@ -38,7 +38,7 @@ export default function Stub({ meet, holder, holderId, compact = false }) {
             // eslint-disable-next-line @next/next/no-img-element
             <img src={meet.photoUrl} alt="" />
           ) : (
-            <PhotoCrop tone={meet.tone} mono={meet.year} monoSize={compact ? 132 : 164} />
+            <PhotoCrop tone={meet.tone} mono={meet.year} monoSize={compact ? 54 : 70} />
           )}
           <div className="stub-photo-veil" />
         </div>
