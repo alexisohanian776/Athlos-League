@@ -34,28 +34,30 @@ export default async function AccountPage({ searchParams }) {
             <span className="ad-card-name">Change password</span>
           </div>
 
-          {message && (
-            <p className={message.tone === 'ok' ? 'ac-ok' : 'ad-error'}>{message.text}</p>
-          )}
+          <div className="ac-body">
+            {message && (
+              <p className={message.tone === 'ok' ? 'ac-ok' : 'ad-error'}>{message.text}</p>
+            )}
 
-          <form action={changePasswordAction} className="ad-login-form ac-form">
-            <div className="au-field">
-              <label className="au-label" htmlFor="current">Current password</label>
-              <input className="ad-input au-input" id="current" name="current" type="password"
-                autoComplete="current-password" placeholder="Your current password" required />
-            </div>
-            <div className="au-field">
-              <label className="au-label" htmlFor="next">New password</label>
-              <input className="ad-input au-input" id="next" name="next" type="password"
-                autoComplete="new-password" placeholder="At least 10 characters" required />
-            </div>
-            <div className="au-field">
-              <label className="au-label" htmlFor="confirm">Retype new password</label>
-              <input className="ad-input au-input" id="confirm" name="confirm" type="password"
-                autoComplete="new-password" placeholder="Retype the new password" required />
-            </div>
-            <button className="ad-btn ad-btn-ink au-submit" type="submit">Change password</button>
-          </form>
+            <form action={changePasswordAction} className="ac-form">
+              <div className="au-field">
+                <label className="au-label" htmlFor="current">Current password</label>
+                <input className="ad-input au-input" id="current" name="current" type="password"
+                  autoComplete="current-password" placeholder="Your current password" required />
+              </div>
+              <div className="au-field">
+                <label className="au-label" htmlFor="next">New password</label>
+                <input className="ad-input au-input" id="next" name="next" type="password"
+                  autoComplete="new-password" placeholder="At least 10 characters" required />
+              </div>
+              <div className="au-field">
+                <label className="au-label" htmlFor="confirm">Retype new password</label>
+                <input className="ad-input au-input" id="confirm" name="confirm" type="password"
+                  autoComplete="new-password" placeholder="Retype the new password" required />
+              </div>
+              <button className="ad-btn ad-btn-ink au-submit" type="submit">Change password</button>
+            </form>
+          </div>
         </div>
       </div>
     </div>

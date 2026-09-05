@@ -103,9 +103,16 @@
 
 .ad-textarea { height: auto; min-height: 96px; padding: 10px; line-height: 1.5; resize: vertical; font-family: var(--font-ui); }
 
-/* Account page */
+/* Account page. The card supplies no padding of its own — each of its
+   children does — so the form body has to bring its own, or the fields sit
+   flush against the card edge and their borders read as divider rows. */
 .ac-card { max-width: 460px; }
-.ac-form { margin-top: 4px; }
+.ac-body { padding: 20px; }
+.ac-form { display: flex; flex-direction: column; gap: 16px; }
+/* Paper-on-paper leaves the boxes invisible inside a card. */
+.ac-form .au-input { background: var(--bone); }
+.ac-form .au-submit { width: 100%; margin-top: 4px; }
+.ac-body > .ac-ok, .ac-body > .ad-error { margin: 0 0 16px; }
 .ac-ok {
   font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em;
   text-transform: uppercase; color: var(--ink-2); margin: 0;
