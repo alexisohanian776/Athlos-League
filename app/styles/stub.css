@@ -21,10 +21,13 @@
 .stub-top { position: relative; aspect-ratio: 5 / 6; color: #fff; display: flex; flex-direction: column; }
 .stub-photo { position: absolute; inset: 0; z-index: 0; }
 .stub-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* PhotoCrop sizes to its container, and this one is absolutely positioned —
+   without an explicit fill the duotone collapses and only the veil shows. */
+.stub-photo .lg-photo { width: 100%; height: 100%; }
 .stub-photo-veil {
   position: absolute; inset: 0;
   background:
-    linear-gradient(180deg, rgba(13,4,11,.62) 0%, rgba(13,4,11,.12) 34%, rgba(13,4,11,.20) 62%, rgba(13,4,11,.88) 100%);
+    linear-gradient(180deg, rgba(13,4,11,.55) 0%, rgba(13,4,11,0) 32%, rgba(13,4,11,.18) 58%, rgba(13,4,11,.86) 100%);
 }
 
 .stub-head {
