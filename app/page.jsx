@@ -5,6 +5,7 @@ import LeagueNav from '@/components/league-nav';
 import LeagueFooter from '@/components/league-footer';
 import UpcomingCard from '@/components/schedule/upcoming-card';
 import ScheduleArchive from '@/components/schedule/schedule-archive';
+import { pastMeetsForArchive } from '@/lib/meets-db';
 import { MEETS, daysUntil } from '@/lib/league';
 
 /* The meet countdowns are computed, so the page is regenerated hourly. */
@@ -15,7 +16,11 @@ export const metadata = {
   description: 'The fastest women on Earth line up in London this September. Seven events in one night.',
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  /* Meets come from the database now, so attendance typed in admin shows up
+     here. updateMeetAction revalidates '/', so the hourly cache below never
+     holds a stale number for long. */
+  const pastMeets = await pastMeetsForArchive();
   const now = new Date();
   const meets = MEETS.map((m) => ({ ...m, days: daysUntil(m.iso, now) }));
 
@@ -36,7 +41,7 @@ export default function HomePage() {
         {meets.map((m) => <UpcomingCard key={m.city} meet={m} />)}
       </section>
 
-      <ScheduleArchive />
+      <ScheduleArchive meets={pastMeets} />
 
       <LeagueFooter />
     </div>

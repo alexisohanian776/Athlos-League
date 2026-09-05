@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import Avatar from '../avatar';
 import MarkPill from '../mark-pill';
 import { MEET_RESULTS } from '@/lib/results';
-import { FAN_TONES, PAST_MEETS } from '@/lib/schedule';
+import { FAN_TONES } from '@/lib/schedule';
 import { slugify } from '@/lib/slug';
 
 /* Every athlete name links to its public profile route. Those pages are not
@@ -22,23 +22,35 @@ function AthleteLink({ name, className = '' }) {
   );
 }
 
-function FanStack({ fans, total, size = 32, onClaim }) {
-  const avatars = (
+function FanStack({ fans = [], total, verified = 0, size = 32, onClaim }) {
+  const avatars = fans.length > 0 && (
     <div className="sc-avatars">
-      {fans.slice(0, 6).map((n, i) => (
-        <div key={n} className="sc-avatar-wrap" style={{ zIndex: 6 - i }}>
-          <Avatar name={n} size={size} tone={FAN_TONES[i % FAN_TONES.length]} />
+      {fans.slice(0, 6).map((f, i) => (
+        <div key={f.handle || f.name} className="sc-avatar-wrap" style={{ zIndex: 6 - i }}>
+          {f.avatarUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img className="sc-avatar-img" src={f.avatarUrl} alt="" width={size} height={size} />
+          ) : (
+            <Avatar name={f.name} size={size} tone={FAN_TONES[i % FAN_TONES.length]} />
+          )}
         </div>
       ))}
     </div>
   );
+
+  /* Crowd size is what the league typed in admin; `verified` is how many
+     people have actually proved they were there. They are different numbers
+     and the label says which is which. */
+  const headline = Number.isFinite(total) && total !== null
+    ? `${total.toLocaleString('en-US')} in the stands`
+    : verified > 0 ? `${verified} verified` : 'Be the first';
 
   if (onClaim) {
     return (
       <button type="button" className="sc-fanstack is-cta" onClick={(e) => { e.stopPropagation(); onClaim(); }}>
         {avatars}
         <span className="sc-fanstack-text">
-          <span className="sc-fanstack-count lg-mono-data">{total} verified</span>
+          <span className="sc-fanstack-count lg-mono-data">{headline}</span>
           <span className="sc-fanstack-cta lg-mono">Become ATHLOS verified →</span>
         </span>
       </button>
@@ -48,8 +60,8 @@ function FanStack({ fans, total, size = 32, onClaim }) {
   return (
     <div className="sc-fanstack">
       {avatars}
-      <span className="sc-fanstack-count lg-mono-data">{total}</span>
-      <span className="lg-mono sc-fanstack-label">fans verified</span>
+      <span className="sc-fanstack-count lg-mono-data">{headline}</span>
+      {verified > 0 && <span className="lg-mono sc-fanstack-label">{verified} verified</span>}
     </div>
   );
 }
@@ -77,20 +89,32 @@ function ResultsTable({ ev }) {
   );
 }
 
+/* The headline marks used to be re-typed into schedule.js. They are just the
+   meet records inside the results, so read them from there and the two can no
+   longer drift apart. */
+function marqueeFor(year) {
+  return (MEET_RESULTS[year] || [])
+    .flatMap((ev) => ev.athletes
+      .filter((a) => a.marks?.includes('MR'))
+      .map((a) => ({ who: a.who, ev: ev.event, mark: a.time, note: 'MR' })))
+    .slice(0, 3);
+}
+
 function PastMeet({ meet: p, open, onToggle, onClaim }) {
   const results = MEET_RESULTS[p.year] || [];
+  const marquee = marqueeFor(p.year);
   return (
     <div className={`sc-meet ${open ? 'is-open' : ''}`}>
       <button type="button" className="sc-meet-head" aria-expanded={open} onClick={onToggle}>
         <div className="sc-past-when">
           <span className="lg-display sc-past-year">{p.year}</span>
-          <span className="lg-mono-data sc-past-date">{p.date}</span>
+          <span className="lg-mono-data sc-past-date">{p.dateLabel}</span>
           <span className="lg-mono sc-past-venue">{p.venue} · {p.area}</span>
         </div>
         <div className="sc-past-marquee">
           <div className="lg-mono sc-past-label">{p.events} events · Meet records</div>
           <div className="sc-past-marks">
-            {p.marquee.map((w) => (
+            {marquee.map((w) => (
               <div key={w.who} className="sc-mark-row">
                 <span className="sc-mark-who">{w.who}</span>
                 <span className="lg-mono sc-mark-ev">{w.ev}</span>
@@ -114,13 +138,13 @@ function PastMeet({ meet: p, open, onToggle, onClaim }) {
         <div className="sc-meet-panel">
           <div className="sc-attend">
             <div className="sc-attend-left">
-              <FanStack fans={p.fans} total={p.attendees} size={40} />
+              <FanStack fans={p.fans} total={p.attendance} verified={p.verifiedCount} size={40} />
               <div className="sc-attend-copy">
                 <div className="sc-attend-title">Were you in the stands?</div>
                 <p className="lg-serif sc-attend-sub">
                   Get ATHLOS verified — create a free account (or sign in), send a
                   photo of your ticket or a selfie from the meet, and we&rsquo;ll pin
-                  your badge to ATHLOS New York {p.year}.
+                  your badge to {p.name}.
                 </p>
               </div>
             </div>
@@ -212,7 +236,7 @@ function ClaimModal({ meet, onClose }) {
   );
 }
 
-export default function ScheduleArchive() {
+export default function ScheduleArchive({ meets = [] }) {
   const [openYear, setOpenYear] = useState('2025');
   const [claim, setClaim] = useState(null);
 
@@ -224,7 +248,7 @@ export default function ScheduleArchive() {
           <h2 className="lg-display sc-archive-title">Past meets</h2>
         </div>
         <div className="sc-past-list">
-          {PAST_MEETS.map((p) => (
+          {meets.map((p) => (
             <PastMeet
               key={p.slug}
               meet={p}
