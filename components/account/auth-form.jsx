@@ -1,12 +1,10 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import Wordmark from '../wordmark';
 
 /* Shared shell for sign-in and invite-accept. */
-export default function AuthForm({ mode, token, email, clubName, role }) {
-  const params = useSearchParams();
+export default function AuthForm({ mode, token, email, clubName, role, next }) {
   const isInvite = mode === 'invite';
 
   const formRef = useRef(null);
@@ -73,7 +71,7 @@ export default function AuthForm({ mode, token, email, clubName, role }) {
     /* Hard navigation so the freshly-set session cookie is used, rather than
        a cached client-router result from before sign-in. Only same-site paths
        are followed, so `next` can't be used to bounce someone off-site. */
-    const requested = params.get('next');
+    const requested = next;
     const fallback = body.role === 'admin' ? '/admin' : '/club';
     const target = requested && /^\/(?!\/)/.test(requested) ? requested : fallback;
     window.location.assign(target);

@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import AuthForm from '@/components/account/auth-form';
 import { findByInvite } from '@/lib/users-db';
 
@@ -26,10 +25,8 @@ export default async function InvitePage({ params }) {
   return (
     <div className="ad">
       <div className="ad-login">
-        <Suspense fallback={null}>
-          <AuthForm mode="invite" token={params.token} email={user.email}
-            clubName={user.clubName} role={user.role} />
-        </Suspense>
+        <AuthForm mode="invite" token={params.token} email={user.email}
+          clubName={user.clubName} role={user.role} />
       </div>
     </div>
   );
