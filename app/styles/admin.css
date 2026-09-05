@@ -203,3 +203,29 @@
 .ac-crop-zoom { width: 100%; max-width: 288px; accent-color: var(--ink); cursor: pointer; }
 .ac-crop-actions { display: flex; gap: 10px; width: 100%; }
 .ac-crop-actions .dash-btn { flex: 1; }
+
+/* ---- meets admin: form beside a live stub ---- */
+.mt-split { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 24px; align-items: start; }
+.mt-form { min-width: 0; }
+.mt-preview { padding: 20px 20px 20px 0; position: sticky; top: 84px; }
+.mt-check { flex-direction: row; align-items: center; gap: 10px; }
+.mt-check input { width: 16px; height: 16px; accent-color: var(--ink); cursor: pointer; }
+@media (max-width: 900px) {
+  .mt-split { grid-template-columns: 1fr; }
+  .mt-preview { padding: 0 20px 20px; position: static; }
+}
+
+/* ---- attendance queue ---- */
+.at-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.at-empty { padding: 28px 20px; font-family: var(--font-serif); font-size: 16px; color: var(--ink-2); }
+.cl-body { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 20px; padding: 18px 20px 0; align-items: start; }
+.cl-proof img { width: 100%; border: 1px solid var(--rule); display: block; background: var(--bone); }
+.cl-noproof {
+  border: 1px dashed var(--rule); padding: 30px 12px; text-align: center;
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+.cl-meta { min-width: 0; }
+.cl-line { margin: 4px 0 14px; font-size: 14px; color: var(--ink); word-break: break-word; }
+.cl-note { font-family: var(--font-serif); font-size: 15px; line-height: 1.5; color: var(--ink-2); white-space: pre-wrap; }
+@media (max-width: 700px) { .cl-body { grid-template-columns: 1fr; } }
