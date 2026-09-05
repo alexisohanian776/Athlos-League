@@ -3,7 +3,7 @@ import { vipGate } from '@/lib/vip-auth';
 import { SESSION_COOKIE, readSession } from '@/lib/session';
 
 /* /vip is a shared-password guest gate. /admin and /club need real accounts. */
-export const config = { matcher: ['/vip', '/admin', '/admin/:path*', '/club', '/club/:path*', '/account'] };
+export const config = { matcher: ['/vip', '/admin', '/admin/:path*', '/club', '/club/:path*', '/account', '/verify/:path*'] };
 
 export async function middleware(request) {
   const { pathname } = request.nextUrl;
@@ -22,6 +22,15 @@ export async function middleware(request) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     url.searchParams.set('next', pathname);
+    return NextResponse.redirect(url);
+  }
+
+  /* Fans have no dashboard at all, so send them back to the league rather
+     than to a club page that would be empty for them. */
+  if (session.role === 'fan' && (pathname.startsWith('/admin') || pathname.startsWith('/club'))) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/';
+    url.search = '';
     return NextResponse.redirect(url);
   }
 

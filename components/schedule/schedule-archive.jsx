@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import Avatar from '../avatar';
 import MarkPill from '../mark-pill';
 import { MEET_RESULTS } from '@/lib/results';
-import { FAN_TONES, PAST_MEETS, VERIFY_EMAIL } from '@/lib/schedule';
+import { FAN_TONES, PAST_MEETS } from '@/lib/schedule';
 import { slugify } from '@/lib/slug';
 
 /* Every athlete name links to its public profile route. Those pages are not
@@ -138,22 +138,6 @@ function PastMeet({ meet: p, open, onToggle, onClaim }) {
   );
 }
 
-/* Verification is handled by the ops team over email, so the button composes
-   the message rather than posting to an endpoint that does not exist. */
-function sendProof(meet, email) {
-  const label = `ATHLOS New York ${meet.year}`;
-  const subject = `ATHLOS verified — ${label}`;
-  const body = [
-    `I was at ${label} (${meet.date}, ${meet.venue}).`,
-    '',
-    'Proof is attached — please attach a photo of your ticket or a selfie from the stands before sending.',
-    '',
-    `Contact email: ${email}`,
-  ].join('\n');
-  window.location.href =
-    `mailto:${VERIFY_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-}
-
 function ClaimModal({ meet, onClose }) {
   const [email, setEmail] = useState('');
 
@@ -190,18 +174,17 @@ function ClaimModal({ meet, onClose }) {
           <li>
             <span className="sc-step-n lg-mono-data">1</span>
             <div>
-              <div className="sc-step-t">Tell us where to reach you</div>
-              <div className="lg-serif sc-step-d">Your email, so the league can confirm your badge.</div>
+              <div className="sc-step-t">Sign in, or make a free account</div>
+              <div className="lg-serif sc-step-d">It takes a minute and gives you a profile to collect stubs on.</div>
             </div>
           </li>
           <li>
             <span className="sc-step-n lg-mono-data">2</span>
             <div>
-              <div className="sc-step-t">Attach your proof and send</div>
+              <div className="sc-step-t">Upload your proof</div>
               <div className="lg-serif sc-step-d">
-                The button opens an email to{' '}
-                <span className="sc-mail">{VERIFY_EMAIL}</span> — attach a photo of
-                your ticket, or a selfie from the stands.
+                A photo of your ticket, or a selfie from the stands. Straight off
+                your phone is fine.
               </div>
             </div>
           </li>
@@ -209,28 +192,21 @@ function ClaimModal({ meet, onClose }) {
             <span className="sc-step-n lg-mono-data">3</span>
             <div>
               <div className="sc-step-t">We verify within 48 hours</div>
-              <div className="lg-serif sc-step-d">Your badge appears on this meet and your profile. That&rsquo;s it.</div>
+              <div className="lg-serif sc-step-d">
+                Your ticket stub appears on your profile, keeping the date, the
+                venue and the crowd that night.
+              </div>
             </div>
           </li>
         </ol>
-        <form className="sc-modal-form" onSubmit={(e) => { e.preventDefault(); sendProof(meet, email); }}>
-          <label className="sc-modal-label" htmlFor="sc-claim-email">Your email</label>
-          <input
-            id="sc-claim-email"
-            className="sc-modal-input"
-            type="email"
-            required
-            placeholder="you@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <button type="submit" className="lg-btn lg-btn-red lg-btn-lg" disabled={!email}>
-            Email my proof →
-          </button>
+        <div className="sc-modal-form">
+          <Link href={`/verify/${meet.slug}`} className="lg-btn lg-btn-red lg-btn-lg">
+            Upload my proof →
+          </Link>
           <p className="sc-modal-fine">
-            Opens your mail app with the message ready. Attach the photo and hit send.
+            You will be asked to sign in first if you are not already.
           </p>
-        </form>
+        </div>
       </div>
     </div>
   );
