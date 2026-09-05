@@ -2,7 +2,7 @@
 
 .dash { background: var(--bone); color: var(--ink); min-height: 100vh; font-family: var(--font-ui); }
 .dash *, .dash *::before, .dash *::after { box-sizing: border-box; }
-.dash a { color: inherit; }
+.dash a { color: inherit; text-decoration: none; }
 
 .dash-bar {
   display: flex; align-items: center; gap: 20px; height: 64px;
@@ -36,10 +36,13 @@
 .dash-input:focus, .dash-select:focus { outline: none; border-color: var(--accent); }
 
 .dash-actions { display: flex; align-items: center; gap: 10px; padding: 0 20px 20px; flex-wrap: wrap; }
+/* inline-flex so an <a> styled as a button centres its label the same way a
+   real <button> does — the bar mixes both. */
 .dash-btn {
+  display: inline-flex; align-items: center; justify-content: center; white-space: nowrap;
   height: 38px; padding: 0 16px; border: 0; border-radius: var(--r-pill); cursor: pointer;
-  font-family: var(--font-ui); font-weight: 600; font-size: 13px;
-  transition: background var(--dur-micro) var(--ease-out);
+  font-family: var(--font-ui); font-weight: 600; font-size: 13px; text-decoration: none;
+  transition: background var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
 }
 .dash-btn-ink { background: var(--ink); color: var(--bone); }
 .dash-btn-ink:hover { background: #1F0219; }
@@ -116,4 +119,26 @@
 .ac-ok {
   font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em;
   text-transform: uppercase; color: var(--ink-2); margin: 0;
+}
+
+/* Profile card: avatar + the file input, which browsers style unhelpfully. */
+.ac-avatar-row { display: flex; align-items: center; gap: 18px; }
+.ac-avatar {
+  width: 72px; height: 72px; border-radius: 50%; object-fit: cover;
+  border: 1px solid var(--rule); background: var(--stone); flex: none; display: block;
+}
+.ac-avatar-field { flex: 1; min-width: 0; }
+.ac-file { font-family: var(--font-ui); font-size: 13px; color: var(--ink-2); }
+.ac-file::file-selector-button {
+  height: 34px; padding: 0 14px; margin-right: 12px; cursor: pointer;
+  border: 1px solid var(--rule); border-radius: var(--r-pill);
+  background: var(--bone); color: var(--ink);
+  font-family: var(--font-ui); font-weight: 600; font-size: 13px;
+}
+.ac-file::file-selector-button:hover { background: var(--stone); }
+.ac-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 560px) { .ac-pair { grid-template-columns: 1fr; } }
+.dash-bar-avatar {
+  width: 26px; height: 26px; border-radius: 50%; object-fit: cover;
+  border: 1px solid var(--rule); display: block; flex: none;
 }
