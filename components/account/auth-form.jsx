@@ -78,20 +78,20 @@ export default function AuthForm({ mode, token, email, clubName, role, next }) {
   }
 
   return (
-    <div className="ad-login-inner">
+    <div className="dash-login-inner">
       <Wordmark size={28} />
-      <h1 className="ad-login-title">{isInvite ? 'Set your password' : 'Sign in'}</h1>
-      <p className="ad-login-note">
+      <h1 className="dash-login-title">{isInvite ? 'Set your password' : 'Sign in'}</h1>
+      <p className="dash-login-note">
         {isInvite
           ? <>You&rsquo;re joining as {role === 'admin' ? 'an admin' : <>the leader of <strong>{clubName || 'your club'}</strong></>}. Choose a password for <strong>{email}</strong>.</>
           : 'Run club leaders and league staff.'}
       </p>
 
-      <form className="ad-login-form" ref={formRef} onSubmit={onSubmit} noValidate>
+      <form className="dash-login-form" ref={formRef} onSubmit={onSubmit} noValidate>
         {!isInvite && (
           <div className="au-field">
             <label className="au-label" htmlFor="email">Email address</label>
-            <input id="email" name="email" className="ad-input au-input" type="email" autoComplete="username"
+            <input id="email" name="email" className="dash-input au-input" type="email" autoComplete="username"
               placeholder="you@example.com" value={form.email} onChange={set('email')} autoFocus />
           </div>
         )}
@@ -103,7 +103,7 @@ export default function AuthForm({ mode, token, email, clubName, role, next }) {
           <input
             id="password"
             name="password"
-            className="ad-input au-input"
+            className="dash-input au-input"
             type={show ? 'text' : 'password'}
             autoComplete={isInvite ? 'new-password' : 'current-password'}
             placeholder={isInvite ? 'At least 10 characters' : 'Your password'}
@@ -120,7 +120,7 @@ export default function AuthForm({ mode, token, email, clubName, role, next }) {
             <input
               id="confirm"
               name="confirm"
-              className={`ad-input au-input ${mismatch ? 'is-bad' : ''}`}
+              className={`dash-input au-input ${mismatch ? 'is-bad' : ''}`}
               type={show ? 'text' : 'password'}
               autoComplete="new-password"
               placeholder="Type it again to confirm"
@@ -136,9 +136,9 @@ export default function AuthForm({ mode, token, email, clubName, role, next }) {
           <span>Show password</span>
         </label>
 
-        {error && <p className="ad-error">{error}</p>}
+        {error && <p className="dash-error">{error}</p>}
 
-        <button className="ad-btn ad-btn-ink au-submit" type="submit" disabled={pending}>
+        <button className="dash-btn dash-btn-ink au-submit" type="submit" disabled={pending}>
           {pending ? 'Checking…' : isInvite ? 'Set password and continue' : 'Sign in'}
         </button>
 

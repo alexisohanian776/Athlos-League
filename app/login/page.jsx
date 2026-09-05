@@ -10,8 +10,8 @@ export const dynamic = 'force-dynamic';
 export default function LoginPage({ searchParams }) {
   const next = typeof searchParams?.next === 'string' ? searchParams.next : null;
   return (
-    <div className="ad">
-      <div className="ad-login">
+    <div className="dash">
+      <div className="dash-login">
         <AuthForm mode="login" next={next} />
       </div>
     </div>

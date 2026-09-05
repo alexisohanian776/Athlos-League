@@ -6,7 +6,7 @@ export default function ClubForm({ club, action, submitLabel, leaderView = false
   return (
     <form action={action}>
       {club && <input type="hidden" name="id" value={club.id} />}
-      <div className="ad-grid">
+      <div className="dash-grid">
         <Field label="Club name" name="name" defaultValue={v.name} wide required />
         <Field label="City" name="city" defaultValue={v.city} required />
         <Field label="Neighbourhood" name="hood" defaultValue={v.hood} />
@@ -34,14 +34,14 @@ export default function ClubForm({ club, action, submitLabel, leaderView = false
         <Field label="Photo URL" name="photo" defaultValue={v.photo} wide placeholder="Image URL — optional" />
         <Field label="Website" name="website" defaultValue={v.website} placeholder="https://" />
         <Field label="Instagram" name="instagram" defaultValue={v.instagram} placeholder="@handle" />
-        <label className="ad-field is-wide" style={{ gridColumn: '1 / -1' }}>
-          <span className="ad-label">About — one paragraph per blank line</span>
-          <textarea className="ad-input ad-textarea" name="about" rows={5} defaultValue={v.about ?? ''} />
+        <label className="dash-field is-wide" style={{ gridColumn: '1 / -1' }}>
+          <span className="dash-label">About — one paragraph per blank line</span>
+          <textarea className="dash-input dash-textarea" name="about" rows={5} defaultValue={v.about ?? ''} />
         </label>
       </div>
-      <div className="ad-actions">
-        <button className="ad-btn ad-btn-ink" type="submit">{submitLabel}</button>
-        <p className="ad-hint">
+      <div className="dash-actions">
+        <button className="dash-btn dash-btn-ink" type="submit">{submitLabel}</button>
+        <p className="dash-hint">
           {leaderView ? 'Changes go live on your public club page.' : 'Map X/Y are percentages across the locator map.'}
         </p>
       </div>
@@ -51,18 +51,18 @@ export default function ClubForm({ club, action, submitLabel, leaderView = false
 
 function Field({ label, name, wide, ...rest }) {
   return (
-    <label className={`ad-field ${wide ? 'is-wide' : ''}`}>
-      <span className="ad-label">{label}</span>
-      <input className="ad-input" name={name} {...rest} defaultValue={rest.defaultValue ?? ''} />
+    <label className={`dash-field ${wide ? 'is-wide' : ''}`}>
+      <span className="dash-label">{label}</span>
+      <input className="dash-input" name={name} {...rest} defaultValue={rest.defaultValue ?? ''} />
     </label>
   );
 }
 
 function Select({ label, name, defaultValue, options }) {
   return (
-    <label className="ad-field">
-      <span className="ad-label">{label}</span>
-      <select className="ad-select" name={name} defaultValue={defaultValue}>
+    <label className="dash-field">
+      <span className="dash-label">{label}</span>
+      <select className="dash-select" name={name} defaultValue={defaultValue}>
         {options.map((o) => <option key={o} value={o}>{o}</option>)}
       </select>
     </label>

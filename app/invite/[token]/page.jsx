@@ -9,11 +9,11 @@ export default async function InvitePage({ params }) {
 
   if (!user) {
     return (
-      <div className="ad">
-        <div className="ad-login">
-          <div className="ad-login-inner">
-            <h1 className="ad-login-title">Link expired</h1>
-            <p className="ad-login-note">
+      <div className="dash">
+        <div className="dash-login">
+          <div className="dash-login-inner">
+            <h1 className="dash-login-title">Link expired</h1>
+            <p className="dash-login-note">
               This invite has expired or already been used. Ask the league to send a new one.
             </p>
           </div>
@@ -23,8 +23,8 @@ export default async function InvitePage({ params }) {
   }
 
   return (
-    <div className="ad">
-      <div className="ad-login">
+    <div className="dash">
+      <div className="dash-login">
         <AuthForm mode="invite" token={params.token} email={user.email}
           clubName={user.clubName} role={user.role} />
       </div>

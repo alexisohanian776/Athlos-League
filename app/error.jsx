@@ -5,18 +5,18 @@
    after sign-in looked like. The digest is the key to the server log. */
 export default function ErrorBoundary({ error, reset }) {
   return (
-    <div className="ad">
-      <div className="ad-login">
-        <div className="ad-login-inner">
-          <h1 className="ad-login-title">Something broke</h1>
-          <p className="ad-login-note">
+    <div className="dash">
+      <div className="dash-login">
+        <div className="dash-login-inner">
+          <h1 className="dash-login-title">Something broke</h1>
+          <p className="dash-login-note">
             This page hit an error and stopped. Reloading usually clears it.
           </p>
           {error?.digest && (
-            <p className="ad-error" style={{ marginTop: 14 }}>Reference {error.digest}</p>
+            <p className="dash-error" style={{ marginTop: 14 }}>Reference {error.digest}</p>
           )}
-          <div className="ad-login-form">
-            <button className="ad-btn ad-btn-ink" type="button" onClick={() => reset()}>
+          <div className="dash-login-form">
+            <button className="dash-btn dash-btn-ink" type="button" onClick={() => reset()}>
               Try again
             </button>
           </div>

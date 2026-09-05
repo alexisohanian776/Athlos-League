@@ -4,7 +4,7 @@
 export default function DeleteClubButton({ name }) {
   return (
     <button
-      className="ad-btn ad-btn-danger"
+      className="dash-btn dash-btn-danger"
       type="submit"
       onClick={(e) => {
         if (!window.confirm(`Delete ${name}? This removes its page from the site.`)) {

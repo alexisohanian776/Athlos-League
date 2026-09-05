@@ -11,44 +11,44 @@ const formatDay = (value) =>
 export default function PeoplePanel({ users, clubs, origin }) {
   return (
     <>
-      <div className="ad-head" style={{ marginTop: 48 }}>
-        <h1 className="ad-title">People</h1>
-        <span className="ad-count">
+      <div className="dash-head" style={{ marginTop: 48 }}>
+        <h1 className="dash-title">People</h1>
+        <span className="dash-count">
           {users.filter((u) => u.role === 'admin').length} admins ·{' '}
           {users.filter((u) => u.role === 'leader').length} club leaders
         </span>
       </div>
 
-      <div className="ad-card ad-new">
-        <div className="ad-card-head"><span className="ad-card-name">Invite someone</span></div>
+      <div className="dash-card dash-new">
+        <div className="dash-card-head"><span className="dash-card-name">Invite someone</span></div>
         <form action={inviteUserAction}>
-          <div className="ad-grid">
-            <label className="ad-field is-wide">
-              <span className="ad-label">Email</span>
-              <input className="ad-input" name="email" type="email" required placeholder="leader@example.com" />
+          <div className="dash-grid">
+            <label className="dash-field is-wide">
+              <span className="dash-label">Email</span>
+              <input className="dash-input" name="email" type="email" required placeholder="leader@example.com" />
             </label>
-            <label className="ad-field">
-              <span className="ad-label">Name</span>
-              <input className="ad-input" name="name" placeholder="Optional" />
+            <label className="dash-field">
+              <span className="dash-label">Name</span>
+              <input className="dash-input" name="name" placeholder="Optional" />
             </label>
-            <label className="ad-field">
-              <span className="ad-label">Role</span>
-              <select className="ad-select" name="role" defaultValue="leader">
+            <label className="dash-field">
+              <span className="dash-label">Role</span>
+              <select className="dash-select" name="role" defaultValue="leader">
                 <option value="leader">Club leader</option>
                 <option value="admin">Admin</option>
               </select>
             </label>
-            <label className="ad-field">
-              <span className="ad-label">Club (leaders only)</span>
-              <select className="ad-select" name="clubId" defaultValue="">
+            <label className="dash-field">
+              <span className="dash-label">Club (leaders only)</span>
+              <select className="dash-select" name="clubId" defaultValue="">
                 <option value="">—</option>
                 {clubs.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </label>
           </div>
-          <div className="ad-actions">
-            <button className="ad-btn ad-btn-ink" type="submit">Create invite</button>
-            <p className="ad-hint">
+          <div className="dash-actions">
+            <button className="dash-btn dash-btn-ink" type="submit">Create invite</button>
+            <p className="dash-hint">
               Creates the account and a 14-day invite link. Send them the link — there is no automated email yet.
             </p>
           </div>
@@ -56,32 +56,32 @@ export default function PeoplePanel({ users, clubs, origin }) {
       </div>
 
       {users.map((u) => (
-        <div className="ad-card" key={u.id}>
-          <div className="ad-card-head">
-            <span className="ad-card-name">{u.name || u.email}</span>
-            <span className={`ad-tag ${u.role === 'admin' ? 'is-partner' : ''}`}>{u.role}</span>
-            {u.clubName && <span className="ad-card-meta">{u.clubName}</span>}
-            <div className="ad-card-spacer" />
-            <span className="ad-card-meta">
+        <div className="dash-card" key={u.id}>
+          <div className="dash-card-head">
+            <span className="dash-card-name">{u.name || u.email}</span>
+            <span className={`dash-tag ${u.role === 'admin' ? 'is-partner' : ''}`}>{u.role}</span>
+            {u.clubName && <span className="dash-card-meta">{u.clubName}</span>}
+            <div className="dash-card-spacer" />
+            <span className="dash-card-meta">
               {u.hasPassword
                 ? (u.lastLoginAt ? `last in ${formatDay(u.lastLoginAt)}` : 'never signed in')
                 : u.invitePending ? 'invite pending' : 'no password set'}
             </span>
           </div>
 
-          <div className="ad-actions" style={{ paddingTop: 16 }}>
-            <span className="ad-card-meta">{u.email}</span>
-            {u.locked && <span className="ad-tag is-partner">locked</span>}
-            <div className="ad-actions-spacer" />
+          <div className="dash-actions" style={{ paddingTop: 16 }}>
+            <span className="dash-card-meta">{u.email}</span>
+            {u.locked && <span className="dash-tag is-partner">locked</span>}
+            <div className="dash-actions-spacer" />
             <form action={reissueInviteAction}>
               <input type="hidden" name="id" value={u.id} />
-              <button className="ad-btn ad-btn-ghost" type="submit">
+              <button className="dash-btn dash-btn-ghost" type="submit">
                 {u.hasPassword ? 'Send reset link' : 'New invite link'}
               </button>
             </form>
             <form action={removeUserAction}>
               <input type="hidden" name="id" value={u.id} />
-              <button className="ad-btn ad-btn-danger" type="submit">Remove</button>
+              <button className="dash-btn dash-btn-danger" type="submit">Remove</button>
             </form>
           </div>
 

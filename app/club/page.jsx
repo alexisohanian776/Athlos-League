@@ -15,9 +15,9 @@ export default async function ClubDashboard() {
 
   if (!user) {
     return (
-      <div className="ad"><div className="ad-wrap">
-        <h1 className="ad-title">Signed out</h1>
-        <p className="ad-login-note"><Link href="/login">Sign in again</Link>.</p>
+      <div className="dash"><div className="dash-wrap">
+        <h1 className="dash-title">Signed out</h1>
+        <p className="dash-login-note"><Link href="/login">Sign in again</Link>.</p>
       </div></div>
     );
   }
@@ -27,41 +27,41 @@ export default async function ClubDashboard() {
   const mine = user.role === 'admin' ? clubs : clubs.filter((c) => c.id === user.clubId);
 
   return (
-    <div className="ad">
+    <div className="dash">
       <AccountBar email={user.email} role={user.role} clubName={user.clubName} />
-      <div className="ad-wrap">
-        <div className="ad-head">
-          <h1 className="ad-title">{user.role === 'admin' ? 'All run clubs' : 'My run club'}</h1>
-          <span className="ad-count">
+      <div className="dash-wrap">
+        <div className="dash-head">
+          <h1 className="dash-title">{user.role === 'admin' ? 'All run clubs' : 'My run club'}</h1>
+          <span className="dash-count">
             {user.role === 'admin' ? `${clubs.length} clubs` : 'Your page on athlosleague.com'}
           </span>
         </div>
 
         {mine.length === 0 && (
-          <div className="ad-card"><div className="ad-card-head">
-            <span className="ad-card-name">No club assigned yet</span>
+          <div className="dash-card"><div className="dash-card-head">
+            <span className="dash-card-name">No club assigned yet</span>
           </div>
-          <p className="ad-hint" style={{ padding: '0 20px 20px' }}>
+          <p className="dash-hint" style={{ padding: '0 20px 20px' }}>
             The league has not linked your account to a club. Reply to your invite and they will sort it.
           </p></div>
         )}
 
         {mine.map((c) => (
-          <div className="ad-card" key={c.id}>
-            <div className="ad-card-head">
-              <span className="ad-card-name">{c.name}</span>
-              <span className={`ad-tag ${c.type === 'Partner' ? 'is-partner' : ''}`}>{c.type}</span>
-              <Link className="ad-card-meta" href={`/run-clubs/${c.slug}`} target="_blank">
+          <div className="dash-card" key={c.id}>
+            <div className="dash-card-head">
+              <span className="dash-card-name">{c.name}</span>
+              <span className={`dash-tag ${c.type === 'Partner' ? 'is-partner' : ''}`}>{c.type}</span>
+              <Link className="dash-card-meta" href={`/run-clubs/${c.slug}`} target="_blank">
                 /run-clubs/{c.slug} ↗
               </Link>
-              <div className="ad-card-spacer" />
-              <span className="ad-card-meta">{c.members} members</span>
+              <div className="dash-card-spacer" />
+              <span className="dash-card-meta">{c.members} members</span>
             </div>
             <ClubForm club={c} action={updateMyClubAction} submitLabel="Save changes" leaderView />
           </div>
         ))}
 
-        <p className="ad-hint">
+        <p className="dash-hint">
           Region, club type and map position are set by the league. Ask them to change those.
         </p>
       </div>

@@ -6,10 +6,10 @@ import { useState } from 'react';
 export default function InviteLinkRow({ url }) {
   const [copied, setCopied] = useState(false);
   return (
-    <div className="ad-actions" style={{ paddingTop: 0 }}>
-      <code className="ad-invite">{url}</code>
+    <div className="dash-actions" style={{ paddingTop: 0 }}>
+      <code className="dash-invite">{url}</code>
       <button
-        className="ad-btn ad-btn-ghost"
+        className="dash-btn dash-btn-ghost"
         type="button"
         onClick={async () => {
           await navigator.clipboard.writeText(url);
