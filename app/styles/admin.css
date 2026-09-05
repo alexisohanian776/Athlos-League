@@ -142,3 +142,30 @@
   width: 26px; height: 26px; border-radius: 50%; object-fit: cover;
   border: 1px solid var(--rule); display: block; flex: none;
 }
+
+.dash-tag.is-super { background: var(--ink); color: var(--bone); }
+.dash-tag.is-revoked { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+
+/* ---- usage metrics ---- */
+.mx-stats { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 16px; }
+@media (max-width: 1000px) { .mx-stats { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 620px)  { .mx-stats { grid-template-columns: repeat(2, 1fr); } }
+.mx-stat { padding: 16px; margin-bottom: 0; }
+.mx-stat-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+.mx-stat-value { font-family: var(--font-display); font-size: 34px; line-height: 1.05; margin-top: 6px; }
+.mx-stat-note { font-family: var(--font-mono); font-size: 10px; color: var(--ink-3); margin-top: 4px; }
+
+.mx-chart { display: flex; align-items: flex-end; gap: 6px; height: 168px; padding: 20px; }
+.mx-bar-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; gap: 4px; }
+.mx-bar { width: 100%; min-height: 2px; background: var(--ink); border-radius: 2px 2px 0 0; }
+.mx-bar-n { font-family: var(--font-mono); font-size: 10px; color: var(--ink-2); height: 12px; }
+.mx-bar-day { font-family: var(--font-mono); font-size: 9px; color: var(--ink-3); white-space: nowrap; }
+
+.mx-table { padding: 4px 20px 20px; }
+.mx-row { display: grid; grid-template-columns: 2fr 1fr .6fr 1fr; gap: 12px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--rule-soft); font-size: 14px; }
+.mx-row:last-child { border-bottom: 0; }
+.mx-row-head { font-family: var(--font-mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+.mx-who { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.mx-who em { font-family: var(--font-mono); font-style: normal; font-size: 11px; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; }
+.mx-revoked { margin-left: 8px; }
+@media (max-width: 700px) { .mx-row { grid-template-columns: 2fr 1fr; } .mx-row > :nth-child(3) { display: none; } }

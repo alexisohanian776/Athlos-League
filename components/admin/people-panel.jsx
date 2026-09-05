@@ -1,4 +1,4 @@
-import { inviteUserAction, reissueInviteAction, removeUserAction } from '@/app/admin/actions';
+import { inviteUserAction, reissueInviteAction, removeUserAction, setAccessAction, setRoleAction } from '@/app/admin/actions';
 import InviteLinkRow from './invite-link-row';
 
 /* Dates must format identically on the server and in the browser, or React
@@ -8,7 +8,7 @@ import InviteLinkRow from './invite-link-row';
 const formatDay = (value) =>
   new Intl.DateTimeFormat('en-GB', { timeZone: 'UTC' }).format(new Date(value));
 
-export default function PeoplePanel({ users, clubs, origin }) {
+export default function PeoplePanel({ users, clubs, origin, meId }) {
   return (
     <>
       <div className="dash-head" style={{ marginTop: 48 }}>
@@ -60,6 +60,8 @@ export default function PeoplePanel({ users, clubs, origin }) {
           <div className="dash-card-head">
             <span className="dash-card-name">{u.name || u.email}</span>
             <span className={`dash-tag ${u.role === 'admin' ? 'is-partner' : ''}`}>{u.role}</span>
+            {u.isSuper && <span className="dash-tag is-super">super admin</span>}
+            {u.disabled && <span className="dash-tag is-revoked">access revoked</span>}
             {u.clubName && <span className="dash-card-meta">{u.clubName}</span>}
             <div className="dash-card-spacer" />
             <span className="dash-card-meta">
@@ -79,10 +81,30 @@ export default function PeoplePanel({ users, clubs, origin }) {
                 {u.hasPassword ? 'Send reset link' : 'New invite link'}
               </button>
             </form>
-            <form action={removeUserAction}>
-              <input type="hidden" name="id" value={u.id} />
-              <button className="dash-btn dash-btn-danger" type="submit">Remove</button>
-            </form>
+            {/* A super admin's own row, and any super admin's row, carries no
+                controls — there has to be someone left who can undo things. */}
+            {!u.isSuper && u.id !== meId && (
+              <>
+                <form action={setRoleAction}>
+                  <input type="hidden" name="id" value={u.id} />
+                  <input type="hidden" name="role" value={u.role === 'admin' ? 'leader' : 'admin'} />
+                  <button className="dash-btn dash-btn-ghost" type="submit">
+                    {u.role === 'admin' ? 'Make leader' : 'Make admin'}
+                  </button>
+                </form>
+                <form action={setAccessAction}>
+                  <input type="hidden" name="id" value={u.id} />
+                  <input type="hidden" name="disabled" value={u.disabled ? 'false' : 'true'} />
+                  <button className="dash-btn dash-btn-ghost" type="submit">
+                    {u.disabled ? 'Restore access' : 'Revoke access'}
+                  </button>
+                </form>
+                <form action={removeUserAction}>
+                  <input type="hidden" name="id" value={u.id} />
+                  <button className="dash-btn dash-btn-danger" type="submit">Remove</button>
+                </form>
+              </>
+            )}
           </div>
 
           {u.inviteToken && <InviteLinkRow url={`${origin}/invite/${u.inviteToken}`} />}

@@ -1,6 +1,5 @@
 'use server';
 
-import { put } from '@vercel/blob';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { currentUser } from '@/lib/current-user';
@@ -26,9 +25,6 @@ export async function changePasswordAction(formData) {
   redirect('/account?status=ok');
 }
 
-const MAX_AVATAR = 5 * 1024 * 1024;
-const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-
 export async function updateProfileAction(formData) {
   const session = await currentUser();
   if (!session) redirect('/login?next=/account');
@@ -41,20 +37,15 @@ export async function updateProfileAction(formData) {
   if (result.error === 'email') redirect('/account?status=bademail');
   if (result.error === 'taken') redirect('/account?status=taken');
 
-  /* The avatar is optional: an empty file input still arrives as a File with
-     zero bytes, so size is what says whether one was actually chosen. */
-  const file = formData.get('avatar');
-  if (file && typeof file === 'object' && file.size > 0) {
-    if (!IMAGE_TYPES.includes(file.type)) redirect('/account?status=badimage');
-    if (file.size > MAX_AVATAR) redirect('/account?status=bigimage');
-
-    const ext = (file.type.split('/')[1] || 'jpg').replace('jpeg', 'jpg');
-    const blob = await put(`avatars/${session.id}.${ext}`, file, {
-      access: 'public',
-      addRandomSuffix: true,        // a new URL per upload, so caches can't serve the old face
-      contentType: file.type,
-    });
-    await setAvatar(session.id, blob.url);
+  /* The browser uploaded straight to Blob and passed back the URL. Only a
+     URL from our own store is accepted, so this field can't be used to point
+     someone's avatar at an arbitrary address. */
+  const avatarUrl = String(formData.get('avatarUrl') ?? '').trim();
+  if (avatarUrl && avatarUrl !== 'null') {
+    if (!/^https:\/\/[a-z0-9-]+\.public\.blob\.vercel-storage\.com\//.test(avatarUrl)) {
+      redirect('/account?status=badimage');
+    }
+    await setAvatar(session.id, avatarUrl);
   }
 
   revalidatePath('/account');

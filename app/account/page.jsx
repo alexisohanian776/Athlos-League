@@ -1,5 +1,6 @@
 import AccountBar from '@/components/account/account-bar';
 import Avatar from '@/components/avatar';
+import AvatarField from '@/components/account/avatar-field';
 import { currentUser } from '@/lib/current-user';
 import { getUserById } from '@/lib/users-db';
 import { changePasswordAction, updateProfileAction } from './actions';
@@ -18,9 +19,8 @@ const MESSAGES = {
   bademail:  { tone: 'err', text: 'That does not look like an email address.' },
   taken:     { tone: 'err', text: 'Another account already uses that email.' },
   badimage:  { tone: 'err', text: 'Use a JPG, PNG, WEBP or GIF for your photo.' },
-  bigimage:  { tone: 'err', text: 'That photo is over 5MB. Use a smaller one.' },
 };
-const PROFILE_STATUS = ['saved', 'bademail', 'taken', 'badimage', 'bigimage'];
+const PROFILE_STATUS = ['saved', 'bademail', 'taken', 'badimage'];
 
 export default async function AccountPage({ searchParams }) {
   const session = await currentUser();
@@ -53,22 +53,11 @@ export default async function AccountPage({ searchParams }) {
           <div className="ac-body">
             {note(onProfile)}
 
-            {/* multipart, because this form carries a file */}
-            <form action={updateProfileAction} className="ac-form" encType="multipart/form-data">
-              <div className="ac-avatar-row">
-                {user?.avatarUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img className="ac-avatar" src={user.avatarUrl} alt="" width={72} height={72} />
-                ) : (
-                  <Avatar name={fullName || user?.email || '?'} size={72} tone="ph-plum" />
-                )}
-                <div className="au-field ac-avatar-field">
-                  <label className="au-label" htmlFor="avatar">Profile photo</label>
-                  <input className="ac-file" id="avatar" name="avatar" type="file"
-                    accept="image/jpeg,image/png,image/webp,image/gif" />
-                  <p className="au-note">JPG, PNG, WEBP or GIF, up to 5MB.</p>
-                </div>
-              </div>
+            <form action={updateProfileAction} className="ac-form">
+              <AvatarField
+                initialUrl={user?.avatarUrl}
+                fallback={<Avatar name={fullName || user?.email || '?'} size={72} tone="ph-plum" />}
+              />
 
               <div className="ac-pair">
                 <div className="au-field">

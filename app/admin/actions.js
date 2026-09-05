@@ -3,13 +3,24 @@
 import { revalidatePath } from 'next/cache';
 import { currentUser } from '@/lib/current-user';
 import { createClub, deleteClub, updateClub } from '@/lib/clubs-db';
-import { deleteUser, inviteUser, reissueInvite } from '@/lib/users-db';
+import { deleteUser, getUserById, inviteUser, reissueInvite, setDisabled, setRole } from '@/lib/users-db';
 
 /* Server actions are directly callable endpoints, so each one re-checks the
    session rather than trusting that middleware ran. */
 async function assertAdmin() {
   const user = await currentUser();
   if (!user || user.role !== 'admin') throw new Error('Not authorised.');
+  return user;
+}
+
+/* Managing people is super-admin only. The flag is read from the database,
+   never from the session cookie, so promoting yourself in a forged cookie
+   gets you nowhere. */
+async function assertSuperAdmin() {
+  const session = await currentUser();
+  if (!session) throw new Error('Not authorised.');
+  const user = await getUserById(session.id);
+  if (!user || !user.isSuper || user.disabled) throw new Error('Not authorised.');
   return user;
 }
 
@@ -93,7 +104,7 @@ function refreshPeople() {
 }
 
 export async function inviteUserAction(formData) {
-  await assertAdmin();
+  await assertSuperAdmin();
   const email = String(formData.get('email') || '').trim().toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('Enter a valid email address.');
 
@@ -107,7 +118,7 @@ export async function inviteUserAction(formData) {
 }
 
 export async function reissueInviteAction(formData) {
-  await assertAdmin();
+  await assertSuperAdmin();
   const id = Number(formData.get('id'));
   if (!Number.isInteger(id)) throw new Error('Bad user id.');
   await reissueInvite(id);
@@ -115,10 +126,22 @@ export async function reissueInviteAction(formData) {
 }
 
 export async function removeUserAction(formData) {
-  const me = await assertAdmin();
+  const me = await assertSuperAdmin();
   const id = Number(formData.get('id'));
   if (!Number.isInteger(id)) throw new Error('Bad user id.');
   if (id === me.id) throw new Error('You cannot remove your own account.');
   await deleteUser(id);
+  refreshPeople();
+}
+
+export async function setRoleAction(formData) {
+  const me = await assertSuperAdmin();
+  await setRole(me.id, formData.get('id'), String(formData.get('role') || ''));
+  refreshPeople();
+}
+
+export async function setAccessAction(formData) {
+  const me = await assertSuperAdmin();
+  await setDisabled(me.id, formData.get('id'), formData.get('disabled') === 'true');
   refreshPeople();
 }
