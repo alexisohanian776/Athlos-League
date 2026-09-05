@@ -8,6 +8,7 @@
 @import url('./styles/profile.css');
 @import url('./styles/clubs.css');
 @import url('./styles/vip.css');
+@import url('./styles/stub.css');
 @import url('./styles/admin.css');
 
 html, body { margin: 0; background: var(--bone); }
