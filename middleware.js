@@ -3,7 +3,7 @@ import { vipGate } from '@/lib/vip-auth';
 import { SESSION_COOKIE, readSession } from '@/lib/session';
 
 /* /vip is a shared-password guest gate. /admin and /club need real accounts. */
-export const config = { matcher: ['/vip', '/admin', '/admin/:path*', '/club', '/club/:path*'] };
+export const config = { matcher: ['/vip', '/admin', '/admin/:path*', '/club', '/club/:path*', '/account'] };
 
 export async function middleware(request) {
   const { pathname } = request.nextUrl;

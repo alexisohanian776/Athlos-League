@@ -1,6 +1,13 @@
 import { inviteUserAction, reissueInviteAction, removeUserAction } from '@/app/admin/actions';
 import InviteLinkRow from './invite-link-row';
 
+/* Dates must format identically on the server and in the browser, or React
+   throws a hydration mismatch and unmounts the whole tree — the page paints
+   and then goes blank. Pinning the zone to UTC keeps the two in agreement;
+   `toLocaleDateString` alone uses each runtime's own zone. */
+const formatDay = (value) =>
+  new Intl.DateTimeFormat('en-GB', { timeZone: 'UTC' }).format(new Date(value));
+
 export default function PeoplePanel({ users, clubs, origin }) {
   return (
     <>
@@ -57,16 +64,14 @@ export default function PeoplePanel({ users, clubs, origin }) {
             <div className="ad-card-spacer" />
             <span className="ad-card-meta">
               {u.hasPassword
-                ? (u.lastLoginAt ? `last in ${new Date(u.lastLoginAt).toLocaleDateString('en-GB')}` : 'never signed in')
+                ? (u.lastLoginAt ? `last in ${formatDay(u.lastLoginAt)}` : 'never signed in')
                 : u.invitePending ? 'invite pending' : 'no password set'}
             </span>
           </div>
 
           <div className="ad-actions" style={{ paddingTop: 16 }}>
             <span className="ad-card-meta">{u.email}</span>
-            {u.lockedUntil && new Date(u.lockedUntil) > new Date() && (
-              <span className="ad-tag is-partner">locked</span>
-            )}
+            {u.locked && <span className="ad-tag is-partner">locked</span>}
             <div className="ad-actions-spacer" />
             <form action={reissueInviteAction}>
               <input type="hidden" name="id" value={u.id} />

@@ -16,6 +16,7 @@ export default function AccountBar({ email, role, clubName }) {
       <span className="ad-card-meta">{email}</span>
       <div className="ad-bar-spacer" />
       {role === 'admin' && <Link className="ad-btn ad-btn-ghost" href="/admin">Admin</Link>}
+      <Link className="ad-btn ad-btn-ghost" href="/account">Account</Link>
       <Link className="ad-btn ad-btn-ghost" href="/run-clubs" target="_blank">View site ↗</Link>
       <button className="ad-btn ad-btn-ghost" type="button" onClick={signOut}>Sign out</button>
     </div>
