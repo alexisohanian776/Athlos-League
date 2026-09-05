@@ -169,3 +169,37 @@
 .mx-who em { font-family: var(--font-mono); font-style: normal; font-size: 11px; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; }
 .mx-revoked { margin-left: 8px; }
 @media (max-width: 700px) { .mx-row { grid-template-columns: 2fr 1fr; } .mx-row > :nth-child(3) { display: none; } }
+
+/* ---- avatar cropper ---- */
+.ac-crop-scrim {
+  position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center;
+  background: rgba(13,4,11,.55); padding: 20px;
+  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+}
+.ac-crop {
+  background: var(--paper); border: 1px solid var(--rule); padding: 20px;
+  display: flex; flex-direction: column; align-items: center; gap: 16px; max-width: 100%;
+}
+.ac-crop-head {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--ink-3); text-align: center;
+}
+.ac-crop-stage {
+  position: relative; overflow: hidden; background: var(--stone);
+  cursor: grab; touch-action: none; user-select: none; max-width: 100%;
+}
+.ac-crop-stage:active { cursor: grabbing; }
+.ac-crop-stage:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.ac-crop-img {
+  position: absolute; top: 50%; left: 50%; max-width: none; display: block;
+  pointer-events: none; -webkit-user-drag: none;
+}
+/* The dimmed surround is one huge shadow spilling out of a round hole. */
+.ac-crop-mask {
+  position: absolute; inset: 0; border-radius: 50%; pointer-events: none;
+  box-shadow: 0 0 0 9999px rgba(242,240,236,.82);
+  border: 1px solid rgba(13,4,11,.25);
+}
+.ac-crop-zoom { width: 100%; max-width: 288px; accent-color: var(--ink); cursor: pointer; }
+.ac-crop-actions { display: flex; gap: 10px; width: 100%; }
+.ac-crop-actions .dash-btn { flex: 1; }
