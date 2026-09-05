@@ -8,7 +8,10 @@ import { currentUser } from '@/lib/current-user';
    normal headshot never arrives. */
 export const dynamic = 'force-dynamic';
 
-const MAX_AVATAR = 5 * 1024 * 1024;
+/* The browser resizes before uploading, so anything arriving here is small.
+   The ceiling exists for formats canvas can't decode and is sent through
+   untouched — not as the expected path. */
+const MAX_AVATAR = 12 * 1024 * 1024;
 const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
 export async function POST(request) {
