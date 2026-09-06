@@ -123,8 +123,9 @@ export default async function MetricsPage() {
             <span className="dash-card-name">Email</span>
             <div className="dash-card-spacer" />
             <span className="dash-card-meta">
-              {mail.totals.sent} sent · {mail.totals.delivered} delivered
-              {mail.totals.bounced > 0 && ` · ${mail.totals.bounced} bounced`}
+              {mail.receiving
+                ? `${mail.totals.sent} sent · ${mail.totals.delivered} delivered${mail.totals.bounced > 0 ? ` · ${mail.totals.bounced} bounced` : ''}`
+                : `${mail.totals.sent} sent · no events yet`}
             </span>
           </div>
 
@@ -132,17 +133,23 @@ export default async function MetricsPage() {
             <div className="mx-stat mx-stat-flat">
               <div className="mx-stat-label">Open rate</div>
               <div className="mx-stat-value">{mail.openRate === null ? '—' : `${mail.openRate}%`}</div>
-              <div className="mx-stat-note">{mail.totals.opened} opened</div>
+              <div className="mx-stat-note">
+                {mail.receiving ? `${mail.totals.opened} opened` : 'waiting on webhook'}
+              </div>
             </div>
             <div className="mx-stat mx-stat-flat">
               <div className="mx-stat-label">Click rate</div>
               <div className="mx-stat-value">{mail.clickRate === null ? '—' : `${mail.clickRate}%`}</div>
-              <div className="mx-stat-note">{mail.totals.clicked} clicked</div>
+              <div className="mx-stat-note">
+                {mail.receiving ? `${mail.totals.clicked} clicked` : 'waiting on webhook'}
+              </div>
             </div>
             <div className="mx-stat mx-stat-flat">
               <div className="mx-stat-label">Bounced</div>
               <div className="mx-stat-value">{mail.totals.bounced}</div>
-              <div className="mx-stat-note">{mail.bounceRate === null ? 'none sent' : `${mail.bounceRate}% of sends`}</div>
+              <div className="mx-stat-note">
+                {mail.receiving ? `${mail.bounceRate}% of sends` : 'waiting on webhook'}
+              </div>
             </div>
             <div className="mx-stat mx-stat-flat">
               <div className="mx-stat-label">Complaints</div>
