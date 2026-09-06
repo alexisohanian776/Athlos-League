@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import AccountBar from '@/components/account/account-bar';
+import AdminTabs from '@/components/admin/admin-tabs';
 import { currentUser } from '@/lib/current-user';
 import { getUserById, usageMetrics } from '@/lib/users-db';
 import { emailStats } from '@/lib/email-events';
@@ -25,6 +26,7 @@ export default async function MetricsPage() {
     return (
       <div className="dash">
         <AccountBar email={me?.email} role={me?.role} avatarUrl={me?.avatarUrl} />
+        <AdminTabs isSuper={false} />
         <div className="dash-wrap">
           <h1 className="dash-title">Not available</h1>
           <p className="dash-login-note">
@@ -58,6 +60,7 @@ export default async function MetricsPage() {
     <div className="dash">
       <AccountBar email={me.email} role={me.role} avatarUrl={me.avatarUrl}
         name={[me.firstName, me.lastName].filter(Boolean).join(' ')} />
+      <AdminTabs isSuper={true} />
       <div className="dash-wrap">
         <div className="dash-head">
           <h1 className="dash-title">Usage</h1>

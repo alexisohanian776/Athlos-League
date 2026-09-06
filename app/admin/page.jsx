@@ -1,12 +1,11 @@
 import Link from 'next/link';
 import { headers } from 'next/headers';
 import AccountBar from '@/components/account/account-bar';
+import AdminTabs from '@/components/admin/admin-tabs';
 import ClubForm from '@/components/admin/club-form';
 import DeleteClubButton from '@/components/admin/delete-club-button';
-import PeoplePanel from '@/components/admin/people-panel';
 import { listClubs } from '@/lib/clubs-db';
 import { getUserById, listUsers } from '@/lib/users-db';
-import { emailConfigured } from '@/lib/email';
 import { currentUser } from '@/lib/current-user';
 import { addClubAction, deleteClubAction, updateClubAction } from './actions';
 
@@ -23,7 +22,9 @@ export default async function AdminPage() {
 
   return (
     <div className="dash">
-      <AccountBar email={session?.email} role="admin" />
+      <AccountBar email={me?.email} role="admin" avatarUrl={me?.avatarUrl}
+        name={[me?.firstName, me?.lastName].filter(Boolean).join(' ')} />
+      <AdminTabs isSuper={Boolean(me?.isSuper && !me.disabled)} />
       <div className="dash-wrap">
         <div className="dash-head">
           <h1 className="dash-title">Run clubs</h1>
@@ -56,16 +57,6 @@ export default async function AdminPage() {
             </form>
           </div>
         ))}
-        {/* People and usage are super-admin only. */}
-        {me?.isSuper && !me.disabled && (
-          <>
-            <PeoplePanel users={users} clubs={clubs} origin={origin} meId={me.id}
-              mailOn={emailConfigured()} />
-            <p className="dash-hint" style={{ marginTop: 22 }}>
-              <Link href="/admin/metrics" className="dash-btn dash-btn-ghost">Usage metrics →</Link>
-            </p>
-          </>
-        )}
       </div>
     </div>
   );

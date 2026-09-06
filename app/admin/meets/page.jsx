@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import AccountBar from '@/components/account/account-bar';
+import AdminTabs from '@/components/admin/admin-tabs';
 import Stub from '@/components/stub';
 import DeleteClubButton from '@/components/admin/delete-club-button';
 import { currentUser } from '@/lib/current-user';
@@ -90,6 +91,7 @@ export default async function MeetsAdminPage() {
     <div className="dash">
       <AccountBar email={me?.email} role={me?.role} avatarUrl={me?.avatarUrl}
         name={[me?.firstName, me?.lastName].filter(Boolean).join(' ')} />
+      <AdminTabs isSuper={Boolean(me?.isSuper && !me.disabled)} />
       <div className="dash-wrap">
         <div className="dash-head">
           <h1 className="dash-title">Meets</h1>
@@ -98,10 +100,6 @@ export default async function MeetsAdminPage() {
           </span>
         </div>
 
-        <p className="dash-hint" style={{ marginBottom: 20 }}>
-          <Link href="/admin" className="dash-btn dash-btn-ghost">← Run clubs</Link>{' '}
-          <Link href="/admin/attendance" className="dash-btn dash-btn-ghost">Attendance queue</Link>
-        </p>
 
         <div className="dash-card dash-new">
           <div className="dash-card-head"><span className="dash-card-name">Add a meet</span></div>

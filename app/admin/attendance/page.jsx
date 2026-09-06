@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import AccountBar from '@/components/account/account-bar';
+import AdminTabs from '@/components/admin/admin-tabs';
 import Avatar from '@/components/avatar';
 import { currentUser } from '@/lib/current-user';
 import { getUserById } from '@/lib/users-db';
@@ -28,6 +29,7 @@ export default async function AttendancePage({ searchParams }) {
     <div className="dash">
       <AccountBar email={me?.email} role={me?.role} avatarUrl={me?.avatarUrl}
         name={[me?.firstName, me?.lastName].filter(Boolean).join(' ')} />
+      <AdminTabs isSuper={Boolean(me?.isSuper && !me.disabled)} />
       <div className="dash-wrap">
         <div className="dash-head">
           <h1 className="dash-title">Attendance</h1>
@@ -36,10 +38,6 @@ export default async function AttendancePage({ searchParams }) {
           </span>
         </div>
 
-        <p className="dash-hint" style={{ marginBottom: 18 }}>
-          <Link href="/admin" className="dash-btn dash-btn-ghost">← Run clubs</Link>{' '}
-          <Link href="/admin/meets" className="dash-btn dash-btn-ghost">Meets</Link>
-        </p>
 
         <div className="at-tabs">
           {TABS.map((t) => (

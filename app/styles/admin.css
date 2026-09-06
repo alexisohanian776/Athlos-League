@@ -236,3 +236,40 @@
 .mx-row-mail { grid-template-columns: 2fr 1.2fr .8fr .7fr .7fr; }
 .mx-row-mail.is-bounced { color: var(--accent); }
 @media (max-width: 700px) { .mx-row-mail { grid-template-columns: 2fr 1fr; } .mx-row-mail > :nth-child(n+3) { display: none; } }
+
+/* ---- identity in the bar ---- */
+.dash-bar-title { text-decoration: none; }
+.dash-bar-title:hover { color: var(--ink); }
+.dash-me {
+  display: inline-flex; align-items: center; gap: 9px; padding: 5px 10px 5px 6px;
+  border-radius: var(--r-pill); text-decoration: none; min-width: 0;
+  transition: background var(--dur-micro) var(--ease-out);
+}
+.dash-me:hover { background: var(--stone); }
+.dash-me-name {
+  font-family: var(--font-mono); font-size: 11px; color: var(--ink-2);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.dash-me:hover .dash-me-name { color: var(--ink); }
+.dash-me-dot { width: 26px; height: 26px; border-radius: 50%; background: var(--stone); border: 1px solid var(--rule); flex: none; }
+
+/* ---- section tabs ---- */
+.dash-tabs {
+  display: flex; gap: 2px; padding: 0 var(--gutter); background: var(--paper);
+  border-bottom: 1px solid var(--rule); overflow-x: auto; scrollbar-width: none;
+  position: sticky; top: 64px; z-index: 9;
+}
+.dash-tabs::-webkit-scrollbar { display: none; }
+.dash-tab {
+  position: relative; padding: 14px 16px; white-space: nowrap; text-decoration: none;
+  font-family: var(--font-ui); font-weight: 600; font-size: 14px; letter-spacing: -.01em;
+  color: var(--ink-3); transition: color var(--dur-micro) var(--ease-out);
+}
+.dash-tab:hover { color: var(--ink); }
+.dash-tab.is-active { color: var(--ink); }
+/* The underline sits on the bar's own border, so the active tab reads as
+   continuous with the page below it. */
+.dash-tab.is-active::after {
+  content: ''; position: absolute; left: 12px; right: 12px; bottom: -1px;
+  height: 2px; background: var(--accent);
+}
