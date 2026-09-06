@@ -229,3 +229,10 @@
 .cl-line { margin: 4px 0 14px; font-size: 14px; color: var(--ink); word-break: break-word; }
 .cl-note { font-family: var(--font-serif); font-size: 15px; line-height: 1.5; color: var(--ink-2); white-space: pre-wrap; }
 @media (max-width: 700px) { .cl-body { grid-template-columns: 1fr; } }
+
+.mx-stats-inner { grid-template-columns: repeat(4, 1fr); padding: 20px 20px 4px; margin-bottom: 0; }
+@media (max-width: 700px) { .mx-stats-inner { grid-template-columns: repeat(2, 1fr); } }
+.mx-stat-flat { border: 0; padding: 0; box-shadow: none; background: transparent; }
+.mx-row-mail { grid-template-columns: 2fr 1.2fr .8fr .7fr .7fr; }
+.mx-row-mail.is-bounced { color: var(--accent); }
+@media (max-width: 700px) { .mx-row-mail { grid-template-columns: 2fr 1fr; } .mx-row-mail > :nth-child(n+3) { display: none; } }

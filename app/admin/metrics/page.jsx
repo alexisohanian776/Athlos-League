@@ -2,6 +2,7 @@ import Link from 'next/link';
 import AccountBar from '@/components/account/account-bar';
 import { currentUser } from '@/lib/current-user';
 import { getUserById, usageMetrics } from '@/lib/users-db';
+import { emailStats } from '@/lib/email-events';
 import { listClubs } from '@/lib/clubs-db';
 import { SEASONS } from '@/lib/season-cards';
 
@@ -34,9 +35,10 @@ export default async function MetricsPage() {
     );
   }
 
-  const [{ counts, signins, daily, recent }, clubs] = await Promise.all([
+  const [{ counts, signins, daily, recent }, clubs, mail] = await Promise.all([
     usageMetrics(),
     listClubs(),
+    emailStats(),
   ]);
 
   const runners = clubs.reduce((n, c) => n + c.members, 0);
@@ -116,8 +118,65 @@ export default async function MetricsPage() {
           </div>
         </div>
 
+        <div className="dash-card">
+          <div className="dash-card-head">
+            <span className="dash-card-name">Email</span>
+            <div className="dash-card-spacer" />
+            <span className="dash-card-meta">
+              {mail.totals.sent} sent · {mail.totals.delivered} delivered
+              {mail.totals.bounced > 0 && ` · ${mail.totals.bounced} bounced`}
+            </span>
+          </div>
+
+          <div className="mx-stats mx-stats-inner">
+            <div className="mx-stat mx-stat-flat">
+              <div className="mx-stat-label">Open rate</div>
+              <div className="mx-stat-value">{mail.openRate === null ? '—' : `${mail.openRate}%`}</div>
+              <div className="mx-stat-note">{mail.totals.opened} opened</div>
+            </div>
+            <div className="mx-stat mx-stat-flat">
+              <div className="mx-stat-label">Click rate</div>
+              <div className="mx-stat-value">{mail.clickRate === null ? '—' : `${mail.clickRate}%`}</div>
+              <div className="mx-stat-note">{mail.totals.clicked} clicked</div>
+            </div>
+            <div className="mx-stat mx-stat-flat">
+              <div className="mx-stat-label">Bounced</div>
+              <div className="mx-stat-value">{mail.totals.bounced}</div>
+              <div className="mx-stat-note">{mail.bounceRate === null ? 'none sent' : `${mail.bounceRate}% of sends`}</div>
+            </div>
+            <div className="mx-stat mx-stat-flat">
+              <div className="mx-stat-label">Complaints</div>
+              <div className="mx-stat-value">{mail.totals.complained}</div>
+              <div className="mx-stat-note">marked as spam</div>
+            </div>
+          </div>
+
+          {mail.recent.length > 0 && (
+            <div className="mx-table">
+              <div className="mx-row mx-row-head mx-row-mail">
+                <span>Recipient</span><span>Sent</span><span>Delivered</span><span>Opened</span><span>Clicked</span>
+              </div>
+              {mail.recent.map((m) => (
+                <div className={`mx-row mx-row-mail ${m.bounced ? 'is-bounced' : ''}`} key={m.resend_id}>
+                  <span className="mx-who">{m.recipient}<em>{m.subject}</em></span>
+                  <span>{m.sent_at}</span>
+                  <span>{m.bounced ? 'bounced' : m.delivered ? 'yes' : '—'}</span>
+                  <span>{m.opened ? 'yes' : '—'}</span>
+                  <span>{m.clicked ? 'yes' : '—'}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         <p className="dash-hint" style={{ marginTop: 18 }}>
-          Sign-ins are the only usage the app records. Page views and clicks are
+          Opens are counted by a tracking pixel, so treat them as a floor, not a
+          fact: Apple Mail Privacy Protection loads that pixel whether or not
+          anyone read the message, and a client with images off never loads it
+          at all. Clicks are the honest signal.
+        </p>
+        <p className="dash-hint" style={{ marginTop: 10 }}>
+          Sign-ins are the only in-app usage the app records. Page views and clicks are
           not tracked anywhere, so nothing here is inferred.
         </p>
       </div>
