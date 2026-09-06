@@ -277,3 +277,26 @@
   content: ''; position: absolute; left: 12px; right: 12px; bottom: -1px;
   height: 2px; background: var(--accent);
 }
+
+/* ---- meet hero shot ---- */
+.mp-field { gap: 8px; }
+.mp-row { display: flex; gap: 16px; align-items: flex-start; }
+.mp-thumb {
+  width: 100px; height: 120px; flex: none; border: 1px solid var(--rule);
+  background: var(--bone); display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+.mp-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.mp-thumb-empty {
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+.mp-controls { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 9px; }
+.mp-url { font-family: var(--font-mono); font-size: 12px; }
+.mp-notes { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.mp-bad { color: var(--accent); }
+.mp-clear {
+  border: 0; background: none; padding: 0; cursor: pointer;
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--accent);
+}
+.mp-clear:hover { text-decoration: underline; }

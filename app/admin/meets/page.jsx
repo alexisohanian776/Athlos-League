@@ -2,6 +2,7 @@ import Link from 'next/link';
 import AccountBar from '@/components/account/account-bar';
 import AdminTabs from '@/components/admin/admin-tabs';
 import Stub from '@/components/stub';
+import MeetPhotoField from '@/components/admin/meet-photo-field';
 import DeleteClubButton from '@/components/admin/delete-club-button';
 import { currentUser } from '@/lib/current-user';
 import { getUserById } from '@/lib/users-db';
@@ -51,7 +52,7 @@ function MeetForm({ meet, action, submitLabel }) {
           </select>
         </label>
 
-        <Field label="Photo URL" name="photoUrl" defaultValue={meet?.photoUrl} placeholder="Image URL — optional" wide />
+        <MeetPhotoField slug={meet?.slug} initialUrl={meet?.photoUrl} />
 
         <label className="dash-field is-wide">
           <span className="dash-label">Headline — one sentence on the stub</span>
