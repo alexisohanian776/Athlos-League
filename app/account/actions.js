@@ -33,9 +33,17 @@ export async function updateProfileAction(formData) {
     firstName: formData.get('firstName'),
     lastName: formData.get('lastName'),
     email: formData.get('email'),
+    handle: formData.get('handle'),
+    city: formData.get('city'),
+    bio: formData.get('bio'),
+    instagram: formData.get('instagram'),
+    strava: formData.get('strava'),
+    clubId: formData.get('clubId'),
+    favourites: String(formData.get('favourites') || '').split(',').filter(Boolean),
   });
   if (result.error === 'email') redirect('/account?status=bademail');
   if (result.error === 'taken') redirect('/account?status=taken');
+  if (result.error === 'handle') redirect(`/account?status=handle&msg=${encodeURIComponent(result.message)}`);
 
   /* The browser uploaded straight to Blob and passed back the URL. Only a
      URL from our own store is accepted, so this field can't be used to point

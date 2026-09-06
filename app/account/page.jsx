@@ -1,6 +1,9 @@
 import AccountBar from '@/components/account/account-bar';
 import Avatar from '@/components/avatar';
 import AvatarField from '@/components/account/avatar-field';
+import FavouritesPicker from '@/components/account/favourites-picker';
+import { listClubs } from '@/lib/clubs-db';
+import { ALL_ATHLETES } from '@/lib/season-cards';
 import { currentUser } from '@/lib/current-user';
 import { getUserById } from '@/lib/users-db';
 import { changePasswordAction, updateProfileAction } from './actions';
@@ -19,14 +22,20 @@ const MESSAGES = {
   bademail:  { tone: 'err', text: 'That does not look like an email address.' },
   taken:     { tone: 'err', text: 'Another account already uses that email.' },
   badimage:  { tone: 'err', text: 'Use a JPG, PNG, WEBP or GIF for your photo.' },
+  handle:    { tone: 'err', text: 'That handle did not work.' },
 };
-const PROFILE_STATUS = ['saved', 'bademail', 'taken', 'badimage'];
+const PROFILE_STATUS = ['saved', 'bademail', 'taken', 'badimage', 'handle'];
 
 export default async function AccountPage({ searchParams }) {
   const session = await currentUser();
-  const user = session ? await getUserById(session.id) : null;
+  const [user, clubs] = await Promise.all([
+    session ? getUserById(session.id) : null,
+    listClubs(),
+  ]);
   const status = searchParams?.status;
-  const message = MESSAGES[status];
+  const message = status === 'handle'
+    ? { tone: 'err', text: searchParams?.msg || 'That handle did not work.' }
+    : MESSAGES[status];
   const onProfile = PROFILE_STATUS.includes(status);
   const fullName = [user?.firstName, user?.lastName].filter(Boolean).join(' ');
 
@@ -75,12 +84,62 @@ export default async function AccountPage({ searchParams }) {
                 </div>
               </div>
 
+              <div className="ac-pair">
+                <div className="au-field">
+                  <label className="au-label" htmlFor="handle">Profile handle</label>
+                  <input className="dash-input au-input" id="handle" name="handle" type="text"
+                    defaultValue={user?.handle || ''} placeholder="yourname"
+                    minLength={3} maxLength={24} />
+                  <p className="au-note">athlosleague.com/fans/{user?.handle || 'yourname'}</p>
+                </div>
+                <div className="au-field">
+                  <label className="au-label" htmlFor="city">City</label>
+                  <input className="dash-input au-input" id="city" name="city" type="text"
+                    defaultValue={user?.city || ''} placeholder="Brooklyn, NY" />
+                </div>
+              </div>
+
               <div className="au-field">
                 <label className="au-label" htmlFor="email">Email address</label>
                 <input className="dash-input au-input" id="email" name="email" type="email"
                   defaultValue={user?.email || ''} placeholder="you@example.com"
                   autoComplete="email" required />
                 <p className="au-note">This is what you sign in with.</p>
+              </div>
+
+              <div className="au-field">
+                <label className="au-label" htmlFor="bio">Bio</label>
+                <textarea className="dash-input dash-textarea au-input" id="bio" name="bio" rows={3}
+                  maxLength={280} defaultValue={user?.bio || ''}
+                  placeholder="A line or two. Where you run, why you watch." />
+              </div>
+
+              <div className="ac-pair">
+                <div className="au-field">
+                  <label className="au-label" htmlFor="instagram">Instagram</label>
+                  <input className="dash-input au-input" id="instagram" name="instagram" type="text"
+                    defaultValue={user?.instagram || ''} placeholder="@handle" />
+                </div>
+                <div className="au-field">
+                  <label className="au-label" htmlFor="strava">Strava</label>
+                  <input className="dash-input au-input" id="strava" name="strava" type="text"
+                    defaultValue={user?.strava || ''} placeholder="Profile link or id" />
+                </div>
+              </div>
+
+              <div className="au-field">
+                <label className="au-label" htmlFor="clubId">Run club</label>
+                <select className="dash-input au-input" id="clubId" name="clubId"
+                  defaultValue={user?.clubId ?? ''}>
+                  <option value="">Not with a club</option>
+                  {clubs.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                </select>
+              </div>
+
+              <div className="au-field">
+                <span className="au-label">Your top five athletes</span>
+                <p className="au-note">They appear on your profile as cards, in this order.</p>
+                <FavouritesPicker athletes={ALL_ATHLETES} initial={user?.favourites || []} />
               </div>
 
               <button className="dash-btn dash-btn-ink au-submit" type="submit">Save profile</button>

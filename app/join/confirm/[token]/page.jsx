@@ -20,7 +20,7 @@ export default async function ConfirmPage({ params }) {
               : 'This confirmation link has already been used, or it is not one of ours. If your account already works, there is nothing to do.'}
           </p>
           <div className="dash-login-form">
-            <Link className="dash-btn dash-btn-ink" href={user?.handle ? `/u/${user.handle}` : '/'}>
+            <Link className="dash-btn dash-btn-ink" href={user?.handle ? `/fans/${user.handle}` : '/'}>
               {user?.handle ? 'Go to my profile' : 'Back to the league'}
             </Link>
           </div>

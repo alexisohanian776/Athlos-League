@@ -65,7 +65,7 @@ export default async function AttendancePage({ searchParams }) {
               )}
               <span className="dash-card-name">{c.who}</span>
               {c.handle && (
-                <Link className="dash-card-meta" href={`/u/${c.handle}`} target="_blank">@{c.handle} ↗</Link>
+                <Link className="dash-card-meta" href={`/fans/${c.handle}`} target="_blank">@{c.handle} ↗</Link>
               )}
               <div className="dash-card-spacer" />
               <span className="dash-card-meta">{c.meetName}</span>

@@ -40,5 +40,5 @@ export async function joinAction(formData) {
     url: `${origin}/join/confirm/${result.token}`,
   });
 
-  redirect(`/u/${result.user.handle}`);
+  redirect(`/fans/${result.user.handle}`);
 }

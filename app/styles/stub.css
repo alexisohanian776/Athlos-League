@@ -168,3 +168,57 @@
   .vf-aside { position: static; order: -1; }
   .vf-title { font-size: 34px; }
 }
+
+/* ---- fan profile ---- */
+.fn-wrap { max-width: 1180px; margin: 0 auto; padding: 0 var(--gutter); }
+.fn-hero { padding: 56px 0 34px; border-bottom: 1px solid var(--rule); }
+.fn-hero .fn-wrap { display: flex; align-items: flex-end; justify-content: space-between; gap: 36px; flex-wrap: wrap; }
+.fn-id { display: flex; gap: 26px; min-width: 0; align-items: flex-start; }
+.fn-avatar {
+  width: 132px; height: 132px; border-radius: 50%; object-fit: cover;
+  border: 1px solid var(--rule); display: block; flex: none;
+}
+.fn-id-copy { min-width: 0; }
+.fn-eyebrow { color: var(--accent); letter-spacing: .14em; text-transform: uppercase; font-size: 11px; }
+.fn-name { font-size: 54px; margin: 10px 0 0; line-height: .92; }
+.fn-handle { color: var(--ink-3); margin-top: 8px; }
+.fn-bio { font-size: 17px; line-height: 1.5; color: var(--ink-2); margin: 14px 0 0; max-width: 520px; }
+.fn-rows { display: flex; align-items: center; gap: 26px; flex-wrap: wrap; margin-top: 18px; }
+.fn-club { display: inline-flex; align-items: center; gap: 11px; text-decoration: none; }
+.fn-club-copy { display: flex; flex-direction: column; gap: 2px; }
+.fn-club-k { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+.fn-club-name { font-weight: 600; font-size: 15px; letter-spacing: -.01em; color: var(--ink); }
+.fn-club:hover .fn-club-name { color: var(--accent); }
+.fn-socials { display: flex; gap: 18px; flex-wrap: wrap; }
+.fn-social { display: flex; flex-direction: column; gap: 2px; text-decoration: none; }
+.fn-social .lg-mono { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+.fn-social-h { font-size: 14px; color: var(--ink); }
+.fn-social:hover .fn-social-h { color: var(--accent); }
+
+.fn-stats { display: flex; gap: 40px; }
+.fn-stat-v { font-family: var(--font-display); font-size: 46px; line-height: 1; letter-spacing: -.02em; }
+.fn-stat-k { color: var(--ink-3); margin-top: 6px; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
+
+.fn-body { padding: 44px 0 84px; max-width: 1180px; margin: 0 auto; }
+.fn-sec { padding: 0 var(--gutter); margin-bottom: 58px; }
+.fn-sec:last-child { margin-bottom: 0; }
+.fn-sec-head { margin-bottom: 26px; }
+.fn-sec-title { font-size: 34px; margin: 8px 0 0; }
+
+/* The cards keep their own tilt, so the rank sits outside the frame. */
+.fn-faves { display: grid; grid-template-columns: repeat(5, 1fr); gap: 22px; }
+.fn-fave { position: relative; }
+.fn-fave-rank {
+  position: absolute; top: -10px; left: -8px; z-index: 4;
+  width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff;
+  display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;
+  pointer-events: none;
+}
+@media (max-width: 1000px) { .fn-faves { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 640px) {
+  .fn-faves { grid-template-columns: repeat(2, 1fr); }
+  .fn-name { font-size: 38px; }
+  .fn-avatar { width: 92px; height: 92px; }
+  .fn-hero .fn-wrap { align-items: flex-start; }
+  .fn-stats { gap: 28px; }
+}

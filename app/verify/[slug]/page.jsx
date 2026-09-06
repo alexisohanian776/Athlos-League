@@ -59,7 +59,7 @@ export default async function VerifyPage({ params, searchParams }) {
                   You are verified for this meet. The stub is on your profile.
                 </p>
                 {me.handle && (
-                  <Link className="lg-btn lg-btn-ink" href={`/u/${me.handle}`}>See my stubs →</Link>
+                  <Link className="lg-btn lg-btn-ink" href={`/fans/${me.handle}`}>See my stubs →</Link>
                 )}
               </div>
             ) : (
