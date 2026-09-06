@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { recordEmailEvent } from '@/lib/email-events';
+import { isOurs, recordEmailEvent } from '@/lib/email-events';
 
 /* Resend posts delivery and engagement events here.
 
@@ -9,8 +9,11 @@ import { recordEmailEvent } from '@/lib/email-events';
    could otherwise POST fabricated opens. */
 export const dynamic = 'force-dynamic';
 
+/* email.sent is deliberately absent: we write that row ourselves when we
+   send. Resend webhooks are account-wide, so accepting it here would log
+   every message the whole account sends — including other products sharing
+   this Resend account — into ATHLOS's metrics. */
 const KINDS = {
-  'email.sent': 'sent',
   'email.delivered': 'delivered',
   'email.opened': 'opened',
   'email.clicked': 'clicked',
@@ -86,8 +89,16 @@ export async function POST(request) {
   if (!kind) return NextResponse.json({ ok: true, ignored: event?.type });
 
   const data = event.data || {};
+  const resendId = data.email_id || data.id;
+
+  /* Only events for mail this app actually sent. The account is shared, so
+     without this the panel fills up with other products' recipients. */
+  if (!resendId || !(await isOurs(resendId))) {
+    return NextResponse.json({ ok: true, ignored: 'not ours' });
+  }
+
   await recordEmailEvent({
-    resendId: data.email_id || data.id,
+    resendId,
     recipient: Array.isArray(data.to) ? data.to[0] : data.to,
     kind,
     subject: data.subject,
