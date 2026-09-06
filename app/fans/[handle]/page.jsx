@@ -12,6 +12,13 @@ import { cardForAthlete } from '@/lib/season-cards';
 
 export const dynamic = 'force-dynamic';
 
+/* A name already ending in s takes a bare apostrophe — Alexis', not
+   Alexis's. Same for names ending in an s-sound spelled z or x. */
+function possessive(name) {
+  const n = String(name || '').trim();
+  return /[sxz]$/i.test(n) ? `${n}\u2019` : `${n}\u2019s`;
+}
+
 export async function generateMetadata({ params }) {
   const user = await getUserByHandle(params.handle);
   if (!user) return { title: 'Not found — ATHLOS' };
@@ -136,7 +143,7 @@ export default async function FanProfile({ params }) {
             <div className="fn-sec-head">
               <div className="lg-section-eyebrow">Who they watch</div>
               <h2 className="lg-display fn-sec-title">
-                {name.split(' ')[0]}&rsquo;s top {favourites.length}
+                {possessive(name.split(' ')[0])} top {favourites.length}
               </h2>
             </div>
             <div className="fn-faves">
