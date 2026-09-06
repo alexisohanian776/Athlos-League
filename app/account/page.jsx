@@ -104,9 +104,15 @@ export default async function AccountPage({ searchParams }) {
                     defaultValue={user?.handle || ''} placeholder="yourname"
                     minLength={3} maxLength={24} />
                   <p className="au-note">
-                    {user?.handle
-                      ? `athlosleague.com/fans/${user.handle}`
-                      : 'Not set yet — pick one above.'}
+                    {user?.handle ? (
+                      <>
+                        Your profile:{' '}
+                        <a className="ac-profile-link" href={`/fans/${user.handle}`}
+                          target="_blank" rel="noopener noreferrer">
+                          athlosleague.com/fans/{user.handle} ↗
+                        </a>
+                      </>
+                    ) : 'Not set yet — pick one above.'}
                   </p>
                 </div>
                 <div className="au-field">

@@ -9,7 +9,10 @@ import { pastMeetsForArchive } from '@/lib/meets-db';
 import { MEETS, daysUntil } from '@/lib/league';
 
 /* The meet countdowns are computed, so the page is regenerated hourly. */
-export const revalidate = 3600;
+/* Reads club and meet records the league edits in admin, and the Neon
+   driver is uncached, so this renders per request rather than being
+   prerendered — edits show up immediately. */
+export const dynamic = 'force-dynamic';
 
 export const metadata = {
   title: 'ATHLOS League',

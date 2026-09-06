@@ -9,7 +9,10 @@ export const metadata = {
   description: 'Find an official ATHLOS run club near you, or start one in your city.',
 };
 
-export const revalidate = 60;
+/* Reads club and meet records the league edits in admin, and the Neon
+   driver is uncached, so this renders per request rather than being
+   prerendered — edits show up immediately. */
+export const dynamic = 'force-dynamic';
 
 export default async function RunClubsPage() {
   const [clubs, stats] = await Promise.all([listClubs(), clubStats()]);

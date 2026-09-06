@@ -8,7 +8,10 @@ import GoingStack from '@/components/clubs/going-stack';
 import { CLUB_DETAIL, CLUB_FAN_TONES } from '@/lib/clubs';
 import { getClub, listClubs } from '@/lib/clubs-db';
 
-export const revalidate = 60;
+/* Reads club and meet records the league edits in admin, and the Neon
+   driver is uncached, so this renders per request rather than being
+   prerendered — edits show up immediately. */
+export const dynamic = 'force-dynamic';
 
 export async function generateStaticParams() {
   const clubs = await listClubs();
