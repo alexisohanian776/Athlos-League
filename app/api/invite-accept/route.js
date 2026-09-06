@@ -15,7 +15,7 @@ export async function POST(request) {
     return NextResponse.json({ error: 'This invite has expired or already been used.' }, { status: 400 });
   }
 
-  const res = NextResponse.json({ ok: true, role: user.role });
+  const res = NextResponse.json({ ok: true, role: user.role, needsHandle: !user.handle });
   res.cookies.set(SESSION_COOKIE, await createSession(user), {
     httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production',
     path: '/', maxAge: SESSION_MAX_AGE,

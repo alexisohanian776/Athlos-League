@@ -409,3 +409,19 @@
 .fv-option:last-child { border-bottom: 0; }
 .fv-option:hover { background: var(--stone); }
 .fv-code { font-size: 10px; color: var(--ink-3); letter-spacing: .1em; }
+
+/* ---- handle prompt ---- */
+.hd-error { margin-top: 16px; }
+.hd-row { display: flex; align-items: center; border: 1px solid var(--rule); border-radius: var(--r-tiny); background: var(--bone); overflow: hidden; }
+.hd-prefix {
+  font-family: var(--font-mono); font-size: 12px; color: var(--ink-3);
+  padding: 0 2px 0 11px; white-space: nowrap; flex: none;
+}
+.hd-input { border: 0; background: none; padding-left: 2px; min-width: 0; }
+.hd-input:focus { outline: none; }
+.ac-nudge {
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  padding: 16px 20px; border-color: var(--ink); flex-wrap: wrap;
+  font-family: var(--font-serif); font-size: 15px; line-height: 1.5; color: var(--ink-2);
+}
+.ac-nudge strong { font-family: var(--font-ui); font-weight: 600; color: var(--ink); }

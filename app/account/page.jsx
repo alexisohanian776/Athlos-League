@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import AccountBar from '@/components/account/account-bar';
 import Avatar from '@/components/avatar';
 import AvatarField from '@/components/account/avatar-field';
@@ -54,6 +55,18 @@ export default async function AccountPage({ searchParams }) {
           <span className="dash-count">{user?.title || user?.role}</span>
         </div>
 
+        {/* Someone who skipped the first-run prompt has no public profile
+            until they claim one, so say so rather than leaving it blank. */}
+        {user && !user.handle && (
+          <div className="dash-card ac-nudge">
+            <div>
+              <strong>You have not picked a handle yet.</strong>{' '}
+              Without one there is no public profile to pin your ticket stubs to.
+            </div>
+            <Link className="dash-btn dash-btn-ink" href="/account/handle">Pick a handle</Link>
+          </div>
+        )}
+
         <div className="dash-card ac-card">
           <div className="dash-card-head">
             <span className="dash-card-name">Profile</span>
@@ -90,7 +103,11 @@ export default async function AccountPage({ searchParams }) {
                   <input className="dash-input au-input" id="handle" name="handle" type="text"
                     defaultValue={user?.handle || ''} placeholder="yourname"
                     minLength={3} maxLength={24} />
-                  <p className="au-note">athlosleague.com/fans/{user?.handle || 'yourname'}</p>
+                  <p className="au-note">
+                    {user?.handle
+                      ? `athlosleague.com/fans/${user.handle}`
+                      : 'Not set yet — pick one above.'}
+                  </p>
                 </div>
                 <div className="au-field">
                   <label className="au-label" htmlFor="city">City</label>

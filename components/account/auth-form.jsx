@@ -74,7 +74,13 @@ export default function AuthForm({ mode, token, email, clubName, role, next }) {
     const requested = next;
     const fallback = body.role === 'admin' ? '/admin' : '/club';
     const target = requested && /^\/(?!\/)/.test(requested) ? requested : fallback;
-    window.location.assign(target);
+
+    /* Nobody has a public profile until they choose a handle, so first
+       sign-in stops here to pick one, then carries on where they meant to
+       go. */
+    window.location.assign(
+      body.needsHandle ? `/account/handle?next=${encodeURIComponent(target)}` : target
+    );
   }
 
   return (

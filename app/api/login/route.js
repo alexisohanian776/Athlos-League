@@ -11,7 +11,7 @@ export async function POST(request) {
   const { user, error } = await authenticate(email, password);
   if (error) return NextResponse.json({ error }, { status: 401 });
 
-  const res = NextResponse.json({ ok: true, role: user.role });
+  const res = NextResponse.json({ ok: true, role: user.role, needsHandle: !user.handle });
   res.cookies.set(SESSION_COOKIE, await createSession(user), {
     httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production',
     path: '/', maxAge: SESSION_MAX_AGE,
