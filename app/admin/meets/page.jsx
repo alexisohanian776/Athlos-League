@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import AccountBar from '@/components/account/account-bar';
 import AdminTabs from '@/components/admin/admin-tabs';
-import Stub from '@/components/stub';
-import MeetPhotoField from '@/components/admin/meet-photo-field';
+import StubPhotoPicker from '@/components/admin/stub-photo-picker';
+import { CITIES } from '@/lib/cities';
 import DeleteClubButton from '@/components/admin/delete-club-button';
 import { currentUser } from '@/lib/current-user';
 import { getUserById } from '@/lib/users-db';
@@ -27,19 +27,30 @@ function Field({ label, name, defaultValue, type = 'text', placeholder, wide, hi
   );
 }
 
+/* A meet that does not exist yet still needs something to draw. */
+const BLANK = { slug: '', name: 'New meet', year: '', heldOn: null, venue: '', area: '',
+  tone: 'ph-wine', facts: [], attendance: null, photoUrl: null };
+
 function MeetForm({ meet, action, submitLabel }) {
   return (
     <form action={action}>
       {meet && <input type="hidden" name="id" value={meet.id} />}
+      <div className="mt-split">
+      <div className="mt-form">
       <div className="dash-grid">
         {!meet && <Field label="Slug" name="slug" placeholder="2027-london" hint="Used in URLs. Cannot be changed later." />}
         <Field label="Name" name="name" defaultValue={meet?.name} placeholder="ATHLOS London 2026" wide />
-        <Field label="Date" name="heldOn" defaultValue={meet?.heldOn} placeholder="2026-09-18" hint="YYYY-MM-DD" />
-        <Field label="Year" name="year" defaultValue={meet?.year} placeholder="2026" />
+        <Field label="Date" name="heldOn" defaultValue={meet?.heldOn} type="date"
+          hint="The year on the stub comes from this" />
         <Field label="Venue" name="venue" defaultValue={meet?.venue} placeholder="Stone X Stadium" />
-        <Field label="Area" name="area" defaultValue={meet?.area} placeholder="Hendon, London" />
-        <Field label="City" name="city" defaultValue={meet?.city} placeholder="London" />
-        <Field label="Country" name="country" defaultValue={meet?.country} placeholder="GBR" />
+
+        <label className="dash-field is-wide">
+          <span className="dash-label">Location</span>
+          <input className="dash-input" name="location" list="mt-cities"
+            defaultValue={[meet?.city, meet?.country].filter(Boolean).join(', ')}
+            placeholder="London, United Kingdom" />
+          <span className="dash-hint">Start typing a city — or write your own.</span>
+        </label>
         <Field label="Attendance" name="attendance" type="number" defaultValue={meet?.attendance ?? ''}
           hint="Shown on the stub" />
         <Field label="Capacity" name="capacity" type="number" defaultValue={meet?.capacity ?? ''} />
@@ -52,7 +63,6 @@ function MeetForm({ meet, action, submitLabel }) {
           </select>
         </label>
 
-        <MeetPhotoField slug={meet?.slug} initialUrl={meet?.photoUrl} />
 
         <label className="dash-field is-wide">
           <span className="dash-label">Headline — one sentence on the stub</span>
@@ -77,6 +87,11 @@ function MeetForm({ meet, action, submitLabel }) {
       <div className="dash-actions">
         <button className="dash-btn dash-btn-ink" type="submit">{submitLabel}</button>
       </div>
+      </div>
+      <div className="mt-preview">
+        <StubPhotoPicker meet={meet || BLANK} />
+      </div>
+      </div>
     </form>
   );
 }
@@ -94,6 +109,11 @@ export default async function MeetsAdminPage() {
         name={[me?.firstName, me?.lastName].filter(Boolean).join(' ')} />
       <AdminTabs isSuper={Boolean(me?.isSuper && !me.disabled)} />
       <div className="dash-wrap">
+        {/* One list, shared by every form on the page. */}
+        <datalist id="mt-cities">
+          {CITIES.map((c) => <option key={c} value={c} />)}
+        </datalist>
+
         <div className="dash-head">
           <h1 className="dash-title">Meets</h1>
           <span className="dash-count">
@@ -117,13 +137,7 @@ export default async function MeetsAdminPage() {
               <span className="dash-card-meta">{meet.verifiedCount || 0} verified</span>
             </div>
 
-            <div className="mt-split">
-              <div className="mt-form"><MeetForm meet={meet} action={updateMeetAction} submitLabel="Save meet" /></div>
-              <div className="mt-preview">
-                <div className="dash-label" style={{ marginBottom: 10 }}>Stub preview</div>
-                <Stub meet={meet} holder="Fan name" holderId={0} compact />
-              </div>
-            </div>
+            <MeetForm meet={meet} action={updateMeetAction} submitLabel="Save meet" />
 
             <form action={deleteMeetAction} className="dash-actions">
               <input type="hidden" name="id" value={meet.id} />

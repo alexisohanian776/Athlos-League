@@ -109,7 +109,9 @@ function PastMeet({ meet: p, open, onToggle, onClaim }) {
         <div className="sc-past-when">
           <span className="lg-display sc-past-year">{p.year}</span>
           <span className="lg-mono-data sc-past-date">{p.dateLabel}</span>
-          <span className="lg-mono sc-past-venue">{p.venue} · {p.area}</span>
+          <span className="lg-mono sc-past-venue">
+            {[p.venue, p.area || [p.city, p.country].filter(Boolean).join(', ')].filter(Boolean).join(' · ')}
+          </span>
         </div>
         <div className="sc-past-marquee">
           <div className="lg-mono sc-past-label">{p.events} events · Meet records</div>

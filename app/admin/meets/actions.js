@@ -43,19 +43,29 @@ function parse(formData) {
   const name = str('name', 120);
   if (!name) throw new Error('Name is required.');
 
+  /* The date is required because the year is derived from it rather than
+     typed twice — two fields that can disagree is one field too many. */
   const heldOn = str('heldOn', 10);
-  if (heldOn && !/^\d{4}-\d{2}-\d{2}$/.test(heldOn)) throw new Error('Date must be YYYY-MM-DD.');
+  if (!heldOn) throw new Error('Date is required.');
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(heldOn)) throw new Error('Date must be YYYY-MM-DD.');
+
+  /* One "City, Country" field, split on the last comma so city names
+     containing one survive. */
+  const location = str('location', 160);
+  const comma = location.lastIndexOf(',');
+  const city = comma === -1 ? location : location.slice(0, comma).trim();
+  const country = comma === -1 ? '' : location.slice(comma + 1).trim();
 
   const tone = str('tone');
 
   return {
     name,
-    year: str('year', 4) || (heldOn ? heldOn.slice(0, 4) : ''),
-    heldOn: heldOn || null,
+    year: heldOn.slice(0, 4),
+    heldOn,
     venue: str('venue', 120),
-    area: str('area', 120),
-    city: str('city', 80),
-    country: str('country', 40),
+    area: '',
+    city,
+    country,
     attendance: int('attendance', 0, 500000),
     capacity: int('capacity', 0, 500000),
     events: int('events', 0, 40),
