@@ -2,7 +2,11 @@
 
 .dash { background: var(--bone); color: var(--ink); min-height: 100vh; font-family: var(--font-ui); }
 .dash *, .dash *::before, .dash *::after { box-sizing: border-box; }
-.dash a { color: inherit; text-decoration: none; }
+/* Scoped away from buttons: `.dash a` is (0,1,1) and would otherwise beat
+   .dash-btn-ink's (0,1,0) colour, leaving an active pill with black text on
+   its black background. league.css does the same for .lg-btn. */
+.dash a:not(.dash-btn) { color: inherit; text-decoration: none; }
+.dash a.dash-btn { text-decoration: none; }
 
 .dash-bar {
   display: flex; align-items: center; gap: 20px; height: 64px;
