@@ -40,6 +40,7 @@ export default function StubPhotoPicker({ meet, compact = true }) {
 
   const [query, setQuery] = useState('');
   const [results, setResults] = useState(null);   // null = not searched yet
+  const [scope, setScope] = useState('');         // what the current results represent
   const fileRef = useRef(null);
 
   useEffect(() => {
@@ -48,6 +49,35 @@ export default function StubPhotoPicker({ meet, compact = true }) {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [open]);
+
+  /* Opening the library shows this meet's own race first — the admin can
+     still search for anything else from there. */
+  useEffect(() => {
+    if (!open || tab !== 'library' || results !== null) return;
+    let cancelled = false;
+    (async () => {
+      setBusy('searching');
+      try {
+        const params = new URLSearchParams({
+          city: meet?.city || '', year: meet?.year || '', name: meet?.name || '',
+        });
+        const res = await fetch(`/api/scoreplay/search?${params}`);
+        const json = await res.json();
+        if (cancelled) return;
+        if (!res.ok) throw new Error(json.error || 'Search failed.');
+        setResults(json.media || []);
+        setQuery(json.query || '');
+        setScope(json.matchedMeet
+          ? `Photos from ${meet?.name || 'this meet'}`
+          : 'No photos found for this meet yet — showing the library');
+      } catch (err) {
+        if (!cancelled) { setError(err.message); setResults([]); }
+      } finally {
+        if (!cancelled) setBusy('');
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [open, tab, results, meet?.city, meet?.year, meet?.name]);
 
   async function search(e) {
     e?.preventDefault();
@@ -58,6 +88,7 @@ export default function StubPhotoPicker({ meet, compact = true }) {
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || 'Search failed.');
       setResults(json.media || []);
+      setScope(`Results for “${query}”`);
     } catch (err) {
       setError(err.message);
       setResults([]);
@@ -170,11 +201,9 @@ export default function StubPhotoPicker({ meet, compact = true }) {
                   </button>
                 </div>
 
-                {results === null && (
-                  <p className="sp-hint">
-                    The library is organised by file name. Try an athlete&rsquo;s surname,
-                    a shoot name, or leave it blank to browse the newest.
-                  </p>
+                {scope && <p className="sp-scope">{scope}</p>}
+                {results === null && busy === 'searching' && (
+                  <p className="sp-hint">Looking for photos from this meet…</p>
                 )}
                 {results?.length === 0 && busy !== 'searching' && (
                   <p className="sp-hint">Nothing matched that. Try a shorter term.</p>
