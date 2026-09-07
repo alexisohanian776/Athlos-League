@@ -305,6 +305,11 @@
 .sp-wrap { padding: 20px 20px 20px 0; }
 .sp-caption { margin-bottom: 10px; }
 .sp-stub { position: relative; display: inline-block; max-width: 100%; }
+/* The stub lifts 3px on hover. Under the picker overlay that slid the card
+   out from beneath the cursor, which un-hovered it, which dropped it back —
+   a flicker loop. Inside the picker the card stays put; the overlay is the
+   affordance. */
+.sp-stub .stub, .sp-stub .stub:hover { transform: none; box-shadow: 0 8px 24px rgba(13,4,11,.12); }
 .sp-overlay {
   position: absolute; inset: 0; border: 0; cursor: pointer; padding: 0;
   background: rgba(13, 4, 11, .58);
@@ -314,10 +319,16 @@
 /* With no photo the prompt is always visible — an empty stub gives no other
    hint that it is clickable. The scrim is heavy enough to suppress the date
    and venue underneath, which otherwise collide with the label. */
-.sp-overlay:not(.has-photo) { opacity: 1; background: rgba(13, 4, 11, .74); }
+.sp-overlay:not(.has-photo) { opacity: 1; background: rgba(13, 4, 11, .62); }
 .sp-overlay:hover, .sp-overlay:focus-visible { opacity: 1; }
 .sp-overlay:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.sp-overlay-inner { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 0 22px; max-width: 200px; }
+.sp-overlay-inner {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  padding: 0 22px; max-width: 210px;
+}
+/* Sits in the upper half, which is empty on a photo-less stub, rather than
+   over the date and venue block at the bottom. */
+.sp-overlay { align-items: flex-start; padding-top: 26%; }
 .sp-plus {
   width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.75);
   color: #fff; display: flex; align-items: center; justify-content: center;
