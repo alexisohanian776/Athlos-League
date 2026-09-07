@@ -26,8 +26,8 @@ function Field({ label, name, defaultValue, type = 'text', placeholder, wide, hi
 }
 
 /* A meet that does not exist yet still needs something to draw. */
-const BLANK = { slug: '', name: 'New meet', year: '', heldOn: null, venue: '', area: '',
-  tone: 'ph-wine', facts: [], attendance: null, photoUrl: null };
+const BLANK = { slug: '', name: 'New meet', year: '', heldOn: null, venue: '',
+  tone: 'ph-wine', attendance: null, photoUrl: null };
 
 function MeetForm({ meet, action, submitLabel }) {
   return (

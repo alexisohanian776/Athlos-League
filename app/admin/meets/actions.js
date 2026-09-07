@@ -47,7 +47,6 @@ function parse(formData) {
     year: heldOn.slice(0, 4),
     heldOn,
     venue: str('venue', 120),
-    area: '',
     city,
     country,
     attendance: int('attendance', 0, 500000),

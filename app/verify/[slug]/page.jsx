@@ -46,7 +46,7 @@ export default async function VerifyPage({ params, searchParams }) {
             <div className="lg-section-eyebrow">Were you there?</div>
             <h1 className="lg-display vf-title">{meet.name}</h1>
             <p className="lg-serif vf-sub">
-              {[meet.venue, meet.area].filter(Boolean).join(' · ')}
+              {[meet.venue, [meet.city, meet.country].filter(Boolean).join(', ')].filter(Boolean).join(' · ')}
             </p>
 
             {message && (

@@ -9,7 +9,18 @@ await sql`ALTER TABLE meets ADD COLUMN IF NOT EXISTS prize_purse text`;
 
 /* Anything already written as "Weather: 62°F, clear" or "Prize purse: $663,000"
    moves into its own column rather than being retyped. */
-const rows = await sql`SELECT id, slug, facts FROM meets WHERE jsonb_array_length(facts) > 0`;
+/* Already applied, and the column it reads has since been dropped — so on a
+   database that never had it there is simply nothing to carry over. */
+const [{ exists }] = await sql`
+  SELECT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'meets' AND column_name = 'facts'
+  ) AS exists
+`;
+const rows = exists
+  ? await sql`SELECT id, slug, facts FROM meets WHERE jsonb_array_length(facts) > 0`
+  : [];
+if (!exists) console.log('no facts column — nothing to migrate');
 for (const r of rows) {
   const find = (label) => (r.facts || [])
     .find((f) => String(f.label || '').toLowerCase().replace(/\s+/g, '') === label)?.value || null;

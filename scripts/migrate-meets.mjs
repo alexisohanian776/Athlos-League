@@ -13,13 +13,11 @@ await sql`
     year       text NOT NULL,
     held_on    date,
     venue      text,
-    area       text,
     city       text,
     country    text,
     attendance integer,
     events     integer,
     headline   text,
-    facts      jsonb NOT NULL DEFAULT '[]'::jsonb,
     photo_url  text,
     tone       text NOT NULL DEFAULT 'ph-wine',
     published  boolean NOT NULL DEFAULT true,
@@ -79,7 +77,6 @@ const SEED = [
     year: m.year,
     held_on: parseDate(m.date),
     venue: m.venue,
-    area: m.area,
     city: 'New York',
     country: 'USA',
     events: m.events,
@@ -91,7 +88,6 @@ const SEED = [
     year: '2026',
     held_on: '2026-09-18',
     venue: 'Stone X Stadium',
-    area: 'Hendon, London',
     city: 'London',
     country: 'GBR',
     events: 7,
@@ -101,8 +97,8 @@ const SEED = [
 
 for (const m of SEED) {
   await sql`
-    INSERT INTO meets (slug, name, year, held_on, venue, area, city, country, events, tone)
-    VALUES (${m.slug}, ${m.name}, ${m.year}, ${m.held_on}, ${m.venue}, ${m.area},
+    INSERT INTO meets (slug, name, year, held_on, venue, city, country, events, tone)
+    VALUES (${m.slug}, ${m.name}, ${m.year}, ${m.held_on}, ${m.venue},
             ${m.city}, ${m.country}, ${m.events}, ${m.tone})
     ON CONFLICT (slug) DO NOTHING
   `;

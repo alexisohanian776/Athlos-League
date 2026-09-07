@@ -64,8 +64,6 @@ export default function Stub({ meet, holder, holderId, compact = false }) {
 
         <div className="stub-where">
           <div className="stub-venue">{meet.venue || meet.name}</div>
-          {/* Area was removed from the meet form; city and country are the
-              record now, and an old area value would contradict them. */}
           <div className="stub-area">{[meet.city, meet.country].filter(Boolean).join(', ')}</div>
         </div>
       </div>
