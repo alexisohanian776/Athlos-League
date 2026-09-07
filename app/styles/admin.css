@@ -479,3 +479,20 @@
   border: 1px solid var(--rule); padding: 0;
 }
 .mf-tone.is-active { box-shadow: 0 0 0 2px var(--accent); border-color: var(--accent); }
+
+/* ---- action outcome notice ---- */
+.nt {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 18px;
+  padding: 14px 16px; border: 1px solid var(--rule); background: var(--paper);
+  font-family: var(--font-ui); font-size: 14px; line-height: 1.45; color: var(--ink);
+}
+.nt-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.nt-ok   { border-color: var(--ink); }
+.nt-ok   .nt-dot { background: var(--ink); }
+.nt-warn { border-color: var(--ink-3); }
+.nt-warn .nt-dot { background: var(--ink-3); }
+.nt-bad  { border-color: var(--accent); }
+.nt-bad  .nt-dot { background: var(--accent); }
+.nt-text { flex: 1; }
+.nt-x { flex: none; color: var(--ink-3); text-decoration: none; font-size: 13px; padding: 2px 4px; }
+.nt-x:hover { color: var(--ink); }

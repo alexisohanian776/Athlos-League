@@ -3,6 +3,7 @@ import { headers } from 'next/headers';
 import AccountBar from '@/components/account/account-bar';
 import AdminTabs from '@/components/admin/admin-tabs';
 import PeoplePanel from '@/components/admin/people-panel';
+import Notice from '@/components/admin/notice';
 import { currentUser } from '@/lib/current-user';
 import { getUserById, listUsers } from '@/lib/users-db';
 import { listClubs } from '@/lib/clubs-db';
@@ -11,7 +12,7 @@ import { emailConfigured } from '@/lib/email';
 export const metadata = { title: 'People — ATHLOS admin' };
 export const dynamic = 'force-dynamic';
 
-export default async function PeoplePage() {
+export default async function PeoplePage({ searchParams }) {
   const session = await currentUser();
   const me = session ? await getUserById(session.id) : null;
 
@@ -42,6 +43,8 @@ export default async function PeoplePage() {
         name={[me.firstName, me.lastName].filter(Boolean).join(' ')} />
       <AdminTabs isSuper />
       <div className="dash-wrap">
+        <Notice notice={searchParams?.notice} who={searchParams?.who}
+          detail={searchParams?.detail} kind={searchParams?.kind} />
         <PeoplePanel users={users} clubs={clubs} origin={origin} meId={me.id}
           mailOn={emailConfigured()} />
       </div>
