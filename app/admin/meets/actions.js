@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { currentUser } from '@/lib/current-user';
 import { createMeet, deleteMeet, updateMeet } from '@/lib/meets-db';
+import { CITIES } from '@/lib/cities';
 
 /* Server actions are directly callable endpoints, so each re-checks the
    session rather than trusting that middleware ran. Meets are ordinary
@@ -33,9 +34,13 @@ function parse(formData) {
   if (!heldOn) throw new Error('Date is required.');
   if (!/^\d{4}-\d{2}-\d{2}$/.test(heldOn)) throw new Error('Date must be YYYY-MM-DD.');
 
-  /* One "City, Country" field, split on the last comma so city names
-     containing one survive. */
+  /* One "City, Country" field, and it has to be one of ours — the picker
+     only offers listed cities, and this is what makes that true rather than
+     merely encouraged. Empty is allowed; a made-up city is not. */
   const location = str('location', 160);
+  if (location && !CITIES.includes(location)) {
+    throw new Error('Pick a location from the list.');
+  }
   const comma = location.lastIndexOf(',');
   const city = comma === -1 ? location : location.slice(0, comma).trim();
   const country = comma === -1 ? '' : location.slice(comma + 1).trim();

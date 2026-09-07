@@ -3,6 +3,8 @@ import AccountBar from '@/components/account/account-bar';
 import AdminTabs from '@/components/admin/admin-tabs';
 import StubPhotoPicker from '@/components/admin/stub-photo-picker';
 import { CITIES } from '@/lib/cities';
+import { CityPicker, HeadlineField, TonePicker, WeatherField } from '@/components/admin/meet-fields';
+import { headlineFor } from '@/lib/meet-copy';
 import DeleteClubButton from '@/components/admin/delete-club-button';
 import { currentUser } from '@/lib/current-user';
 import { getUserById } from '@/lib/users-db';
@@ -11,8 +13,6 @@ import { createMeetAction, deleteMeetAction, updateMeetAction } from './actions'
 
 export const metadata = { title: 'Meets — ATHLOS admin' };
 export const dynamic = 'force-dynamic';
-
-const TONES = ['ph-wine', 'ph-plum', 'ph-ember', 'ph-field', 'ph-dusk', 'ph-clay'];
 
 function Field({ label, name, defaultValue, type = 'text', placeholder, wide, hint }) {
   return (
@@ -29,9 +29,9 @@ function Field({ label, name, defaultValue, type = 'text', placeholder, wide, hi
 const BLANK = { slug: '', name: 'New meet', year: '', heldOn: null, venue: '',
   tone: 'ph-wine', attendance: null, photoUrl: null };
 
-function MeetForm({ meet, action, submitLabel }) {
+function MeetForm({ meet, action, submitLabel, suggestion }) {
   return (
-    <form action={action}>
+    <form action={action} data-meet={meet?.slug || 'new'}>
       {meet && <input type="hidden" name="id" value={meet.id} />}
       <div className="mt-split">
       <div className="mt-form">
@@ -42,33 +42,18 @@ function MeetForm({ meet, action, submitLabel }) {
           hint="The year on the stub comes from this" />
         <Field label="Venue" name="venue" defaultValue={meet?.venue} placeholder="Stone X Stadium" />
 
-        <label className="dash-field is-wide">
-          <span className="dash-label">Location</span>
-          <input className="dash-input" name="location" list="mt-cities"
-            defaultValue={[meet?.city, meet?.country].filter(Boolean).join(', ')}
-            placeholder="London, United Kingdom" />
-          <span className="dash-hint">Start typing a city — or write your own.</span>
-        </label>
+        <CityPicker cities={CITIES}
+          initial={[meet?.city, meet?.country].filter(Boolean).join(', ')} />
         <Field label="Attendance" name="attendance" type="number" defaultValue={meet?.attendance ?? ''}
           hint="Shown on the stub" />
         <Field label="Events" name="events" type="number" defaultValue={meet?.events ?? ''} />
 
-        <label className="dash-field">
-          <span className="dash-label">Duotone</span>
-          <select className="dash-select" name="tone" defaultValue={meet?.tone || 'ph-wine'}>
-            {TONES.map((t) => <option key={t} value={t}>{t}</option>)}
-          </select>
-        </label>
+        <TonePicker initial={meet?.tone || 'ph-wine'} />
 
 
-        <label className="dash-field is-wide">
-          <span className="dash-label">Headline — one sentence on the stub</span>
-          <input className="dash-input" name="headline" defaultValue={meet?.headline || ''}
-            placeholder="Faith Kipyegon took the mile in 4:17.78 — a meet record." />
-        </label>
+        <HeadlineField initial={meet?.headline || ''} suggestion={suggestion} />
 
-        <Field label="Weather" name="weather" defaultValue={meet?.weather}
-          placeholder="62°F, clear" hint="Shown on the stub" />
+        <WeatherField initial={meet?.weather || ''} slug={meet?.slug} />
         <Field label="Prize purse" name="prizePurse" defaultValue={meet?.prizePurse}
           placeholder="$663,000" hint="Include the currency symbol" />
 
@@ -111,11 +96,6 @@ export default async function MeetsAdminPage() {
         name={[me?.firstName, me?.lastName].filter(Boolean).join(' ')} />
       <AdminTabs isSuper={Boolean(me?.isSuper && !me.disabled)} />
       <div className="dash-wrap">
-        {/* One list, shared by every form on the page. */}
-        <datalist id="mt-cities">
-          {CITIES.map((c) => <option key={c} value={c} />)}
-        </datalist>
-
         <div className="dash-head">
           <h1 className="dash-title">Meets</h1>
           <span className="dash-count">
@@ -126,7 +106,7 @@ export default async function MeetsAdminPage() {
 
         <div className="dash-card dash-new">
           <div className="dash-card-head"><span className="dash-card-name">Add a meet</span></div>
-          <MeetForm meet={null} action={createMeetAction} submitLabel="Add meet" />
+          <MeetForm meet={null} action={createMeetAction} submitLabel="Add meet" suggestion="" />
         </div>
 
         {meets.map((meet) => (
@@ -139,7 +119,8 @@ export default async function MeetsAdminPage() {
               <span className="dash-card-meta">{meet.verifiedCount || 0} verified</span>
             </div>
 
-            <MeetForm meet={meet} action={updateMeetAction} submitLabel="Save meet" />
+            <MeetForm meet={meet} action={updateMeetAction} submitLabel="Save meet"
+              suggestion={headlineFor(meet.year)} />
 
             <form action={deleteMeetAction} className="dash-actions">
               <input type="hidden" name="id" value={meet.id} />
