@@ -51,7 +51,6 @@ function parse(formData) {
     city,
     country,
     attendance: int('attendance', 0, 500000),
-    capacity: int('capacity', 0, 500000),
     events: int('events', 0, 40),
     headline: str('headline', 240),
     weather: str('weather', 60),

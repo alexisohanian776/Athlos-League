@@ -17,7 +17,6 @@ await sql`
     city       text,
     country    text,
     attendance integer,
-    capacity   integer,
     events     integer,
     headline   text,
     facts      jsonb NOT NULL DEFAULT '[]'::jsonb,

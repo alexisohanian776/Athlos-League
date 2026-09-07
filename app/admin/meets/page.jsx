@@ -51,7 +51,6 @@ function MeetForm({ meet, action, submitLabel }) {
         </label>
         <Field label="Attendance" name="attendance" type="number" defaultValue={meet?.attendance ?? ''}
           hint="Shown on the stub" />
-        <Field label="Capacity" name="capacity" type="number" defaultValue={meet?.capacity ?? ''} />
         <Field label="Events" name="events" type="number" defaultValue={meet?.events ?? ''} />
 
         <label className="dash-field">
