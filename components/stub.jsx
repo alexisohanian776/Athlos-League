@@ -27,7 +27,15 @@ function serial(meetSlug, holderId) {
 
 export default function Stub({ meet, holder, holderId, compact = false }) {
   const { day, month, year } = parts(meet.heldOn);
-  const facts = (meet.facts || []).slice(0, compact ? 2 : 4);
+  /* Assembled from the record, not a free-form list: meet records are
+     counted from the results, the rest are their own fields. Anything unset
+     simply does not appear. */
+  const facts = [
+    meet.meetRecords > 0 && { label: 'Meet records', value: String(meet.meetRecords) },
+    meet.events > 0 && { label: 'Events', value: String(meet.events) },
+    meet.weather && { label: 'Weather', value: meet.weather },
+    meet.prizePurse && { label: 'Prize purse', value: meet.prizePurse },
+  ].filter(Boolean).slice(0, compact ? 2 : 4);
   const crowd = Number.isFinite(meet.attendance) && meet.attendance !== null ? meet.attendance : null;
 
   return (

@@ -15,22 +15,6 @@ async function assertAdmin() {
 
 const TONES = ['ph-wine', 'ph-plum', 'ph-ember', 'ph-field', 'ph-dusk', 'ph-clay'];
 
-/* Facts are authored one per line as "Label: Value" — plain enough to type
-   quickly, and it avoids a repeating-field widget nobody asked for. */
-function parseFacts(raw) {
-  return String(raw || '')
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line) => {
-      const at = line.indexOf(':');
-      if (at === -1) return { label: line.slice(0, 40), value: '' };
-      return { label: line.slice(0, at).trim().slice(0, 40), value: line.slice(at + 1).trim().slice(0, 60) };
-    })
-    .filter((f) => f.label)
-    .slice(0, 8);
-}
-
 function parse(formData) {
   const str = (k, max = 200) => String(formData.get(k) ?? '').trim().slice(0, max);
   const int = (k, lo, hi) => {
@@ -70,7 +54,8 @@ function parse(formData) {
     capacity: int('capacity', 0, 500000),
     events: int('events', 0, 40),
     headline: str('headline', 240),
-    facts: parseFacts(formData.get('facts')),
+    weather: str('weather', 60),
+    prizePurse: str('prizePurse', 40),
     photoUrl: str('photoUrl', 500) || null,
     tone: TONES.includes(tone) ? tone : 'ph-wine',
     published: formData.get('published') === 'on',

@@ -14,8 +14,6 @@ export const dynamic = 'force-dynamic';
 
 const TONES = ['ph-wine', 'ph-plum', 'ph-ember', 'ph-field', 'ph-dusk', 'ph-clay'];
 
-const factsText = (facts) => (facts || []).map((f) => `${f.label}: ${f.value}`).join('\n');
-
 function Field({ label, name, defaultValue, type = 'text', placeholder, wide, hint }) {
   return (
     <label className={`dash-field ${wide ? 'is-wide' : ''}`}>
@@ -70,13 +68,18 @@ function MeetForm({ meet, action, submitLabel }) {
             placeholder="Faith Kipyegon took the mile in 4:17.78 — a meet record." />
         </label>
 
-        <label className="dash-field is-wide">
-          <span className="dash-label">Fun facts — one per line, &ldquo;Label: Value&rdquo;</span>
-          <textarea className="dash-input dash-textarea" name="facts" rows={5}
-            defaultValue={factsText(meet?.facts)}
-            placeholder={'Meet records: 3\nWeather: 62°F, clear\nPrize purse: $663,000'} />
-          <span className="dash-hint">Up to eight. The stub shows the first four.</span>
-        </label>
+        <Field label="Weather" name="weather" defaultValue={meet?.weather}
+          placeholder="62°F, clear" hint="Shown on the stub" />
+        <Field label="Prize purse" name="prizePurse" defaultValue={meet?.prizePurse}
+          placeholder="$663,000" hint="Include the currency symbol" />
+
+        <div className="dash-field">
+          <span className="dash-label">Meet records</span>
+          <div className="mt-derived">
+            {meet ? (meet.meetRecords > 0 ? meet.meetRecords : 'None yet') : '—'}
+          </div>
+          <span className="dash-hint">Counted from the results. Not editable.</span>
+        </div>
 
         <label className="dash-field mt-check">
           <span className="dash-label">Published</span>
