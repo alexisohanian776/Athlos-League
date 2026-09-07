@@ -148,24 +148,28 @@ export default function StubPhotoPicker({ meet, compact = true }) {
       <div className="sp-stub">
         <Stub meet={{ ...meet, photoUrl: url }} holder="Fan name" holderId={0} compact={compact} />
 
-        <button type="button" className={`sp-overlay ${url ? 'has-photo' : ''}`} onClick={() => setOpen(true)}>
-          <span className="sp-overlay-inner">
-            <span className="sp-plus" aria-hidden="true">+</span>
-            <span className="sp-overlay-text">
-              {url ? 'Change photo' : 'Click here to add a photo'}
-            </span>
-          </span>
+        {/* The whole stub is the click target, but the only thing drawn on
+            top is a small badge — a centred label collides with the date and
+            venue at every size the preview is used at. The instruction lives
+            below the card instead. */}
+        <button type="button" className={`sp-overlay ${url ? 'has-photo' : ''}`}
+          onClick={() => setOpen(true)}
+          aria-label={url ? 'Change the stub photo' : 'Add a stub photo'}>
+          <span className="sp-badge" aria-hidden="true">+</span>
         </button>
       </div>
 
       {/* what the form submits */}
       <input type="hidden" name="photoUrl" value={url} />
 
-      {url && (
-        <button type="button" className="mp-clear sp-remove" onClick={() => setUrl('')}>
-          Remove photo
+      <div className="sp-caption-row">
+        <button type="button" className="sp-hint-btn" onClick={() => setOpen(true)}>
+          {url ? 'Change photo' : 'Add a photo'}
         </button>
-      )}
+        {url && (
+          <button type="button" className="mp-clear" onClick={() => setUrl('')}>Remove</button>
+        )}
+      </div>
 
       {open && (
         <div className="sp-scrim" onClick={() => setOpen(false)}>
