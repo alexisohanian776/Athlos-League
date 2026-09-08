@@ -2,6 +2,12 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
+/* The flare polls rather than being handed down from each page: the tabs
+   render on six admin pages, and this way the count appears without
+   navigating and there is one place that knows how to get it. */
+const UNREAD_MS = 15000;
 
 /* Section navigation for the admin area. People and Usage are super-admin
    only, so they are passed in rather than assumed — a plain admin never sees
@@ -21,6 +27,34 @@ const SUPER = [
 export default function AdminTabs({ isSuper = false }) {
   const pathname = usePathname();
   const tabs = isSuper ? [...BASE, ...SUPER] : BASE;
+  const [unread, setUnread] = useState(0);
+  const onChat = pathname.startsWith('/admin/chat');
+
+  useEffect(() => {
+    /* Reading the chat is what clears it, so no need to poll while sitting
+       in there — the chat itself reports what has been seen. */
+    if (onChat) { setUnread(0); return undefined; }
+
+    let stop = false;
+    let timer;
+    async function tick() {
+      if (stop) return;
+      if (document.visibilityState === 'visible') {
+        try {
+          const res = await fetch('/api/chat/unread', { cache: 'no-store' });
+          if (res.ok) {
+            const { count } = await res.json();
+            if (!stop) setUnread(count || 0);
+          }
+        } catch {
+          /* A failed poll leaves the last known count alone. */
+        }
+      }
+      timer = setTimeout(tick, UNREAD_MS);
+    }
+    tick();
+    return () => { stop = true; clearTimeout(timer); };
+  }, [onChat, pathname]);
 
   return (
     <nav className="dash-tabs" aria-label="Admin sections">
@@ -35,6 +69,11 @@ export default function AdminTabs({ isSuper = false }) {
             aria-current={active ? 'page' : undefined}
           >
             {t.label}
+            {t.href === '/admin/chat' && unread > 0 && (
+              <span className="dash-flare" aria-label={`${unread} unread`}>
+                {unread > 9 ? '9+' : unread}
+              </span>
+            )}
           </Link>
         );
       })}

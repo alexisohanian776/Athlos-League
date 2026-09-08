@@ -72,6 +72,18 @@ export default function ChatRoom({ initial = [], meId, canModerate = false }) {
     return () => { stop = true; clearTimeout(timer); };
   }, [lastId, merge]);
 
+  /* Being in the room is what marks messages read. Sent on mount and
+     whenever the newest id moves, so the flare clears for this person
+     without waiting for a navigation. */
+  useEffect(() => {
+    if (!lastId) return;
+    fetch('/api/chat/unread', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ upTo: lastId }),
+    }).catch(() => {});
+  }, [lastId]);
+
   /* Follow new messages only if the reader had not scrolled up to read
      history — otherwise it yanks the view away mid-sentence. */
   useEffect(() => {
