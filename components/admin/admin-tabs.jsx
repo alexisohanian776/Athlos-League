@@ -10,6 +10,7 @@ const BASE = [
   { href: '/admin', label: 'Run Clubs' },
   { href: '/admin/meets', label: 'Meets' },
   { href: '/admin/attendance', label: 'Attendance' },
+  { href: '/admin/chat', label: 'Chat' },
 ];
 
 const SUPER = [
