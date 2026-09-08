@@ -37,23 +37,37 @@ export default function AdminTabs({ isSuper = false }) {
 
     let stop = false;
     let timer;
+
+    async function check() {
+      try {
+        const res = await fetch('/api/chat/unread', { cache: 'no-store' });
+        if (res.ok) {
+          const { count } = await res.json();
+          if (!stop) setUnread(count || 0);
+        }
+      } catch {
+        /* A failed poll leaves the last known count alone. */
+      }
+    }
+
     async function tick() {
       if (stop) return;
-      if (document.visibilityState === 'visible') {
-        try {
-          const res = await fetch('/api/chat/unread', { cache: 'no-store' });
-          if (res.ok) {
-            const { count } = await res.json();
-            if (!stop) setUnread(count || 0);
-          }
-        } catch {
-          /* A failed poll leaves the last known count alone. */
-        }
-      }
+      if (document.visibilityState === 'visible') await check();
       timer = setTimeout(tick, UNREAD_MS);
     }
+
+    /* Coming back to a backgrounded tab checks straight away rather than
+       waiting out the interval — otherwise a tab opened in the background
+       shows no flare for up to fifteen seconds after you switch to it. */
+    const onVisible = () => { if (document.visibilityState === 'visible') check(); };
+    document.addEventListener('visibilitychange', onVisible);
+
     tick();
-    return () => { stop = true; clearTimeout(timer); };
+    return () => {
+      stop = true;
+      clearTimeout(timer);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
   }, [onChat, pathname]);
 
   return (
