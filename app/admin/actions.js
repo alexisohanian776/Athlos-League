@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { currentUser } from '@/lib/current-user';
 import { createClub, deleteClub, updateClub } from '@/lib/clubs-db';
-import { deleteUser, getUserById, inviteUser, reissueInvite, setDisabled, setRole } from '@/lib/users-db';
+import { deleteUser, getUserById, inviteUser, reissueInvite, setDisabled } from '@/lib/users-db';
 import { sendInviteEmail, sendResetEmail } from '@/lib/email';
 import { headers } from 'next/headers';
 
@@ -179,14 +179,6 @@ export async function removeUserAction(formData) {
   const removed = await deleteUser(id);
   refreshPeople();
   backToPeople({ notice: 'removed', who: removed || '' });
-}
-
-export async function setRoleAction(formData) {
-  const me = await assertSuperAdmin();
-  const role = String(formData.get('role') || '');
-  await setRole(me.id, formData.get('id'), role);
-  refreshPeople();
-  backToPeople({ notice: 'role', detail: role });
 }
 
 export async function setAccessAction(formData) {

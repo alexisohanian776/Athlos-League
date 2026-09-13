@@ -541,3 +541,31 @@
   background: var(--accent); color: #fff;
   font-family: var(--font-mono); font-size: 9.5px; font-weight: 600; letter-spacing: .02em;
 }
+
+/* ---- instant tooltips ----
+   Pure CSS on a data attribute rather than the browser's own title, which
+   waits about a second and cannot be styled. Supplementary text only: every
+   control keeps its own visible label, so nothing is hidden behind a hover. */
+.tip { position: relative; }
+.tip::after {
+  content: attr(data-tip);
+  position: absolute; bottom: calc(100% + 9px); left: 50%; transform: translateX(-50%);
+  width: max-content; max-width: 250px;
+  background: var(--ink); color: var(--bone);
+  padding: 9px 11px; border-radius: var(--r-tiny);
+  font-family: var(--font-ui); font-weight: 400; font-size: 12px; line-height: 1.45;
+  letter-spacing: 0; text-align: left; white-space: normal;
+  opacity: 0; pointer-events: none; z-index: 40;
+  transition: opacity .08s var(--ease-out);
+}
+.tip::before {
+  content: ''; position: absolute; bottom: calc(100% + 3px); left: 50%;
+  margin-left: -5px; border: 5px solid transparent; border-top-color: var(--ink);
+  opacity: 0; pointer-events: none; z-index: 40;
+  transition: opacity .08s var(--ease-out);
+}
+.tip:hover::after, .tip:hover::before,
+.tip:focus-visible::after, .tip:focus-visible::before { opacity: 1; }
+
+/* The last control in a row would push its tooltip past the card edge. */
+.tip-end::after { left: auto; right: 0; transform: none; }

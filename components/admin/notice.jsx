@@ -22,7 +22,6 @@ const NOTICES = {
     text: `Link created for ${who}, but the email did not send: ${detail || 'unknown error'}. Copy it below and send it yourself.`,
   }),
   removed: (who) => ({ tone: 'ok', text: `Removed ${who || 'that account'}.` }),
-  role: (_w, detail) => ({ tone: 'ok', text: `Role changed to ${detail || 'updated'}.` }),
   revoked: () => ({ tone: 'ok', text: 'Access revoked. Any pending invite for them is dead.' }),
   restored: () => ({ tone: 'ok', text: 'Access restored.' }),
   nouser: () => ({ tone: 'bad', text: 'That account no longer exists.' }),

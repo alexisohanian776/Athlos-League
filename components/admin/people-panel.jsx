@@ -1,4 +1,4 @@
-import { inviteUserAction, reissueInviteAction, removeUserAction, setAccessAction, setRoleAction } from '@/app/admin/actions';
+import { inviteUserAction, reissueInviteAction, removeUserAction, setAccessAction } from '@/app/admin/actions';
 import InviteLinkRow from './invite-link-row';
 
 /* Dates must format identically on the server and in the browser, or React
@@ -78,8 +78,8 @@ export default function PeoplePanel({ users, clubs, origin, meId, mailOn }) {
             <div className="dash-actions-spacer" />
             <form action={reissueInviteAction}>
               <input type="hidden" name="id" value={u.id} />
-              <button className="dash-btn dash-btn-ghost" type="submit"
-                title={u.hasPassword
+              <button className="dash-btn dash-btn-ghost tip" type="submit"
+                data-tip={u.hasPassword
                   ? 'Emails them a link to set a new password, good for 14 days. Their current password keeps working until they use it.'
                   : 'Emails them a fresh invite link, good for 14 days. Any previous link stops working.'}>
                 {u.hasPassword ? 'Send reset link' : 'New invite link'}
@@ -89,21 +89,11 @@ export default function PeoplePanel({ users, clubs, origin, meId, mailOn }) {
                 controls — there has to be someone left who can undo things. */}
             {!u.isSuper && u.id !== meId && (
               <>
-                <form action={setRoleAction}>
-                  <input type="hidden" name="id" value={u.id} />
-                  <input type="hidden" name="role" value={u.role === 'admin' ? 'leader' : 'admin'} />
-                  <button className="dash-btn dash-btn-ghost" type="submit"
-                    title={u.role === 'admin'
-                      ? 'Drops them to run club leader: they lose the admin area and can only edit their own club.'
-                      : 'Gives them the full admin area — run clubs, meets, attendance and chat.'}>
-                    {u.role === 'admin' ? 'Make leader' : 'Make admin'}
-                  </button>
-                </form>
                 <form action={setAccessAction}>
                   <input type="hidden" name="id" value={u.id} />
                   <input type="hidden" name="disabled" value={u.disabled ? 'false' : 'true'} />
-                  <button className="dash-btn dash-btn-ghost" type="submit"
-                    title={u.disabled
+                  <button className="dash-btn dash-btn-ghost tip" type="submit"
+                    data-tip={u.disabled
                       ? 'Lets them sign in again. If they never used their invite, send a new invite link as well.'
                       : 'Blocks them from signing in and kills any pending invite link. The account and its history stay, and this can be undone.'}>
                     {u.disabled ? 'Restore access' : 'Revoke access'}
@@ -111,8 +101,8 @@ export default function PeoplePanel({ users, clubs, origin, meId, mailOn }) {
                 </form>
                 <form action={removeUserAction}>
                   <input type="hidden" name="id" value={u.id} />
-                  <button className="dash-btn dash-btn-danger" type="submit"
-                    title="Deletes the account for good, along with their chat messages and any attendance claims. Cannot be undone — revoke access instead if you only want to lock them out.">
+                  <button className="dash-btn dash-btn-danger tip tip-end" type="submit"
+                    data-tip="Deletes the account for good, along with their chat messages and any attendance claims. Cannot be undone — revoke access instead if you only want to lock them out.">
                     Remove
                   </button>
                 </form>
