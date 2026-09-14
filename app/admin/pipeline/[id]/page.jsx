@@ -169,7 +169,9 @@ export default async function DealPage({ params, searchParams }) {
               </form>
             </div>
 
-            <div className="dash-card pl-card">
+            {/* Named so the save and delete redirects can land back here
+                rather than at the top of the page. */}
+            <div className="dash-card pl-card" id="money">
               <h2 className="pl-card-title">Money</h2>
               {years.length === 0 && <p className="pl-dim">No numbers yet.</p>}
               {years.length > 0 && (
@@ -196,10 +198,11 @@ export default async function DealPage({ params, searchParams }) {
                             <option value="0">Optioned</option>
                           </select>
                           <button className="dash-btn dash-btn-ink" type="submit">Save</button>
+                          <Link className="pl-year-cancel" scroll={false}
+                            href={`/admin/pipeline/${deal.id}`}>Cancel</Link>
                           <input className="dash-input pl-year-note-input" name="note" maxLength={300}
                             defaultValue={y.note} placeholder="What it was — free water, shelf ads, a content shoot…"
                             aria-label="What this was" />
-                          <Link className="pl-year-cancel" href={`/admin/pipeline/${deal.id}`}>Cancel</Link>
                         </form>
                       );
                     }
@@ -212,7 +215,7 @@ export default async function DealPage({ params, searchParams }) {
                           {y.guaranteed ? 'Guaranteed' : 'Optioned'}
                         </span>
                         {y.note && <span className="pl-year-note">{y.note}</span>}
-                        <Link className="pl-year-edit-btn pl-year-del tip tip-end"
+                        <Link className="pl-year-edit-btn pl-year-del tip tip-end" scroll={false}
                           href={`/admin/pipeline/${deal.id}?edit=${y.id}`}
                           data-tip="Edit this line, or delete it from there." aria-label="Edit this line">
                           <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"
@@ -271,7 +274,7 @@ export default async function DealPage({ params, searchParams }) {
           </div>
 
           <div>
-            <div className="dash-card pl-card">
+            <div className="dash-card pl-card" id="people">
               <h2 className="pl-card-title">People</h2>
               {contacts.length === 0 && <p className="pl-dim">Nobody on this one yet.</p>}
 

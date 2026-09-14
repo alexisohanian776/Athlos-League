@@ -101,7 +101,7 @@ export async function saveContactAction(formData) {
     notes: str(formData, 'notes'),
   });
   refresh(dealId);
-  redirect(`/admin/pipeline/${dealId}${result.error ? `?error=${encodeURIComponent(result.error)}` : ''}`);
+  redirect(`/admin/pipeline/${dealId}${result.error ? `?error=${encodeURIComponent(result.error)}` : ''}#people`);
 }
 
 export async function touchContactAction(formData) {
@@ -109,7 +109,7 @@ export async function touchContactAction(formData) {
   const dealId = str(formData, 'dealId');
   await touchContact(me, dealId, str(formData, 'id'));
   refresh(dealId);
-  redirect(`/admin/pipeline/${dealId}`);
+  redirect(`/admin/pipeline/${dealId}#people`);
 }
 
 export async function deleteContactAction(formData) {
@@ -117,7 +117,7 @@ export async function deleteContactAction(formData) {
   const dealId = str(formData, 'dealId');
   await deleteContact(dealId, str(formData, 'id'));
   refresh(dealId);
-  redirect(`/admin/pipeline/${dealId}`);
+  redirect(`/admin/pipeline/${dealId}#people`);
 }
 
 export async function saveYearAction(formData) {
@@ -131,7 +131,7 @@ export async function saveYearAction(formData) {
     guaranteed: str(formData, 'guaranteed') === '1',
   });
   refresh(dealId);
-  redirect(`/admin/pipeline/${dealId}${result.error ? `?error=${encodeURIComponent(result.error)}` : ''}`);
+  redirect(`/admin/pipeline/${dealId}${result.error ? `?error=${encodeURIComponent(result.error)}` : ''}#money`);
 }
 
 export async function updateYearAction(formData) {
@@ -148,8 +148,8 @@ export async function updateYearAction(formData) {
   /* On failure the row stays open with the message, so the typing is not
      thrown away by a redirect to a closed row. */
   redirect(result.error
-    ? `/admin/pipeline/${dealId}?edit=${str(formData, 'id')}&error=${encodeURIComponent(result.error)}`
-    : `/admin/pipeline/${dealId}`);
+    ? `/admin/pipeline/${dealId}?edit=${str(formData, 'id')}&error=${encodeURIComponent(result.error)}#money`
+    : `/admin/pipeline/${dealId}#money`);
 }
 
 export async function deleteYearAction(formData) {
@@ -157,5 +157,5 @@ export async function deleteYearAction(formData) {
   const dealId = str(formData, 'dealId');
   await deleteDealYear(dealId, str(formData, 'id'));
   refresh(dealId);
-  redirect(`/admin/pipeline/${dealId}`);
+  redirect(`/admin/pipeline/${dealId}#money`);
 }
