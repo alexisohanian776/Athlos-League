@@ -6,7 +6,7 @@ import { currentUser } from '@/lib/current-user';
 import { getUserById } from '@/lib/users-db';
 import {
   STAGES, getDeal, listContacts, listYears, listDealEvents,
-  conflictsFor, chainFor, dealOwners, listDeals,
+  conflictsFor, chainFor, dealOwners, siblingDeals,
 } from '@/lib/deals-db';
 import DealFields from '@/components/admin/deal-fields';
 import {
@@ -43,7 +43,7 @@ export default async function DealPage({ params, searchParams }) {
   const deal = await getDeal(params.id);
   if (!deal) notFound();
 
-  const [me, contacts, years, events, conflicts, renewals, owners, all] = await Promise.all([
+  const [me, contacts, years, events, conflicts, renewals, owners, siblings] = await Promise.all([
     session ? getUserById(session.id) : null,
     listContacts(deal.id),
     listYears(deal.id),
@@ -51,12 +51,12 @@ export default async function DealPage({ params, searchParams }) {
     conflictsFor(deal.id),
     chainFor(deal.id),
     dealOwners(),
-    listDeals({ q: deal.company }),
+    siblingDeals(deal.id),
   ]);
 
-  /* Candidate parents: other deals for the same brand. A deal cannot renew
-     itself, and offering all 237 would be unusable. */
-  const parents = all.filter((d) => d.id !== deal.id);
+  /* Candidate parents: other deals for the same brand. Offering all 237
+     would be unusable, and a deal cannot renew itself. */
+  const parents = siblings;
   const nextYear = new Date().getUTCFullYear() + 1;
 
   return (
