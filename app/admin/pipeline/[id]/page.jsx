@@ -6,7 +6,7 @@ import { currentUser } from '@/lib/current-user';
 import { getUserById } from '@/lib/users-db';
 import {
   STAGES, CLOSED_STAGES, MONEY_KINDS, getDeal, listContacts, listYears, listDealEvents,
-  conflictsFor, chainFor, dealOwners, siblingDeals,
+  conflictsFor, dealOwners,
 } from '@/lib/deals-db';
 import DealFields from '@/components/admin/deal-fields';
 import {
@@ -43,20 +43,15 @@ export default async function DealPage({ params, searchParams }) {
   const deal = await getDeal(params.id);
   if (!deal) notFound();
 
-  const [me, contacts, years, events, conflicts, renewals, owners, siblings] = await Promise.all([
+  const [me, contacts, years, events, conflicts, owners] = await Promise.all([
     session ? getUserById(session.id) : null,
     listContacts(deal.id),
     listYears(deal.id),
     listDealEvents(deal.id),
     conflictsFor(deal.id),
-    chainFor(deal.id),
     dealOwners(),
-    siblingDeals(deal.id),
   ]);
 
-  /* Candidate parents: other deals for the same brand. Offering all 237
-     would be unusable, and a deal cannot renew itself. */
-  const parents = siblings;
   const nextYear = new Date().getUTCFullYear() + 1;
 
   return (
@@ -148,31 +143,13 @@ export default async function DealPage({ params, searchParams }) {
           </p>
         )}
 
-        {(deal.parentCompany || renewals.length > 0) && (
-          <p className="pl-banner">
-            {deal.parentDealId && (
-              <>Renewal of <Link href={`/admin/pipeline/${deal.parentDealId}`}>{deal.parentCompany}</Link>. </>
-            )}
-            {renewals.length > 0 && (
-              <>Renewed by{' '}
-                {renewals.map((r, i) => (
-                  <span key={r.id}>
-                    {i > 0 && ', '}
-                    <Link href={`/admin/pipeline/${r.id}`}>{r.company} ({r.stageLabel})</Link>
-                  </span>
-                ))}.
-              </>
-            )}
-          </p>
-        )}
-
         <div className="pl-cols">
           <div>
             <div className="dash-card pl-card">
               <h2 className="pl-card-title">The deal</h2>
               <form action={saveDealAction}>
                 <input type="hidden" name="id" value={deal.id} />
-                <DealFields deal={deal} owners={owners} deals={parents} />
+                <DealFields deal={deal} owners={owners} />
                 <div className="pl-save">
                   <div className="dash-actions-spacer" />
                   <button className="dash-btn dash-btn-ink" type="submit">Save</button>

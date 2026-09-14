@@ -2,7 +2,7 @@
    reuse rather than an abstraction invented ahead of need. */
 import { STAGES, CLOSED_STAGES } from '@/lib/deals-db';
 
-export default function DealFields({ deal = null, owners = [], deals = [] }) {
+export default function DealFields({ deal = null, owners = [] }) {
   return (
     <>
       <div className="pl-grid">
@@ -55,22 +55,10 @@ export default function DealFields({ deal = null, owners = [], deals = [] }) {
 
       {deal && (
         <>
-          <div className="pl-grid">
-            <label className="pl-field">
-              <span className="dash-label">Status</span>
-              <input className="dash-input" name="statusNote" defaultValue={deal.statusNote} maxLength={200} />
-            </label>
-
-            <label className="pl-field">
-              <span className="dash-label">Renewal of</span>
-              <select className="dash-input" name="parentDealId" defaultValue={deal.parentDealId || ''}>
-                <option value="">—</option>
-                {deals.map((d) => (
-                  <option key={d.id} value={d.id}>{d.company} ({d.stageLabel})</option>
-                ))}
-              </select>
-            </label>
-          </div>
+          <label className="pl-field">
+            <span className="dash-label">Status</span>
+            <input className="dash-input" name="statusNote" defaultValue={deal.statusNote} maxLength={200} />
+          </label>
 
           <label className="pl-field">
             <span className="dash-label">Next meeting / steps</span>

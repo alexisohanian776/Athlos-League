@@ -59,7 +59,6 @@ export async function saveDealAction(formData) {
     next_steps: str(formData, 'nextSteps'),
     last_touchpoint: str(formData, 'lastTouchpoint'),
     owner_name: str(formData, 'ownerName'),
-    parent_deal_id: str(formData, 'parentDealId'),
   });
   if (result.error) redirect(`/admin/pipeline/${id}?error=${encodeURIComponent(result.error)}`);
   refresh(id);

@@ -119,7 +119,6 @@ await sql`
     in_discussions boolean NOT NULL DEFAULT false,
     owner_name     text,
     owner_id       integer REFERENCES users(id) ON DELETE SET NULL,
-    parent_deal_id integer REFERENCES deals(id) ON DELETE SET NULL,
     escalated      boolean NOT NULL DEFAULT false,
     escalated_note text,
     escalated_at   timestamptz,
