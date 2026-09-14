@@ -5,7 +5,7 @@ import AdminTabs from '@/components/admin/admin-tabs';
 import { currentUser } from '@/lib/current-user';
 import { getUserById } from '@/lib/users-db';
 import {
-  STAGES, CLOSED_STAGES, getDeal, listContacts, listYears, listDealEvents,
+  STAGES, CLOSED_STAGES, MONEY_KINDS, getDeal, listContacts, listYears, listDealEvents,
   conflictsFor, chainFor, dealOwners, siblingDeals,
 } from '@/lib/deals-db';
 import DealFields from '@/components/admin/deal-fields';
@@ -185,10 +185,15 @@ export default async function DealPage({ params, searchParams }) {
               {years.length === 0 && <p className="pl-dim">No numbers yet.</p>}
               {years.length > 0 && (
                 <div className="pl-years">
-                  {years.map((y) => (
-                    <div className="pl-year" key={y.id}>
-                      <span className="pl-year-n">{y.year}</span>
+                  {years.map((y, i) => (
+                    /* The year only prints once per block — six rows all
+                       labelled 2025 is noise, not information. */
+                    <div className={`pl-year ${i > 0 && years[i - 1].year === y.year ? 'is-same-year' : ''}`} key={y.id}>
+                      <span className="pl-year-n">
+                        {i > 0 && years[i - 1].year === y.year ? '' : y.year}
+                      </span>
                       <span className="pl-year-amt">{usd(y.amount)}</span>
+                      <span className={`dash-tag pl-kind pl-kind-${y.kind}`}>{y.kindLabel}</span>
                       <span className={`dash-tag ${y.guaranteed ? 'pl-tag-won' : 'pl-tag-engaged'}`}>
                         {y.guaranteed ? 'Guaranteed' : 'Optioned'}
                       </span>
@@ -203,11 +208,24 @@ export default async function DealPage({ params, searchParams }) {
                 </div>
               )}
 
+              {years.length > 0 && (
+                <div className="pl-year-total">
+                  {MONEY_KINDS.map((k) => {
+                    const sum = years.filter((y) => y.kind === k.key)
+                      .reduce((n, y) => n + (y.amount || 0), 0);
+                    return sum ? <span key={k.key}>{k.short} {usd(sum)}</span> : null;
+                  })}
+                </div>
+              )}
+
               <form className="pl-year-add" action={saveYearAction}>
                 <input type="hidden" name="dealId" value={deal.id} />
                 <input className="dash-input" type="number" name="year" min={2020} max={2040}
                   defaultValue={nextYear} aria-label="Season" />
                 <input className="dash-input" name="amount" placeholder="$250,000" aria-label="Amount" />
+                <select className="dash-input" name="kind" defaultValue="cash" aria-label="What the money is">
+                  {MONEY_KINDS.map((k) => <option key={k.key} value={k.key}>{k.label}</option>)}
+                </select>
                 <select className="dash-input" name="guaranteed" defaultValue="1" aria-label="Guaranteed or optioned">
                   <option value="1">Guaranteed</option>
                   <option value="0">Optioned</option>

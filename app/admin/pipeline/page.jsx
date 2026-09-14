@@ -4,7 +4,7 @@ import AdminTabs from '@/components/admin/admin-tabs';
 import { currentUser } from '@/lib/current-user';
 import { getUserById } from '@/lib/users-db';
 import {
-  STAGES, CLOSED_STAGES, SORTS, listDeals, dealCounts, dealOwners, dealYearsInUse, recentDealEvents,
+  STAGES, CLOSED_STAGES, MONEY_KINDS, SORTS, listDeals, dealCounts, dealOwners, dealYearsInUse, recentDealEvents,
 } from '@/lib/deals-db';
 import DealFields from '@/components/admin/deal-fields';
 import { addDealAction } from './actions';
@@ -99,9 +99,16 @@ export default async function PipelinePage({ searchParams }) {
             </Link>
           ))}
           <div className="dash-card mx-stat pl-stat pl-stat-money">
-            <div className="mx-stat-label">{year ? `${year} in play` : 'In play'}</div>
-            <div className="mx-stat-value">{money(counts.guaranteed)}</div>
-            <div className="mx-stat-note">guaranteed · {money(counts.optioned)} optioned</div>
+            <div className="mx-stat-label">{year ? `${year} in play` : 'In play'} · guaranteed</div>
+            <div className="pl-money-split">
+              {MONEY_KINDS.map((k) => (
+                <span className="pl-money-part tip" key={k.key} data-tip={k.hint}>
+                  <em>{money(counts[k.key])}</em>
+                  <i>{k.short}</i>
+                </span>
+              ))}
+            </div>
+            <div className="mx-stat-note">+{money(counts.optioned)} optioned</div>
           </div>
         </div>
 
@@ -187,10 +194,16 @@ export default async function PipelinePage({ searchParams }) {
               </span>
               <span><span className={`dash-tag pl-tag pl-tag-${d.stage}`}>{d.stageLabel}</span></span>
               <span className="pl-dim">{d.ownerName || '—'}</span>
-              <span className="pl-money">
+              {/* Totals span all three kinds — a VIK-only deal reading $0
+                  would be a lie. The tooltip says what it is made of. */}
+              <span className={`pl-money ${d.vik || d.media ? 'tip' : ''}`}
+                data-tip={d.vik || d.media
+                  ? MONEY_KINDS.map((k) => `${k.short} ${money(d[k.key])}`).join(' · ')
+                  : undefined}>
                 {d.guaranteed ? money(d.guaranteed) : ''}
                 {d.optioned ? <em className="pl-opt">{d.guaranteed ? ' + ' : ''}{money(d.optioned)}</em> : ''}
                 {!d.guaranteed && !d.optioned ? '—' : ''}
+                {(d.vik || d.media) ? <i className="pl-kindmark">{d.vik && d.media ? 'VIK+M' : d.vik ? 'VIK' : 'M'}</i> : null}
               </span>
               <span className="pl-dim">{d.lastTouchpoint ? ago(d.lastTouchpoint) : '—'}</span>
             </Link>

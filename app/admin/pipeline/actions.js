@@ -129,6 +129,7 @@ export async function saveYearAction(formData) {
   const result = await setDealYear(me, dealId, {
     year: str(formData, 'year'),
     amount: str(formData, 'amount'),
+    kind: str(formData, 'kind'),
     guaranteed: str(formData, 'guaranteed') === '1',
   });
   refresh(dealId);
