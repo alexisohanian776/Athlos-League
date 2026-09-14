@@ -1,10 +1,11 @@
 import Link from 'next/link';
+import { Fragment } from 'react';
 import AccountBar from '@/components/account/account-bar';
 import AdminTabs from '@/components/admin/admin-tabs';
 import { currentUser } from '@/lib/current-user';
 import { getUserById } from '@/lib/users-db';
 import {
-  STAGES, CLOSED_STAGES, NO_STAGE, MONEY_KINDS, SORTS, listDeals, dealCounts, dealOwners, dealYearsInUse, recentDealEvents,
+  STAGES, CLOSED_STAGES, NO_STAGE, MONEY_KINDS, SORTS, listDeals, dealCounts, dealOwners, dealCategories, dealYearsInUse, recentDealEvents,
 } from '@/lib/deals-db';
 import DealFields from '@/components/admin/deal-fields';
 import { addDealAction } from './actions';
@@ -40,16 +41,18 @@ export default async function PipelinePage({ searchParams }) {
   const escalated = searchParams?.flagged === '1';
   const q = String(searchParams?.q || '').slice(0, 120);
   const owner = String(searchParams?.owner || 'all').slice(0, 80);
+  const category = String(searchParams?.category || 'all').slice(0, 120);
   const year = Number(searchParams?.year) || null;
   const sort = SORTS.some((c) => c.key === searchParams?.sort) ? searchParams.sort : '';
   const dir = searchParams?.dir === 'asc' || searchParams?.dir === 'desc' ? searchParams.dir : '';
 
   const session = await currentUser();
-  const [me, deals, counts, owners, yearsInUse, events] = await Promise.all([
+  const [me, deals, counts, owners, categories, yearsInUse, events] = await Promise.all([
     session ? getUserById(session.id) : null,
-    listDeals({ stage, q, owner, escalated, year, sort, dir }),
+    listDeals({ stage, q, owner, category, escalated, year, sort, dir }),
     dealCounts(year),
     dealOwners(),
+    dealCategories(),
     dealYearsInUse(),
     recentDealEvents(12),
   ]);
@@ -57,10 +60,11 @@ export default async function PipelinePage({ searchParams }) {
   /* Filters other than the one being changed have to survive the click. */
   const href = (patch) => {
     const p = new URLSearchParams();
-    const next = { stage, q, owner, year, sort, dir, flagged: escalated ? '1' : '', ...patch };
+    const next = { stage, q, owner, category, year, sort, dir, flagged: escalated ? '1' : '', ...patch };
     if (next.stage && next.stage !== 'all') p.set('stage', next.stage);
     if (next.q) p.set('q', next.q);
     if (next.owner && next.owner !== 'all') p.set('owner', next.owner);
+    if (next.category && next.category !== 'all') p.set('category', next.category);
     if (next.year) p.set('year', String(next.year));
     if (next.flagged === '1') p.set('flagged', '1');
     if (next.sort) { p.set('sort', next.sort); p.set('dir', next.dir); }
@@ -99,16 +103,18 @@ export default async function PipelinePage({ searchParams }) {
             </Link>
           ))}
           <div className="dash-card mx-stat pl-stat pl-stat-money">
-            <div className="mx-stat-label">{year ? `${year} in play` : 'In play'} · guaranteed</div>
-            <div className="pl-money-split">
+            <div className="pl-money-grid">
+              <span />
+              <span className="mx-stat-label tip" data-tip="Guaranteed value on a deal at Closed Won. Signed.">Closed</span>
+              <span className="mx-stat-label tip" data-tip="Options on a signed deal, plus every number on a deal still being worked.">In play</span>
               {MONEY_KINDS.map((k) => (
-                <span className="pl-money-part tip" key={k.key} data-tip={k.hint}>
-                  <em>{money(counts[k.key])}</em>
-                  <i>{k.short}</i>
-                </span>
+                <Fragment key={k.key}>
+                  <span className="pl-money-kind tip" data-tip={k.hint}>{k.short}</span>
+                  <em>{money(counts.money[k.key].closed)}</em>
+                  <em className="pl-money-play">{money(counts.money[k.key].inPlay)}</em>
+                </Fragment>
               ))}
             </div>
-            <div className="mx-stat-note">+{money(counts.optioned)} optioned</div>
           </div>
         </div>
 
@@ -122,6 +128,15 @@ export default async function PipelinePage({ searchParams }) {
             {escalated && <input type="hidden" name="flagged" value="1" />}
             <input className="dash-input pl-search-input" type="search" name="q" defaultValue={q}
               placeholder="Company, contact, category or notes — try ESSENTIA" />
+            {/* In the GET form rather than as pills: 88 categories are in use,
+                and it submits with Search so it needs no JavaScript. */}
+            <select className="dash-input pl-category" name="category" defaultValue={category}
+              aria-label="Category">
+              <option value="all">All categories</option>
+              {categories.map((c) => (
+                <option key={c.name} value={c.name}>{c.name} ({c.count})</option>
+              ))}
+            </select>
             <button className="dash-btn dash-btn-ghost" type="submit">Search</button>
           </form>
 
@@ -146,7 +161,7 @@ export default async function PipelinePage({ searchParams }) {
               <Link key={y} className={`dash-btn ${year === y ? 'dash-btn-ink' : 'dash-btn-ghost'}`}
                 href={href({ year: year === y ? null : y })}>{y}</Link>
             ))}
-            {(stage !== 'all' || q || owner !== 'all' || year || escalated || sort) && (
+            {(stage !== 'all' || q || owner !== 'all' || category !== 'all' || year || escalated || sort) && (
               <Link className="dash-btn dash-btn-ghost" href="/admin/pipeline">Clear</Link>
             )}
           </div>
