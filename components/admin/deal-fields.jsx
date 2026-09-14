@@ -1,6 +1,6 @@
 /* The shared body of the add and edit forms. Two real call sites, so this is
    reuse rather than an abstraction invented ahead of need. */
-import { STAGES, CLOSED_STAGES, PROSPECT_STAGE } from '@/lib/deals-db';
+import { STAGES, CLOSED_STAGES } from '@/lib/deals-db';
 
 export default function DealFields({ deal = null, owners = [], deals = [] }) {
   return (
@@ -19,14 +19,15 @@ export default function DealFields({ deal = null, owners = [], deals = [] }) {
 
         <label className="pl-field">
           <span className="dash-label">Stage</span>
-          <select className="dash-input" name="stage" defaultValue={deal?.stage || 'engaged'}>
+          <select className="dash-input" name="stage" defaultValue={deal ? (deal.stage || '') : 'engaged'}>
+            {/* Blank is a real state, not a missing value. */}
+            <option value="">No stage yet</option>
             {/* Grouped so the closed stages read as outcomes rather than as
                 two more steps after Closed Won. */}
             <optgroup label="In the funnel">
               {STAGES.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
             </optgroup>
-            <optgroup label="Off the funnel">
-              <option value={PROSPECT_STAGE.key}>{PROSPECT_STAGE.label}</option>
+            <optgroup label="Closed">
               {CLOSED_STAGES.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
             </optgroup>
           </select>

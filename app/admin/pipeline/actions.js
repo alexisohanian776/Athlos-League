@@ -72,6 +72,7 @@ export async function saveDealAction(formData) {
 export async function moveStageAction(formData) {
   const me = await actor();
   const id = str(formData, 'id');
+  /* '' is meaningful here — it clears the stage back to blank. */
   await updateDeal(me, id, { stage: str(formData, 'stage') });
   refresh(id);
   redirect(str(formData, 'back') || `/admin/pipeline/${id}`);

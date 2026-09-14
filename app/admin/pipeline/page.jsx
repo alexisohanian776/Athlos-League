@@ -4,7 +4,7 @@ import AdminTabs from '@/components/admin/admin-tabs';
 import { currentUser } from '@/lib/current-user';
 import { getUserById } from '@/lib/users-db';
 import {
-  STAGES, CLOSED_STAGES, PROSPECT_STAGE, MONEY_KINDS, SORTS, listDeals, dealCounts, dealOwners, dealYearsInUse, recentDealEvents,
+  STAGES, CLOSED_STAGES, NO_STAGE, MONEY_KINDS, SORTS, listDeals, dealCounts, dealOwners, dealYearsInUse, recentDealEvents,
 } from '@/lib/deals-db';
 import DealFields from '@/components/admin/deal-fields';
 import { addDealAction } from './actions';
@@ -35,7 +35,7 @@ export default async function PipelinePage({ searchParams }) {
   /* 'all' is the live funnel, 'closed' is every closed stage at once, and
      any single stage key selects just that one. Anything else falls back to
      'all' rather than reaching the query. */
-  const STAGE_PARAMS = [PROSPECT_STAGE, ...STAGES, ...CLOSED_STAGES].map((s) => s.key).concat('closed');
+  const STAGE_PARAMS = [...STAGES, ...CLOSED_STAGES].map((s) => s.key).concat('closed', 'live', 'none');
   const stage = STAGE_PARAMS.includes(searchParams?.stage) ? searchParams.stage : 'all';
   const escalated = searchParams?.flagged === '1';
   const q = String(searchParams?.q || '').slice(0, 120);
@@ -84,18 +84,18 @@ export default async function PipelinePage({ searchParams }) {
         <div className="dash-head">
           <h1 className="dash-title">Pipeline</h1>
           <span className="dash-count">
-            {counts.total} live · {counts.prospects} prospects · {counts.closed} closed · {counts.escalated} need Alexis
+            {counts.all} deals · {counts.total} live · {counts.unstaged} unstaged · {counts.escalated} need Alexis
           </span>
         </div>
 
         {searchParams?.error && <p className="dash-error">{searchParams.error}</p>}
 
         <div className="mx-stats pl-stats">
-          {STAGES.map((s) => (
+          {[NO_STAGE, ...STAGES].map((s) => (
             <Link key={s.key} href={href({ stage: stage === s.key ? 'all' : s.key })}
               className={`dash-card mx-stat pl-stat ${stage === s.key ? 'is-on' : ''}`}>
               <div className="mx-stat-label">{s.label}</div>
-              <div className="mx-stat-value">{counts.byStage[s.key]}</div>
+              <div className="mx-stat-value">{s.key === 'none' ? counts.unstaged : counts.byStage[s.key]}</div>
             </Link>
           ))}
           <div className="dash-card mx-stat pl-stat pl-stat-money">
@@ -131,10 +131,10 @@ export default async function PipelinePage({ searchParams }) {
               href={href({ flagged: escalated ? '' : '1' })}>
               Needs Alexis ({counts.escalated})
             </Link>
-            <Link className={`dash-btn ${stage === 'prospect' ? 'dash-btn-ink' : 'dash-btn-ghost'} pl-closed-pill tip`}
-              data-tip={PROSPECT_STAGE.hint}
-              href={href({ stage: stage === 'prospect' ? 'all' : 'prospect' })}>
-              Prospects ({counts.prospects})
+            <Link className={`dash-btn ${stage === 'live' ? 'dash-btn-ink' : 'dash-btn-ghost'} tip`}
+              data-tip="Only the deals being actively worked — hides prospects, lost, ghosted and paused."
+              href={href({ stage: stage === 'live' ? 'all' : 'live' })}>
+              Live book ({counts.total})
             </Link>
             {CLOSED_STAGES.map((c) => (
               <Link key={c.key} className={`dash-btn ${stage === c.key ? 'dash-btn-ink' : 'dash-btn-ghost'} pl-closed-pill tip`}
@@ -179,9 +179,7 @@ export default async function PipelinePage({ searchParams }) {
           </div>
 
           {deals.length === 0 && (
-            <div className="pl-empty">
-              {stage === 'all' ? 'No deals match that. Prospects, Lost, Ghosted and Paused are filtered out by default.' : 'No deals match that.'}
-            </div>
+            <div className="pl-empty">No deals match that.</div>
           )}
 
           {deals.map((d) => (
@@ -197,7 +195,11 @@ export default async function PipelinePage({ searchParams }) {
                   {d.parentCompany && ` · renewal of ${d.parentCompany}`}
                 </em>
               </span>
-              <span><span className={`dash-tag pl-tag pl-tag-${d.stage}`}>{d.stageLabel}</span></span>
+              <span>
+                {d.hasStage
+                  ? <span className={`dash-tag pl-tag pl-tag-${d.stage}`}>{d.stageLabel}</span>
+                  : <span className="pl-dim">—</span>}
+              </span>
               <span className="pl-dim">{d.ownerName || '—'}</span>
               {/* Totals span all three kinds — a VIK-only deal reading $0
                   would be a lie. The tooltip says what it is made of. */}

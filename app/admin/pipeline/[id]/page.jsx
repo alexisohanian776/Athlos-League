@@ -5,7 +5,7 @@ import AdminTabs from '@/components/admin/admin-tabs';
 import { currentUser } from '@/lib/current-user';
 import { getUserById } from '@/lib/users-db';
 import {
-  STAGES, CLOSED_STAGES, PROSPECT_STAGE, MONEY_KINDS, getDeal, listContacts, listYears, listDealEvents,
+  STAGES, CLOSED_STAGES, MONEY_KINDS, getDeal, listContacts, listYears, listDealEvents,
   conflictsFor, chainFor, dealOwners, siblingDeals,
 } from '@/lib/deals-db';
 import DealFields from '@/components/admin/deal-fields';
@@ -79,6 +79,16 @@ export default async function DealPage({ params, searchParams }) {
         {/* Stage as five buttons rather than a select: one click to move a
             deal, and no client JavaScript to make a select submit. */}
         <div className="at-tabs pl-stage-strip">
+          <form action={moveStageAction}>
+            <input type="hidden" name="id" value={deal.id} />
+            <input type="hidden" name="stage" value="" />
+            <button className={`dash-btn ${deal.stage ? 'dash-btn-ghost' : 'dash-btn-ink'} tip`}
+              type="submit" disabled={!deal.stage}
+              data-tip="Clears the stage. Where a company sits before anyone has worked it.">
+              No stage
+            </button>
+          </form>
+          <span className="pl-stage-split" aria-hidden="true" />
           {STAGES.map((s) => (
             <form action={moveStageAction} key={s.key}>
               <input type="hidden" name="id" value={deal.id} />
@@ -91,7 +101,7 @@ export default async function DealPage({ params, searchParams }) {
           {/* Outcomes, not steps — kept visually apart so a stage move does
               not put Lost next to Terms as if it were the next one along. */}
           <span className="pl-stage-split" aria-hidden="true" />
-          {[PROSPECT_STAGE, ...CLOSED_STAGES].map((c) => (
+          {CLOSED_STAGES.map((c) => (
             <form action={moveStageAction} key={c.key}>
               <input type="hidden" name="id" value={deal.id} />
               <input type="hidden" name="stage" value={c.key} />
