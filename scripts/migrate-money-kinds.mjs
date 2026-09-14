@@ -12,6 +12,9 @@ const bad = MONEY_KEYS.filter((k) => !/^[a-z][a-z0-9_]*$/.test(k));
 if (bad.length) { console.error('Money kinds must be plain identifiers:', bad); process.exit(1); }
 
 await sql`ALTER TABLE deal_years ADD COLUMN IF NOT EXISTS kind text NOT NULL DEFAULT 'cash'`;
+/* What the value actually was. "$50k VIK" tells you nothing a year later;
+   "free water, ~40 pallets" tells you whether to ask for it again. */
+await sql`ALTER TABLE deal_years ADD COLUMN IF NOT EXISTS note text`;
 
 /* A CHECK takes neither a parameter nor a subquery, so the keys go into the
    statement text — from our own constant, asserted above. */

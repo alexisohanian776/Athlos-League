@@ -760,3 +760,10 @@
 /* Was 200px and clipped "Why does Alexis need to step in?" mid-word. */
 .pl-flag-note { width: 330px; }
 @media (max-width: 900px) { .pl-flag-note { width: 100%; } }
+.pl-year { flex-wrap: wrap; }
+.pl-year-note { flex-basis: 100%; font-size: 11.5px; color: var(--ink-3); padding-left: 34px;
+  margin-top: 1px; }
+.pl-year-add { grid-template-columns: 68px 1fr 104px 112px auto; row-gap: 6px; }
+.pl-year-note-input { grid-column: 1 / -1; }
+@media (max-width: 700px) { .pl-year-add { grid-template-columns: 1fr 1fr; } }
+.pl-tag-prospect { background: transparent; color: var(--ink-3); box-shadow: inset 0 0 0 1px var(--rule-soft); }

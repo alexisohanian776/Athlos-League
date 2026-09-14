@@ -4,7 +4,7 @@ import AdminTabs from '@/components/admin/admin-tabs';
 import { currentUser } from '@/lib/current-user';
 import { getUserById } from '@/lib/users-db';
 import {
-  STAGES, CLOSED_STAGES, MONEY_KINDS, SORTS, listDeals, dealCounts, dealOwners, dealYearsInUse, recentDealEvents,
+  STAGES, CLOSED_STAGES, PROSPECT_STAGE, MONEY_KINDS, SORTS, listDeals, dealCounts, dealOwners, dealYearsInUse, recentDealEvents,
 } from '@/lib/deals-db';
 import DealFields from '@/components/admin/deal-fields';
 import { addDealAction } from './actions';
@@ -35,7 +35,7 @@ export default async function PipelinePage({ searchParams }) {
   /* 'all' is the live funnel, 'closed' is every closed stage at once, and
      any single stage key selects just that one. Anything else falls back to
      'all' rather than reaching the query. */
-  const STAGE_PARAMS = [...STAGES, ...CLOSED_STAGES].map((s) => s.key).concat('closed');
+  const STAGE_PARAMS = [PROSPECT_STAGE, ...STAGES, ...CLOSED_STAGES].map((s) => s.key).concat('closed');
   const stage = STAGE_PARAMS.includes(searchParams?.stage) ? searchParams.stage : 'all';
   const escalated = searchParams?.flagged === '1';
   const q = String(searchParams?.q || '').slice(0, 120);
@@ -84,7 +84,7 @@ export default async function PipelinePage({ searchParams }) {
         <div className="dash-head">
           <h1 className="dash-title">Pipeline</h1>
           <span className="dash-count">
-            {counts.total} live · {counts.closed} closed · {counts.escalated} need Alexis
+            {counts.total} live · {counts.prospects} prospects · {counts.closed} closed · {counts.escalated} need Alexis
           </span>
         </div>
 
@@ -131,6 +131,11 @@ export default async function PipelinePage({ searchParams }) {
               href={href({ flagged: escalated ? '' : '1' })}>
               Needs Alexis ({counts.escalated})
             </Link>
+            <Link className={`dash-btn ${stage === 'prospect' ? 'dash-btn-ink' : 'dash-btn-ghost'} pl-closed-pill tip`}
+              data-tip={PROSPECT_STAGE.hint}
+              href={href({ stage: stage === 'prospect' ? 'all' : 'prospect' })}>
+              Prospects ({counts.prospects})
+            </Link>
             {CLOSED_STAGES.map((c) => (
               <Link key={c.key} className={`dash-btn ${stage === c.key ? 'dash-btn-ink' : 'dash-btn-ghost'} pl-closed-pill tip`}
                 data-tip={c.hint} href={href({ stage: stage === c.key ? 'all' : c.key })}>
@@ -175,7 +180,7 @@ export default async function PipelinePage({ searchParams }) {
 
           {deals.length === 0 && (
             <div className="pl-empty">
-              {stage === 'all' ? 'No deals match that. Lost, Ghosted and Paused are filtered out by default.' : 'No deals match that.'}
+              {stage === 'all' ? 'No deals match that. Prospects, Lost, Ghosted and Paused are filtered out by default.' : 'No deals match that.'}
             </div>
           )}
 

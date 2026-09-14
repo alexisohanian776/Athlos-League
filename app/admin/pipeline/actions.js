@@ -130,6 +130,7 @@ export async function saveYearAction(formData) {
     year: str(formData, 'year'),
     amount: str(formData, 'amount'),
     kind: str(formData, 'kind'),
+    note: str(formData, 'note'),
     guaranteed: str(formData, 'guaranteed') === '1',
   });
   refresh(dealId);

@@ -5,7 +5,7 @@ import AdminTabs from '@/components/admin/admin-tabs';
 import { currentUser } from '@/lib/current-user';
 import { getUserById } from '@/lib/users-db';
 import {
-  STAGES, CLOSED_STAGES, MONEY_KINDS, getDeal, listContacts, listYears, listDealEvents,
+  STAGES, CLOSED_STAGES, PROSPECT_STAGE, MONEY_KINDS, getDeal, listContacts, listYears, listDealEvents,
   conflictsFor, chainFor, dealOwners, siblingDeals,
 } from '@/lib/deals-db';
 import DealFields from '@/components/admin/deal-fields';
@@ -91,7 +91,7 @@ export default async function DealPage({ params, searchParams }) {
           {/* Outcomes, not steps — kept visually apart so a stage move does
               not put Lost next to Terms as if it were the next one along. */}
           <span className="pl-stage-split" aria-hidden="true" />
-          {CLOSED_STAGES.map((c) => (
+          {[PROSPECT_STAGE, ...CLOSED_STAGES].map((c) => (
             <form action={moveStageAction} key={c.key}>
               <input type="hidden" name="id" value={deal.id} />
               <input type="hidden" name="stage" value={c.key} />
@@ -197,6 +197,7 @@ export default async function DealPage({ params, searchParams }) {
                       <span className={`dash-tag ${y.guaranteed ? 'pl-tag-won' : 'pl-tag-engaged'}`}>
                         {y.guaranteed ? 'Guaranteed' : 'Optioned'}
                       </span>
+                      {y.note && <span className="pl-year-note" title={y.note}>{y.note}</span>}
                       <form action={deleteYearAction}>
                         <input type="hidden" name="dealId" value={deal.id} />
                         <input type="hidden" name="id" value={y.id} />
@@ -231,6 +232,10 @@ export default async function DealPage({ params, searchParams }) {
                   <option value="0">Optioned</option>
                 </select>
                 <button className="dash-btn dash-btn-ghost" type="submit">Add</button>
+                {/* Second row: what the value actually was. "$50k VIK" tells
+                    you nothing a year later. */}
+                <input className="dash-input pl-year-note-input" name="note" maxLength={300}
+                  placeholder="What it was — free water, shelf ads, a content shoot…" aria-label="What this was" />
               </form>
             </div>
           </div>
