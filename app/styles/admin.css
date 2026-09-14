@@ -809,3 +809,4 @@
 .pl-back { display: inline-block; margin-bottom: 3px; font-family: var(--font-mono);
   font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
 .pl-back:hover { color: var(--accent); }
+.pl-year-error { grid-column: 1 / -1; margin-top: 2px; }

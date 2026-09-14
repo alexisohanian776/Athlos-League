@@ -9,6 +9,7 @@ import {
   conflictsFor, dealOwners,
 } from '@/lib/deals-db';
 import DealFields from '@/components/admin/deal-fields';
+import AddMoneyForm, { MoneyInput } from '@/components/admin/money-form';
 import {
   saveDealAction, deleteDealAction, escalateAction,
   saveContactAction, touchContactAction, deleteContactAction,
@@ -190,8 +191,7 @@ export default async function DealPage({ params, searchParams }) {
                           <input type="hidden" name="id" value={y.id} />
                           <input className="dash-input" type="number" name="year" min={2020} max={2040}
                             defaultValue={y.year} aria-label="Season" />
-                          <input className="dash-input" name="amount"
-                            defaultValue={y.amount ?? ''} placeholder="$250,000" aria-label="Amount" />
+                          <MoneyInput defaultValue={y.amount ?? ''} />
                           <select className="dash-input" name="kind" defaultValue={y.kind} aria-label="What the money is">
                             {MONEY_KINDS.map((k) => <option key={k.key} value={k.key}>{k.label}</option>)}
                           </select>
@@ -254,24 +254,8 @@ export default async function DealPage({ params, searchParams }) {
               )}
 
               {!years.some((y) => String(searchParams?.edit) === String(y.id)) && (
-              <form className="pl-year-add" action={saveYearAction}>
-                <input type="hidden" name="dealId" value={deal.id} />
-                <input className="dash-input" type="number" name="year" min={2020} max={2040}
-                  defaultValue={nextYear} aria-label="Season" />
-                <input className="dash-input" name="amount" placeholder="$250,000" aria-label="Amount" />
-                <select className="dash-input" name="kind" defaultValue="cash" aria-label="What the money is">
-                  {MONEY_KINDS.map((k) => <option key={k.key} value={k.key}>{k.label}</option>)}
-                </select>
-                <select className="dash-input" name="guaranteed" defaultValue="1" aria-label="Guaranteed or optioned">
-                  <option value="1">Guaranteed</option>
-                  <option value="0">Optioned</option>
-                </select>
-                <button className="dash-btn dash-btn-ghost" type="submit">Add</button>
-                {/* Second row: what the value actually was. "$50k VIK" tells
-                    you nothing a year later. */}
-                <input className="dash-input pl-year-note-input" name="note" maxLength={300}
-                  placeholder="What it was — free water, shelf ads, a content shoot…" aria-label="What this was" />
-              </form>
+                <AddMoneyForm dealId={deal.id} kinds={MONEY_KINDS} nextYear={nextYear}
+                  action={saveYearAction} />
               )}
             </div>
           </div>
