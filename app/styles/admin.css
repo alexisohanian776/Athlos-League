@@ -725,3 +725,12 @@
 .pl-caret { font-size: 9px; opacity: .35; }
 .pl-sort:hover .pl-caret { opacity: .7; }
 .pl-sort.is-on .pl-caret { opacity: 1; }
+
+/* Closed stages read as outcomes, not as two more steps after Closed Won. */
+.pl-stage-split { width: 1px; height: 20px; background: var(--rule); margin: 0 4px; }
+.pl-closed-btn.is-on { border-color: var(--accent); }
+.pl-closed-pill { font-variant: small-caps; }
+.pl-tag-lost, .pl-tag-ghosted, .pl-tag-paused {
+  background: transparent; color: var(--ink-3); box-shadow: inset 0 0 0 1px var(--rule);
+}
+.pl-tag-lost { color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }

@@ -5,7 +5,7 @@ import AdminTabs from '@/components/admin/admin-tabs';
 import { currentUser } from '@/lib/current-user';
 import { getUserById } from '@/lib/users-db';
 import {
-  STAGES, getDeal, listContacts, listYears, listDealEvents,
+  STAGES, CLOSED_STAGES, getDeal, listContacts, listYears, listDealEvents,
   conflictsFor, chainFor, dealOwners, siblingDeals,
 } from '@/lib/deals-db';
 import DealFields from '@/components/admin/deal-fields';
@@ -85,6 +85,18 @@ export default async function DealPage({ params, searchParams }) {
               <input type="hidden" name="stage" value={s.key} />
               <button className={`dash-btn ${deal.stage === s.key ? 'dash-btn-ink' : 'dash-btn-ghost'}`}
                 type="submit" disabled={deal.stage === s.key}>{s.label}</button>
+            </form>
+          ))}
+
+          {/* Outcomes, not steps — kept visually apart so a stage move does
+              not put Lost next to Terms as if it were the next one along. */}
+          <span className="pl-stage-split" aria-hidden="true" />
+          {CLOSED_STAGES.map((c) => (
+            <form action={moveStageAction} key={c.key}>
+              <input type="hidden" name="id" value={deal.id} />
+              <input type="hidden" name="stage" value={c.key} />
+              <button className={`dash-btn ${deal.stage === c.key ? 'dash-btn-danger is-on' : 'dash-btn-ghost'} pl-closed-btn tip`}
+                type="submit" disabled={deal.stage === c.key} data-tip={c.hint}>{c.label}</button>
             </form>
           ))}
 

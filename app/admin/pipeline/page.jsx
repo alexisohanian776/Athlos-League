@@ -4,7 +4,7 @@ import AdminTabs from '@/components/admin/admin-tabs';
 import { currentUser } from '@/lib/current-user';
 import { getUserById } from '@/lib/users-db';
 import {
-  STAGES, SORTS, listDeals, dealCounts, dealOwners, dealYearsInUse, recentDealEvents,
+  STAGES, CLOSED_STAGES, SORTS, listDeals, dealCounts, dealOwners, dealYearsInUse, recentDealEvents,
 } from '@/lib/deals-db';
 import DealFields from '@/components/admin/deal-fields';
 import { addDealAction } from './actions';
@@ -32,7 +32,11 @@ function ago(value) {
 export default async function PipelinePage({ searchParams }) {
   /* Every filter comes off the query string and is checked against an
      allow-list, so a hand-typed ?stage= cannot reach the query. */
-  const stage = STAGES.some((s) => s.key === searchParams?.stage) ? searchParams.stage : 'all';
+  /* 'all' is the live funnel, 'closed' is every closed stage at once, and
+     any single stage key selects just that one. Anything else falls back to
+     'all' rather than reaching the query. */
+  const STAGE_PARAMS = [...STAGES, ...CLOSED_STAGES].map((s) => s.key).concat('closed');
+  const stage = STAGE_PARAMS.includes(searchParams?.stage) ? searchParams.stage : 'all';
   const escalated = searchParams?.flagged === '1';
   const q = String(searchParams?.q || '').slice(0, 120);
   const owner = String(searchParams?.owner || 'all').slice(0, 80);
@@ -80,7 +84,7 @@ export default async function PipelinePage({ searchParams }) {
         <div className="dash-head">
           <h1 className="dash-title">Pipeline</h1>
           <span className="dash-count">
-            {counts.total} deals · {counts.escalated} need Alexis
+            {counts.total} live · {counts.closed} closed · {counts.escalated} need Alexis
           </span>
         </div>
 
@@ -95,7 +99,7 @@ export default async function PipelinePage({ searchParams }) {
             </Link>
           ))}
           <div className="dash-card mx-stat pl-stat pl-stat-money">
-            <div className="mx-stat-label">{year ? `${year} money` : 'All seasons'}</div>
+            <div className="mx-stat-label">{year ? `${year} in play` : 'In play'}</div>
             <div className="mx-stat-value">{money(counts.guaranteed)}</div>
             <div className="mx-stat-note">guaranteed · {money(counts.optioned)} optioned</div>
           </div>
@@ -120,6 +124,12 @@ export default async function PipelinePage({ searchParams }) {
               href={href({ flagged: escalated ? '' : '1' })}>
               Needs Alexis ({counts.escalated})
             </Link>
+            {CLOSED_STAGES.map((c) => (
+              <Link key={c.key} className={`dash-btn ${stage === c.key ? 'dash-btn-ink' : 'dash-btn-ghost'} pl-closed-pill tip`}
+                data-tip={c.hint} href={href({ stage: stage === c.key ? 'all' : c.key })}>
+                {c.label} ({counts.byStage[c.key]})
+              </Link>
+            ))}
             {yearsInUse.map((y) => (
               <Link key={y} className={`dash-btn ${year === y ? 'dash-btn-ink' : 'dash-btn-ghost'}`}
                 href={href({ year: year === y ? null : y })}>{y}</Link>
@@ -156,7 +166,11 @@ export default async function PipelinePage({ searchParams }) {
             ))}
           </div>
 
-          {deals.length === 0 && <div className="pl-empty">No deals match that.</div>}
+          {deals.length === 0 && (
+            <div className="pl-empty">
+              {stage === 'all' ? 'No deals match that. Lost, Ghosted and Paused are filtered out by default.' : 'No deals match that.'}
+            </div>
+          )}
 
           {deals.map((d) => (
             <Link className={`mx-row pl-row pl-deal ${d.escalated ? 'is-flagged' : ''}`}
