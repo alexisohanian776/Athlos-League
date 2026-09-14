@@ -569,3 +569,93 @@
 
 /* The last control in a row would push its tooltip past the card edge. */
 .tip-end::after { left: auto; right: 0; transform: none; }
+
+/* ── Pipeline ─────────────────────────────────────────────────────────────
+   Composes the dash/mx chrome rather than restating it. One trap worth
+   naming: the .mx-row rule at line 175 hides :nth-child(3) below 700px and
+   matches any element carrying .mx-row — so .pl-row restates its own mobile
+   behaviour, exactly as .mx-row-mail does. */
+.pl-stats { grid-template-columns: repeat(6, 1fr); }
+@media (max-width: 1000px) { .pl-stats { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 620px)  { .pl-stats { grid-template-columns: repeat(2, 1fr); } }
+.pl-stat { display: block; transition: border-color .12s, transform .12s; }
+.pl-stat:hover { border-color: var(--ink-1); }
+.pl-stat.is-on { border-color: var(--ink-1); box-shadow: inset 0 0 0 1px var(--ink-1); }
+.pl-stat-money .mx-stat-value { font-size: 28px; }
+
+.pl-filters { margin-bottom: 16px; }
+.pl-search { display: flex; gap: 8px; margin-bottom: 10px; }
+.pl-search-input { flex: 1; min-width: 0; }
+.pl-pills { margin-bottom: 8px; align-items: center; }
+.pl-pills-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--ink-3); margin-right: 2px; }
+
+.pl-row { grid-template-columns: 2.4fr .9fr .8fr .9fr .5fr; }
+/* Restated so the shared .mx-row breakpoint cannot hide the wrong column:
+   below 700px this keeps the deal and its stage, nothing else. */
+@media (max-width: 700px) {
+  .pl-row { grid-template-columns: 2fr 1fr; }
+  .pl-row > :nth-child(n+3) { display: none; }
+}
+.pl-deal { cursor: pointer; }
+.pl-deal:hover { background: var(--paper-2, rgba(0,0,0,.02)); }
+.pl-deal.is-flagged .pl-company { color: var(--accent); }
+.pl-company { display: flex; align-items: center; gap: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pl-flag { font-size: 11px; }
+.pl-dim { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); }
+.pl-money { font-family: var(--font-mono); font-size: 12px; }
+.pl-opt { font-style: normal; color: var(--ink-3); }
+
+.pl-tag { font-size: 9px; }
+.pl-tag-engaged  { opacity: .55; }
+.pl-tag-active   { opacity: .7; }
+.pl-tag-proposal { opacity: .85; }
+.pl-tag-terms    { border-color: var(--ink-1); }
+.pl-tag-won      { border-color: var(--ink-1); background: var(--ink-1); color: var(--paper-1, #fff); }
+
+.pl-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+@media (max-width: 900px) { .pl-cols { grid-template-columns: 1fr; } }
+
+.pl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 620px) { .pl-grid { grid-template-columns: 1fr; } }
+.pl-field { display: block; margin-bottom: 12px; }
+.pl-field .dash-input { width: 100%; }
+
+.pl-stage-strip { align-items: flex-start; }
+.pl-flag-note { width: 220px; margin-right: 6px; }
+
+.pl-banner { font-size: 13px; padding: 10px 14px; margin-bottom: 12px;
+  border: 1px solid var(--rule-soft); border-radius: 4px; }
+.pl-banner-warn { border-color: var(--accent); }
+.pl-banner-flag { border-color: var(--ink-1); }
+
+.pl-years { margin-bottom: 12px; }
+.pl-year { display: flex; align-items: center; gap: 10px; padding: 8px 0;
+  border-bottom: 1px solid var(--rule-soft); }
+.pl-year:last-child { border-bottom: 0; }
+.pl-year-n { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); width: 42px; }
+.pl-year-amt { font-family: var(--font-display); font-size: 19px; flex: 1; }
+.pl-year-add { display: grid; grid-template-columns: 80px 1fr 120px auto; gap: 8px; }
+@media (max-width: 620px) { .pl-year-add { grid-template-columns: 1fr 1fr; } }
+
+.pl-person { padding: 10px 0; border-bottom: 1px solid var(--rule-soft); }
+.pl-person:last-of-type { border-bottom: 0; }
+.pl-person-head { display: flex; align-items: center; gap: 8px; }
+.pl-person-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 3px;
+  font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); }
+.pl-stale { color: var(--accent); }
+.pl-person-note { font-size: 13px; margin-top: 4px; }
+.pl-role-alpha { border-color: var(--accent); color: var(--accent); }
+.pl-person-add { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px;
+  padding-top: 14px; border-top: 1px solid var(--rule-soft); }
+@media (max-width: 620px) { .pl-person-add { grid-template-columns: 1fr; } }
+.pl-mini { padding: 3px 9px; font-size: 10px; }
+.pl-x { background: none; border: 0; cursor: pointer; color: var(--ink-3); font-size: 13px; padding: 2px 4px; }
+.pl-x:hover { color: var(--accent); }
+
+.pl-feed { list-style: none; padding: 0; margin: 0; font-size: 13px; }
+.pl-feed li { padding: 7px 0; border-bottom: 1px solid var(--rule-soft); }
+.pl-feed li:last-child { border-bottom: 0; }
+.pl-feed em { font-family: var(--font-mono); font-style: normal; font-size: 10px;
+  color: var(--ink-3); display: block; margin-top: 2px; }
+.pl-feed s { color: var(--ink-3); }

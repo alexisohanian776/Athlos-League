@@ -15,6 +15,7 @@ const UNREAD_MS = 15000;
 const BASE = [
   { href: '/admin', label: 'Run Clubs' },
   { href: '/admin/meets', label: 'Meets' },
+  { href: '/admin/pipeline', label: 'Pipeline' },
   { href: '/admin/attendance', label: 'Attendance' },
   { href: '/admin/chat', label: 'Chat' },
 ];
