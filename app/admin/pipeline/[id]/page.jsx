@@ -81,16 +81,6 @@ export default async function DealPage({ params, searchParams }) {
         {/* Stage as five buttons rather than a select: one click to move a
             deal, and no client JavaScript to make a select submit. */}
         <div className="at-tabs pl-stage-strip">
-          <form action={moveStageAction}>
-            <input type="hidden" name="id" value={deal.id} />
-            <input type="hidden" name="stage" value="" />
-            <button className={`dash-btn ${deal.stage ? 'dash-btn-ghost' : 'dash-btn-ink'} tip`}
-              type="submit" disabled={!deal.stage}
-              data-tip="Clears the stage. Where a company sits before anyone has worked it.">
-              No stage
-            </button>
-          </form>
-          <span className="pl-stage-split" aria-hidden="true" />
           {STAGES.map((s) => (
             <form action={moveStageAction} key={s.key}>
               <input type="hidden" name="id" value={deal.id} />
@@ -103,6 +93,19 @@ export default async function DealPage({ params, searchParams }) {
           {/* Outcomes, not steps — kept visually apart so a stage move does
               not put Lost next to Terms as if it were the next one along. */}
           <span className="pl-stage-split" aria-hidden="true" />
+          {/* Off the funnel, after the divider. This sat first in the strip
+              and got clicked by accident four seconds after a deal was
+              created — prime real estate for something that undoes a choice
+              you just made. */}
+          <form action={moveStageAction}>
+            <input type="hidden" name="id" value={deal.id} />
+            <input type="hidden" name="stage" value="" />
+            <button className={`dash-btn ${deal.stage ? 'dash-btn-ghost' : 'dash-btn-ink'} tip`}
+              type="submit" disabled={!deal.stage}
+              data-tip="Clears the stage. Where a company sits before anyone has worked it.">
+              No stage
+            </button>
+          </form>
           {CLOSED_STAGES.map((c) => (
             <form action={moveStageAction} key={c.key}>
               <input type="hidden" name="id" value={deal.id} />
