@@ -1,5 +1,10 @@
 /* Sales pipeline: schema and the one-time import of both sheet tabs.
 
+   SUPERSEDED. The HubSpot tab turned out not to be ATHLOS's pipeline, and
+   this reader also threw away the sheet's inline "(VIK)" markers. The live
+   shape comes from scripts/rebuild-pipeline.mjs. Kept as the way back to the
+   raw import, and updated alongside the schema so it still runs.
+
    Two sources become one list. The HubSpot export (202 rows) is the spine;
    the "NEW ATHLOS BRAND TRACKER USE THIS" tab (~48 rows) enriches the deals
    it names with money, a contact and a sales lead.
@@ -105,7 +110,6 @@ await sql`
   CREATE TABLE IF NOT EXISTS deals (
     id             serial PRIMARY KEY,
     company        text NOT NULL,
-    name           text NOT NULL,
     stage          text NOT NULL,
     category       text,
     notes          text,
@@ -268,10 +272,10 @@ for (let r = 1; r < hubRows.length; r++) {
    the live database. JSON in, rows out — one text parameter, no array
    serialisation to get wrong. */
 await sql`
-  INSERT INTO deals (company, name, stage, category, notes, hubspot_id)
-  SELECT company, name, stage, category, notes, hubspot_id
+  INSERT INTO deals (company, stage, category, notes, hubspot_id)
+  SELECT company, stage, category, notes, hubspot_id
   FROM json_to_recordset(${JSON.stringify(deals)}::json)
-    AS t(company text, name text, stage text, category text, notes text, hubspot_id text)
+    AS t(company text, stage text, category text, notes text, hubspot_id text)
 `;
 await sql`INSERT INTO deal_events (deal_id, who, kind) SELECT id, 'CSV import', 'imported' FROM deals`;
 console.log(`imported ${deals.length} deals from the HubSpot tab`);
@@ -298,7 +302,7 @@ const T = {
 /* Ids read back rather than taken from RETURNING, whose order Postgres does
    not promise. Indexed by normalised company, most advanced stage first, so
    a brand holding several deals is enriched on the one furthest along. */
-const stored = await sql`SELECT id, company, name, stage FROM deals`;
+const stored = await sql`SELECT id, company, stage FROM deals`;
 const order = new Map(STAGES.map((s, i) => [s.key, i]));
 const byKey = new Map();
 for (const d of stored) {
@@ -333,8 +337,8 @@ for (let r = 1; r < trkRows.length; r++) {
   if (candidates.length > 1) {
     ambiguous.push({
       entity,
-      chose: `${candidates[0].name} (${candidates[0].stage})`,
-      others: candidates.slice(1).map((c) => `${c.name} (${c.stage})`).join(' | '),
+      chose: `${candidates[0].company} (${candidates[0].stage})`,
+      others: candidates.slice(1).map((c) => `${c.company} (${c.stage})`).join(' | '),
     });
   }
   if (candidates.length) matched.push(entity); else created.push(entity);
@@ -343,8 +347,8 @@ for (let r = 1; r < trkRows.length; r++) {
 
 if (created.length) {
   await sql`
-    INSERT INTO deals (company, name, stage)
-    SELECT company, company, 'engaged'
+    INSERT INTO deals (company, stage)
+    SELECT company, 'engaged'
     FROM json_to_recordset(${JSON.stringify(created.map((company) => ({ company })))}::json)
       AS t(company text)
   `;
@@ -466,7 +470,7 @@ if (dupCompanies.length) {
 }
 
 const dupIds = await sql`
-  SELECT hubspot_id, count(*)::int AS n, string_agg(name, ' | ') AS deals
+  SELECT hubspot_id, count(*)::int AS n, string_agg(company, ' | ') AS deals
   FROM deals WHERE hubspot_id IS NOT NULL
   GROUP BY hubspot_id HAVING count(*) > 1 ORDER BY count(*) DESC
 `;

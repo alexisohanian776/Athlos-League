@@ -35,7 +35,6 @@ export async function addDealAction(formData) {
   const me = await actor();
   const result = await createDeal(me, {
     company: str(formData, 'company'),
-    name: str(formData, 'name'),
     stage: str(formData, 'stage'),
     category: str(formData, 'category'),
     notes: str(formData, 'notes'),
@@ -53,7 +52,6 @@ export async function saveDealAction(formData) {
      the stored row and writes one event per real change. */
   const result = await updateDeal(me, id, {
     company: str(formData, 'company'),
-    name: str(formData, 'name'),
     stage: str(formData, 'stage'),
     category: str(formData, 'category'),
     notes: str(formData, 'notes'),
@@ -98,7 +96,6 @@ export async function saveContactAction(formData) {
   const dealId = str(formData, 'dealId');
   const result = await upsertContact(me, dealId, {
     id: str(formData, 'id'),
-    name: str(formData, 'name'),
     email: str(formData, 'email'),
     title: str(formData, 'title'),
     role: str(formData, 'role'),

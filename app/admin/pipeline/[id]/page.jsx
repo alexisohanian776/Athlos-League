@@ -158,7 +158,7 @@ export default async function DealPage({ params, searchParams }) {
                 {renewals.map((r, i) => (
                   <span key={r.id}>
                     {i > 0 && ', '}
-                    <Link href={`/admin/pipeline/${r.id}`}>{r.name} ({r.stageLabel})</Link>
+                    <Link href={`/admin/pipeline/${r.id}`}>{r.company} ({r.stageLabel})</Link>
                   </span>
                 ))}.
               </>

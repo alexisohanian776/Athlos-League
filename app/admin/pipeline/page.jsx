@@ -190,10 +190,7 @@ export default async function PipelinePage({ searchParams }) {
                   {d.escalated && <span className="pl-flag tip" data-tip={d.escalatedNote || 'Flagged for Alexis'}>★</span>}
                   {d.company}
                 </strong>
-                <em>
-                  {d.name !== d.company ? d.name : d.category || '—'}
-                  {d.parentCompany && ` · renewal of ${d.parentCompany}`}
-                </em>
+                <em>{d.category || '—'}</em>
               </span>
               <span>
                 {d.hasStage

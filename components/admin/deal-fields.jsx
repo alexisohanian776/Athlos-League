@@ -12,12 +12,6 @@ export default function DealFields({ deal = null, owners = [], deals = [] }) {
         </label>
 
         <label className="pl-field">
-          <span className="dash-label">Deal name</span>
-          <input className="dash-input" name="name" defaultValue={deal?.name || ''} maxLength={160}
-            placeholder="Leave blank to match the company" />
-        </label>
-
-        <label className="pl-field">
           <span className="dash-label">Stage</span>
           <select className="dash-input" name="stage" defaultValue={deal ? (deal.stage || '') : 'engaged'}>
             {/* Blank is a real state, not a missing value. */}
@@ -72,7 +66,7 @@ export default function DealFields({ deal = null, owners = [], deals = [] }) {
               <select className="dash-input" name="parentDealId" defaultValue={deal.parentDealId || ''}>
                 <option value="">—</option>
                 {deals.map((d) => (
-                  <option key={d.id} value={d.id}>{d.name} ({d.stageLabel})</option>
+                  <option key={d.id} value={d.id}>{d.company} ({d.stageLabel})</option>
                 ))}
               </select>
             </label>
