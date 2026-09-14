@@ -787,3 +787,19 @@
 /* The two places it is still an alarm rather than a selection: a deal
    flagged for Alexis, and a contact we were talking to and then stopped. */
 .pl-stale { color: var(--accent); }
+
+/* A money line opens for editing in place, driven by ?edit=<id> rather than
+   client state — same as every other filter on these pages. Delete lives
+   inside that open row, so it takes two deliberate clicks rather than
+   sitting one stray click away from a number someone negotiated. */
+.pl-year-edit-btn { display: inline-flex; align-items: center; justify-content: center;
+  color: var(--ink-3); }
+.pl-year-edit-btn:hover { color: var(--accent); }
+.pl-year-edit { display: grid; grid-template-columns: 68px 1fr 104px 112px auto;
+  gap: 6px; padding: 8px; margin: 4px 0; border: 1px solid var(--ink); background: var(--bone); }
+@media (max-width: 700px) { .pl-year-edit { grid-template-columns: 1fr 1fr; } }
+.pl-year-edit .dash-input { background: var(--paper); }
+.pl-year-delete-row { display: flex; justify-content: flex-end; margin: -2px 0 6px; }
+.pl-year-cancel { grid-column: 1 / -1; font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.pl-year-cancel:hover { color: var(--ink); }

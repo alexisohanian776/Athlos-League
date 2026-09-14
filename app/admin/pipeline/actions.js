@@ -7,7 +7,7 @@ import { getUserById } from '@/lib/users-db';
 import {
   createDeal, updateDeal, deleteDeal, setEscalated,
   upsertContact, touchContact, deleteContact,
-  setDealYear, deleteDealYear,
+  setDealYear, updateDealYear, deleteDealYear,
 } from '@/lib/deals-db';
 
 /* The cookie says admin; the row says whether they still are. Every write
@@ -132,6 +132,24 @@ export async function saveYearAction(formData) {
   });
   refresh(dealId);
   redirect(`/admin/pipeline/${dealId}${result.error ? `?error=${encodeURIComponent(result.error)}` : ''}`);
+}
+
+export async function updateYearAction(formData) {
+  const me = await actor();
+  const dealId = str(formData, 'dealId');
+  const result = await updateDealYear(me, dealId, str(formData, 'id'), {
+    year: str(formData, 'year'),
+    amount: str(formData, 'amount'),
+    kind: str(formData, 'kind'),
+    note: str(formData, 'note'),
+    guaranteed: str(formData, 'guaranteed') === '1',
+  });
+  refresh(dealId);
+  /* On failure the row stays open with the message, so the typing is not
+     thrown away by a redirect to a closed row. */
+  redirect(result.error
+    ? `/admin/pipeline/${dealId}?edit=${str(formData, 'id')}&error=${encodeURIComponent(result.error)}`
+    : `/admin/pipeline/${dealId}`);
 }
 
 export async function deleteYearAction(formData) {

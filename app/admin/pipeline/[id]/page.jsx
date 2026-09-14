@@ -12,7 +12,7 @@ import DealFields from '@/components/admin/deal-fields';
 import {
   saveDealAction, deleteDealAction, escalateAction,
   saveContactAction, touchContactAction, deleteContactAction,
-  saveYearAction, deleteYearAction, moveStageAction,
+  saveYearAction, updateYearAction, deleteYearAction, moveStageAction,
 } from '../actions';
 
 export const dynamic = 'force-dynamic';
@@ -174,28 +174,67 @@ export default async function DealPage({ params, searchParams }) {
               {years.length === 0 && <p className="pl-dim">No numbers yet.</p>}
               {years.length > 0 && (
                 <div className="pl-years">
-                  {years.map((y, i) => (
-                    /* The year only prints once per block — six rows all
-                       labelled 2025 is noise, not information. */
-                    <div className={`pl-year ${i > 0 && years[i - 1].year === y.year ? 'is-same-year' : ''}`} key={y.id}>
-                      <span className="pl-year-n">
-                        {i > 0 && years[i - 1].year === y.year ? '' : y.year}
-                      </span>
-                      <span className="pl-year-amt">{usd(y.amount)}</span>
-                      <span className={`dash-tag pl-kind pl-kind-${y.kind}`}>{y.kindLabel}</span>
-                      <span className={`dash-tag ${y.guaranteed ? 'pl-tag-won' : 'pl-tag-engaged'}`}>
-                        {y.guaranteed ? 'Guaranteed' : 'Optioned'}
-                      </span>
-                      {y.note && <span className="pl-year-note">{y.note}</span>}
-                      <form className="pl-year-del" action={deleteYearAction}>
-                        <input type="hidden" name="dealId" value={deal.id} />
-                        <input type="hidden" name="id" value={y.id} />
-                        <button className="pl-x tip tip-end" type="submit"
-                          data-tip="Removes this line. The deal and its other seasons stay.">✕</button>
-                      </form>
-                    </div>
-                  ))}
+                  {years.map((y, i) => {
+                    /* Grouped under one year label: six rows all reading 2025
+                       is noise, not information. */
+                    const sameYear = i > 0 && years[i - 1].year === y.year;
+                    if (String(searchParams?.edit) === String(y.id)) {
+                      return (
+                        <form className="pl-year-edit" action={updateYearAction} key={y.id}>
+                          <input type="hidden" name="dealId" value={deal.id} />
+                          <input type="hidden" name="id" value={y.id} />
+                          <input className="dash-input" type="number" name="year" min={2020} max={2040}
+                            defaultValue={y.year} aria-label="Season" />
+                          <input className="dash-input" name="amount"
+                            defaultValue={y.amount ?? ''} placeholder="$250,000" aria-label="Amount" />
+                          <select className="dash-input" name="kind" defaultValue={y.kind} aria-label="What the money is">
+                            {MONEY_KINDS.map((k) => <option key={k.key} value={k.key}>{k.label}</option>)}
+                          </select>
+                          <select className="dash-input" name="guaranteed" defaultValue={y.guaranteed ? '1' : '0'}
+                            aria-label="Guaranteed or optioned">
+                            <option value="1">Guaranteed</option>
+                            <option value="0">Optioned</option>
+                          </select>
+                          <button className="dash-btn dash-btn-ink" type="submit">Save</button>
+                          <input className="dash-input pl-year-note-input" name="note" maxLength={300}
+                            defaultValue={y.note} placeholder="What it was — free water, shelf ads, a content shoot…"
+                            aria-label="What this was" />
+                          <Link className="pl-year-cancel" href={`/admin/pipeline/${deal.id}`}>Cancel</Link>
+                        </form>
+                      );
+                    }
+                    return (
+                      <div className={`pl-year ${sameYear ? 'is-same-year' : ''}`} key={y.id}>
+                        <span className="pl-year-n">{sameYear ? '' : y.year}</span>
+                        <span className="pl-year-amt">{usd(y.amount)}</span>
+                        <span className={`dash-tag pl-kind pl-kind-${y.kind}`}>{y.kindLabel}</span>
+                        <span className={`dash-tag ${y.guaranteed ? 'pl-tag-won' : 'pl-tag-engaged'}`}>
+                          {y.guaranteed ? 'Guaranteed' : 'Optioned'}
+                        </span>
+                        {y.note && <span className="pl-year-note">{y.note}</span>}
+                        <Link className="pl-year-edit-btn pl-year-del tip tip-end"
+                          href={`/admin/pipeline/${deal.id}?edit=${y.id}`}
+                          data-tip="Edit this line, or delete it from there." aria-label="Edit this line">
+                          <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"
+                            fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round">
+                            <path d="M11.3 1.9l2.8 2.8L5.4 13.4l-3.5.7.7-3.5z" />
+                          </svg>
+                        </Link>
+                      </div>
+                    );
+                  })}
                 </div>
+              )}
+
+              {years.some((y) => String(searchParams?.edit) === String(y.id)) && (
+                <form className="pl-year-delete-row" action={deleteYearAction}>
+                  <input type="hidden" name="dealId" value={deal.id} />
+                  <input type="hidden" name="id" value={searchParams.edit} />
+                  <button className="pl-danger-btn tip" type="submit"
+                    data-tip="Removes this line. The deal and its other seasons stay.">
+                    Delete this line
+                  </button>
+                </form>
               )}
 
               {years.length > 0 && (
@@ -208,6 +247,7 @@ export default async function DealPage({ params, searchParams }) {
                 </div>
               )}
 
+              {!years.some((y) => String(searchParams?.edit) === String(y.id)) && (
               <form className="pl-year-add" action={saveYearAction}>
                 <input type="hidden" name="dealId" value={deal.id} />
                 <input className="dash-input" type="number" name="year" min={2020} max={2040}
@@ -226,6 +266,7 @@ export default async function DealPage({ params, searchParams }) {
                 <input className="dash-input pl-year-note-input" name="note" maxLength={300}
                   placeholder="What it was — free water, shelf ads, a content shoot…" aria-label="What this was" />
               </form>
+              )}
             </div>
           </div>
 
