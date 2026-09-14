@@ -579,8 +579,8 @@
 @media (max-width: 1000px) { .pl-stats { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 620px)  { .pl-stats { grid-template-columns: repeat(2, 1fr); } }
 .pl-stat { display: block; transition: border-color .12s, transform .12s; }
-.pl-stat:hover { border-color: var(--ink-1); }
-.pl-stat.is-on { border-color: var(--ink-1); box-shadow: inset 0 0 0 1px var(--ink-1); }
+.pl-stat:hover { border-color: var(--ink); }
+.pl-stat.is-on { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
 .pl-stat-money .mx-stat-value { font-size: 28px; }
 
 .pl-filters { margin-bottom: 16px; }
@@ -598,7 +598,7 @@
   .pl-row > :nth-child(n+3) { display: none; }
 }
 .pl-deal { cursor: pointer; }
-.pl-deal:hover { background: var(--paper-2, rgba(0,0,0,.02)); }
+.pl-deal:hover { background: var(--stone); }
 .pl-deal.is-flagged .pl-company { color: var(--accent); }
 .pl-company { display: flex; align-items: center; gap: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pl-flag { font-size: 11px; }
@@ -607,11 +607,11 @@
 .pl-opt { font-style: normal; color: var(--ink-3); }
 
 .pl-tag { font-size: 9px; }
-.pl-tag-engaged  { opacity: .55; }
-.pl-tag-active   { opacity: .7; }
-.pl-tag-proposal { opacity: .85; }
-.pl-tag-terms    { border-color: var(--ink-1); }
-.pl-tag-won      { border-color: var(--ink-1); background: var(--ink-1); color: var(--paper-1, #fff); }
+.pl-tag-engaged  { opacity: .62; }
+.pl-tag-active   { opacity: .78; }
+.pl-tag-proposal { opacity: .9; }
+.pl-tag-terms    { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.pl-tag-won      { background: var(--ink); color: var(--bone); }
 
 .pl-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
 @media (max-width: 900px) { .pl-cols { grid-template-columns: 1fr; } }
@@ -627,7 +627,7 @@
 .pl-banner { font-size: 13px; padding: 10px 14px; margin-bottom: 12px;
   border: 1px solid var(--rule-soft); border-radius: 4px; }
 .pl-banner-warn { border-color: var(--accent); }
-.pl-banner-flag { border-color: var(--ink-1); }
+.pl-banner-flag { border-color: var(--ink); }
 
 .pl-years { margin-bottom: 12px; }
 .pl-year { display: flex; align-items: center; gap: 10px; padding: 8px 0;
@@ -645,7 +645,7 @@
   font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); }
 .pl-stale { color: var(--accent); }
 .pl-person-note { font-size: 13px; margin-top: 4px; }
-.pl-role-alpha { border-color: var(--accent); color: var(--accent); }
+.pl-role-alpha { background: transparent; color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
 .pl-person-add { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px;
   padding-top: 14px; border-top: 1px solid var(--rule-soft); }
 @media (max-width: 620px) { .pl-person-add { grid-template-columns: 1fr; } }
