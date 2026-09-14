@@ -63,11 +63,14 @@ export default async function DealPage({ params, searchParams }) {
       <AdminTabs isSuper={Boolean(me?.isSuper && !me.disabled)} />
 
       <div className="dash-wrap">
-        <div className="dash-head">
-          <h1 className="dash-title">{deal.company}</h1>
-          <span className="dash-count">
-            <Link href="/admin/pipeline">← All deals</Link>
-          </span>
+        {/* Above the title, not opposite it. On every other admin page that
+            right-hand slot holds a stat, so a nav control sitting there reads
+            as metadata. */}
+        <div className="dash-head pl-detail-head">
+          <div>
+            <Link className="pl-back" href="/admin/pipeline">← Pipeline</Link>
+            <h1 className="dash-title">{deal.company}</h1>
+          </div>
         </div>
 
         {searchParams?.error && <p className="dash-error">{searchParams.error}</p>}
