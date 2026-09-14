@@ -184,8 +184,8 @@ export default async function DealPage({ params, searchParams }) {
                       <span className={`dash-tag ${y.guaranteed ? 'pl-tag-won' : 'pl-tag-engaged'}`}>
                         {y.guaranteed ? 'Guaranteed' : 'Optioned'}
                       </span>
-                      {y.note && <span className="pl-year-note" title={y.note}>{y.note}</span>}
-                      <form action={deleteYearAction}>
+                      {y.note && <span className="pl-year-note">{y.note}</span>}
+                      <form className="pl-year-del" action={deleteYearAction}>
                         <input type="hidden" name="dealId" value={deal.id} />
                         <input type="hidden" name="id" value={y.id} />
                         <button className="pl-x tip tip-end" type="submit"

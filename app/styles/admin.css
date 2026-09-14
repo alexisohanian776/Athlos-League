@@ -658,13 +658,13 @@
 @media (max-width: 620px) { .pl-grid { grid-template-columns: 1fr; } }
 .pl-field { display: flex; flex-direction: column; gap: 3px; margin: 0 0 10px; }
 .pl-grid > .pl-field { margin-bottom: 0; }
-.pl-save { display: flex; justify-content: flex-end; padding: 0; margin-top: 2px; }
+.pl-save { display: flex; align-items: center; justify-content: flex-end; padding: 0; margin-top: 2px; }
 
 /* ── stage strip ── */
 .pl-stage-strip { gap: 5px; margin-bottom: 12px; align-items: center; }
 .pl-stage-strip .dash-btn { height: 30px; padding: 0 13px; font-size: 12px; }
 .pl-stage-strip form { display: flex; gap: 5px; align-items: center; }
-.pl-flag-note { width: 200px; height: 30px !important; font-size: 12px; }
+.pl-flag-note { width: 330px; height: 30px !important; font-size: 12px; }
 
 .pl-banner { font-size: 12.5px; line-height: 1.45; padding: 8px 12px; margin: 0 0 10px;
   background: var(--paper); border: 1px solid var(--rule); border-left-width: 3px; }
@@ -673,13 +673,27 @@
 .pl-banner a { text-decoration: underline; text-underline-offset: 2px; }
 
 /* ── money ── */
-.pl-year { display: flex; align-items: center; gap: 9px; padding: 6px 0;
-  border-bottom: 1px solid var(--rule-soft); }
-.pl-year:first-child { padding-top: 0; }
-.pl-year-n { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-3); width: 34px; }
-.pl-year-amt { font-family: var(--font-display); font-size: 17px; flex: 1; letter-spacing: -.01em; }
-.pl-year-add { display: grid; grid-template-columns: 72px 1fr 112px auto; gap: 6px; margin-top: 10px; }
-@media (max-width: 620px) { .pl-year-add { grid-template-columns: 1fr 1fr; } }
+/* A grid, not a flex row: the note takes a full line of its own, and with
+   flex-wrap that pushed the delete button onto a third line. Explicit
+   placement keeps the ✕ on line one and the amounts in a real column. */
+.pl-year { display: grid; grid-template-columns: 34px 1fr auto auto 18px;
+  align-items: center; column-gap: 9px; row-gap: 1px; padding: 7px 0;
+  border-top: 1px solid var(--rule-soft); }
+/* A line between year blocks only — not between the cash, VIK and media
+   lines that make up one year. */
+.pl-year:first-child { border-top: 0; padding-top: 0; }
+.pl-year.is-same-year { border-top: 0; }
+.pl-year-del { grid-column: 5; grid-row: 1; }
+.pl-year-n { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-3); }
+.pl-year-amt { font-family: var(--font-display); font-size: 17px; letter-spacing: -.01em; }
+.pl-year-note { grid-column: 2 / 5; grid-row: 2; font-size: 11.5px; line-height: 1.35;
+  color: var(--ink-3); }
+
+/* Five controls then the note on its own line beneath them. */
+.pl-year-add { display: grid; grid-template-columns: 68px 1fr 104px 112px auto;
+  gap: 6px; margin-top: 10px; }
+.pl-year-note-input { grid-column: 1 / -1; }
+@media (max-width: 700px) { .pl-year-add { grid-template-columns: 1fr 1fr; } }
 
 /* ── people ── */
 .pl-person { padding: 8px 0; border-bottom: 1px solid var(--rule-soft); }
@@ -711,7 +725,6 @@
   color: var(--ink-3); display: block; margin-top: 1px; }
 .pl-feed s { color: var(--ink-3); }
 .pl-empty { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); padding: 14px 0; text-align: center; }
-.pl-save { align-items: center; }
 .pl-danger { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--rule-soft); }
 .pl-danger-btn { background: none; border: 0; cursor: pointer; padding: 0;
   font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
@@ -752,20 +765,10 @@
 .pl-kind-media { background: transparent; color: var(--ink-3); box-shadow: inset 0 0 0 1px var(--rule-soft); }
 .pl-kindmark { font-family: var(--font-mono); font-style: normal; font-size: 8px;
   letter-spacing: .1em; color: var(--ink-3); margin-left: 5px; }
-.pl-year.is-same-year { border-top: 0; padding-top: 2px; margin-top: -4px; }
 .pl-year-total { display: flex; gap: 14px; margin-top: 8px; padding-top: 8px;
   border-top: 1px solid var(--rule); font-family: var(--font-mono); font-size: 10px;
   letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
-.pl-year-add { grid-template-columns: 68px 1fr 104px 112px auto; }
-@media (max-width: 700px) { .pl-year-add { grid-template-columns: 1fr 1fr; } }
 
-/* Was 200px and clipped "Why does Alexis need to step in?" mid-word. */
-.pl-flag-note { width: 330px; }
+/* 330px, because 200 clipped its own placeholder mid-word. */
 @media (max-width: 900px) { .pl-flag-note { width: 100%; } }
-.pl-year { flex-wrap: wrap; }
-.pl-year-note { flex-basis: 100%; font-size: 11.5px; color: var(--ink-3); padding-left: 34px;
-  margin-top: 1px; }
-.pl-year-add { grid-template-columns: 68px 1fr 104px 112px auto; row-gap: 6px; }
-.pl-year-note-input { grid-column: 1 / -1; }
-@media (max-width: 700px) { .pl-year-add { grid-template-columns: 1fr 1fr; } }
 .pl-tag-prospect { background: transparent; color: var(--ink-3); box-shadow: inset 0 0 0 1px var(--rule-soft); }
