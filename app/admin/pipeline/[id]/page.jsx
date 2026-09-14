@@ -25,9 +25,11 @@ const ROLES = {
 
 const usd = (n) => (n === null || n === undefined ? '—' : `$${n.toLocaleString('en-US')}`);
 
+const daysSince = (value) => Math.floor((Date.now() - new Date(value).getTime()) / 86400000);
+
 function ago(value) {
   if (!value) return null;
-  const days = Math.floor((Date.now() - new Date(value).getTime()) / 86400000);
+  const days = daysSince(value);
   if (days <= 0) return 'today';
   if (days === 1) return 'yesterday';
   return `${days} days ago`;
@@ -100,7 +102,7 @@ export default async function DealPage({ params, searchParams }) {
             <form action={moveStageAction} key={c.key}>
               <input type="hidden" name="id" value={deal.id} />
               <input type="hidden" name="stage" value={c.key} />
-              <button className={`dash-btn ${deal.stage === c.key ? 'dash-btn-danger is-on' : 'dash-btn-ghost'} pl-closed-btn tip`}
+              <button className={`dash-btn ${deal.stage === c.key ? 'dash-btn-ink' : 'dash-btn-ghost'} tip`}
                 type="submit" disabled={deal.stage === c.key} data-tip={c.hint}>{c.label}</button>
             </form>
           ))}
@@ -256,7 +258,10 @@ export default async function DealPage({ params, searchParams }) {
                   <div className="pl-person-meta">
                     {c.title && <span>{c.title}</span>}
                     {c.email && <a href={`mailto:${c.email}`}>{c.email}</a>}
-                    <span className={c.lastTouchedAt ? '' : 'pl-stale'}>
+                    {/* Never-touched is where every imported contact starts,
+                        so it stays quiet. Magenta is for someone we were
+                        talking to and then stopped. */}
+                    <span className={c.lastTouchedAt && daysSince(c.lastTouchedAt) > 60 ? 'pl-stale' : ''}>
                       {c.lastTouchedAt ? `last touched ${ago(c.lastTouchedAt)}` : 'never touched'}
                     </span>
                   </div>
