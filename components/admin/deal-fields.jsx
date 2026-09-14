@@ -2,7 +2,7 @@
    reuse rather than an abstraction invented ahead of need. */
 import { STAGES, CLOSED_STAGES } from '@/lib/deals-db';
 
-export default function DealFields({ deal = null, owners = [] }) {
+export default function DealFields({ deal = null, owners = [], categories = [] }) {
   return (
     <>
       <div className="pl-grid">
@@ -40,8 +40,15 @@ export default function DealFields({ deal = null, owners = [] }) {
 
         <label className="pl-field">
           <span className="dash-label">Category</span>
-          <input className="dash-input" name="category" defaultValue={deal?.category || ''} maxLength={120}
-            placeholder="Beverage - Water" />
+          {/* Suggests what already exists but does not restrict to it: a
+              category nobody else carries can never raise an exclusivity
+              flag, so matching an existing one matters — but a genuinely new
+              one has to be typeable. Same reason Sales lead is a list. */}
+          <input className="dash-input" name="category" defaultValue={deal?.category || ''}
+            list="pl-categories" maxLength={120} placeholder="Start typing, or add a new one" />
+          <datalist id="pl-categories">
+            {categories.map((c) => <option key={c.name} value={c.name} />)}
+          </datalist>
         </label>
 
         {deal && (

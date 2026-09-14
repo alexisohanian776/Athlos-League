@@ -233,7 +233,7 @@ export default async function PipelinePage({ searchParams }) {
           <div className="dash-card pl-card">
             <h2 className="pl-card-title">Add a deal</h2>
             <form action={addDealAction}>
-              <DealFields owners={owners} />
+              <DealFields owners={owners} categories={categories} />
               <div className="pl-save">
                 <button className="dash-btn dash-btn-ink" type="submit">Add deal</button>
               </div>
