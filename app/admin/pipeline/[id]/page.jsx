@@ -60,7 +60,7 @@ export default async function DealPage({ params, searchParams }) {
   const nextYear = new Date().getUTCFullYear() + 1;
 
   return (
-    <div className="dash">
+    <div className="dash pl-page">
       <AccountBar email={me?.email} role={me?.role} avatarUrl={me?.avatarUrl}
         name={[me?.firstName, me?.lastName].filter(Boolean).join(' ')} />
       <AdminTabs isSuper={Boolean(me?.isSuper && !me.disabled)} />
@@ -146,20 +146,30 @@ export default async function DealPage({ params, searchParams }) {
 
         <div className="pl-cols">
           <div>
-            <div className="dash-card">
-              <h2 className="dash-card-title">The deal</h2>
+            <div className="dash-card pl-card">
+              <h2 className="pl-card-title">The deal</h2>
               <form action={saveDealAction}>
                 <input type="hidden" name="id" value={deal.id} />
                 <DealFields deal={deal} owners={owners} deals={parents} />
-                <div className="dash-actions">
+                <div className="pl-save">
                   <div className="dash-actions-spacer" />
                   <button className="dash-btn dash-btn-ink" type="submit">Save</button>
                 </div>
               </form>
+
+              {/* Outside the save form: a nested <form> is invalid HTML and the
+                  delete would submit the edit instead. */}
+              <form className="pl-danger" action={deleteDealAction}>
+                <input type="hidden" name="id" value={deal.id} />
+                <button className="pl-danger-btn tip" type="submit"
+                  data-tip="Deletes the deal, its contacts, its money and its history. There is no undo.">
+                  Delete this deal
+                </button>
+              </form>
             </div>
 
-            <div className="dash-card">
-              <h2 className="dash-card-title">Money</h2>
+            <div className="dash-card pl-card">
+              <h2 className="pl-card-title">Money</h2>
               {years.length === 0 && <p className="pl-dim">No numbers yet.</p>}
               {years.length > 0 && (
                 <div className="pl-years">
@@ -196,8 +206,8 @@ export default async function DealPage({ params, searchParams }) {
           </div>
 
           <div>
-            <div className="dash-card">
-              <h2 className="dash-card-title">People</h2>
+            <div className="dash-card pl-card">
+              <h2 className="pl-card-title">People</h2>
               {contacts.length === 0 && <p className="pl-dim">Nobody on this one yet.</p>}
 
               {contacts.map((c) => (
@@ -246,8 +256,8 @@ export default async function DealPage({ params, searchParams }) {
               </form>
             </div>
 
-            <div className="dash-card">
-              <h2 className="dash-card-title">History</h2>
+            <div className="dash-card pl-card">
+              <h2 className="pl-card-title">History</h2>
               <ul className="pl-feed">
                 {events.map((e) => (
                   <li key={e.id}>
@@ -259,17 +269,6 @@ export default async function DealPage({ params, searchParams }) {
                   </li>
                 ))}
               </ul>
-            </div>
-
-            <div className="dash-card">
-              <h2 className="dash-card-title">Danger</h2>
-              <form action={deleteDealAction}>
-                <input type="hidden" name="id" value={deal.id} />
-                <button className="dash-btn dash-btn-danger tip tip-end" type="submit"
-                  data-tip="Deletes the deal, its contacts, its money and its history. There is no undo.">
-                  Delete this deal
-                </button>
-              </form>
             </div>
           </div>
         </div>

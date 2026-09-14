@@ -4,7 +4,7 @@ import AdminTabs from '@/components/admin/admin-tabs';
 import { currentUser } from '@/lib/current-user';
 import { getUserById } from '@/lib/users-db';
 import {
-  STAGES, listDeals, dealCounts, dealOwners, dealYearsInUse, recentDealEvents,
+  STAGES, SORTS, listDeals, dealCounts, dealOwners, dealYearsInUse, recentDealEvents,
 } from '@/lib/deals-db';
 import DealFields from '@/components/admin/deal-fields';
 import { addDealAction } from './actions';
@@ -37,11 +37,13 @@ export default async function PipelinePage({ searchParams }) {
   const q = String(searchParams?.q || '').slice(0, 120);
   const owner = String(searchParams?.owner || 'all').slice(0, 80);
   const year = Number(searchParams?.year) || null;
+  const sort = SORTS.some((c) => c.key === searchParams?.sort) ? searchParams.sort : '';
+  const dir = searchParams?.dir === 'asc' || searchParams?.dir === 'desc' ? searchParams.dir : '';
 
   const session = await currentUser();
   const [me, deals, counts, owners, yearsInUse, events] = await Promise.all([
     session ? getUserById(session.id) : null,
-    listDeals({ stage, q, owner, escalated, year }),
+    listDeals({ stage, q, owner, escalated, year, sort, dir }),
     dealCounts(year),
     dealOwners(),
     dealYearsInUse(),
@@ -51,18 +53,25 @@ export default async function PipelinePage({ searchParams }) {
   /* Filters other than the one being changed have to survive the click. */
   const href = (patch) => {
     const p = new URLSearchParams();
-    const next = { stage, q, owner, year, flagged: escalated ? '1' : '', ...patch };
+    const next = { stage, q, owner, year, sort, dir, flagged: escalated ? '1' : '', ...patch };
     if (next.stage && next.stage !== 'all') p.set('stage', next.stage);
     if (next.q) p.set('q', next.q);
     if (next.owner && next.owner !== 'all') p.set('owner', next.owner);
     if (next.year) p.set('year', String(next.year));
     if (next.flagged === '1') p.set('flagged', '1');
+    if (next.sort) { p.set('sort', next.sort); p.set('dir', next.dir); }
     const s = p.toString();
     return s ? `/admin/pipeline?${s}` : '/admin/pipeline';
   };
 
+  /* Clicking the active column flips it; a new column starts in whichever
+     direction is useful first — biggest money, most recent contact, A-Z. */
+  const sortHref = (col) => (sort === col.key
+    ? href({ sort: col.key, dir: dir === 'asc' ? 'desc' : 'asc' })
+    : href({ sort: col.key, dir: col.default }));
+
   return (
-    <div className="dash">
+    <div className="dash pl-page">
       <AccountBar email={me?.email} role={me?.role} avatarUrl={me?.avatarUrl}
         name={[me?.firstName, me?.lastName].filter(Boolean).join(' ')} />
       <AdminTabs isSuper={Boolean(me?.isSuper && !me.disabled)} />
@@ -96,6 +105,7 @@ export default async function PipelinePage({ searchParams }) {
           {/* A plain GET form, so search works with no JavaScript at all. */}
           <form className="pl-search" method="get" action="/admin/pipeline">
             {stage !== 'all' && <input type="hidden" name="stage" value={stage} />}
+            {sort && <><input type="hidden" name="sort" value={sort} /><input type="hidden" name="dir" value={dir} /></>}
             {owner !== 'all' && <input type="hidden" name="owner" value={owner} />}
             {year && <input type="hidden" name="year" value={year} />}
             {escalated && <input type="hidden" name="flagged" value="1" />}
@@ -114,7 +124,7 @@ export default async function PipelinePage({ searchParams }) {
               <Link key={y} className={`dash-btn ${year === y ? 'dash-btn-ink' : 'dash-btn-ghost'}`}
                 href={href({ year: year === y ? null : y })}>{y}</Link>
             ))}
-            {(stage !== 'all' || q || owner !== 'all' || year || escalated) && (
+            {(stage !== 'all' || q || owner !== 'all' || year || escalated || sort) && (
               <Link className="dash-btn dash-btn-ghost" href="/admin/pipeline">Clear</Link>
             )}
           </div>
@@ -132,16 +142,21 @@ export default async function PipelinePage({ searchParams }) {
           )}
         </div>
 
-        <div className="dash-card mx-table">
+        <div className="dash-card mx-table pl-table">
           <div className="mx-row pl-row mx-row-head">
-            <span>Deal</span>
-            <span>Stage</span>
-            <span>Lead</span>
-            <span>Money</span>
-            <span>Touched</span>
+            {SORTS.map((col) => (
+              <Link key={col.key} href={sortHref(col)}
+                className={`pl-sort ${sort === col.key ? 'is-on' : ''}`}
+                aria-sort={sort === col.key ? (dir === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                {col.label}
+                <span className="pl-caret" aria-hidden="true">
+                  {sort === col.key ? (dir === 'asc' ? '\u2191' : '\u2193') : '\u2195'}
+                </span>
+              </Link>
+            ))}
           </div>
 
-          {deals.length === 0 && <div className="at-empty">No deals match that.</div>}
+          {deals.length === 0 && <div className="pl-empty">No deals match that.</div>}
 
           {deals.map((d) => (
             <Link className={`mx-row pl-row pl-deal ${d.escalated ? 'is-flagged' : ''}`}
@@ -169,19 +184,18 @@ export default async function PipelinePage({ searchParams }) {
         </div>
 
         <div className="pl-cols">
-          <div className="dash-card">
-            <h2 className="dash-card-title">Add a deal</h2>
+          <div className="dash-card pl-card">
+            <h2 className="pl-card-title">Add a deal</h2>
             <form action={addDealAction}>
               <DealFields owners={owners} />
-              <div className="dash-actions">
-                <div className="dash-actions-spacer" />
+              <div className="pl-save">
                 <button className="dash-btn dash-btn-ink" type="submit">Add deal</button>
               </div>
             </form>
           </div>
 
-          <div className="dash-card">
-            <h2 className="dash-card-title">Recent changes</h2>
+          <div className="dash-card pl-card">
+            <h2 className="pl-card-title">Recent changes</h2>
             {events.length === 0 && <p className="pl-dim">Nothing has changed since the import.</p>}
             <ul className="pl-feed">
               {events.map((e) => (
