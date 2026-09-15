@@ -105,9 +105,15 @@ export default async function PipelinePage({ searchParams }) {
           ))}
           <div className="dash-card mx-stat pl-stat pl-stat-money">
             <div className="pl-money-grid">
-              <span />
+              {/* Says which slice is on screen, and turns magenta when that
+                  is not everything — so a filtered total can never be read
+                  as the whole book. */}
+              <span className={`pl-money-when ${year ? 'is-filtered' : ''}`}>
+                {year || 'All-time'}
+              </span>
               <span className="mx-stat-label tip" data-tip="Guaranteed value on a deal at Closed Won. Signed.">Closed</span>
               <span className="mx-stat-label tip" data-tip="Options on a signed deal, plus every number on a deal still being worked.">In play</span>
+
               {MONEY_KINDS.map((k) => (
                 <Fragment key={k.key}>
                   <span className="pl-money-kind tip" data-tip={k.hint}>{k.short}</span>
@@ -115,6 +121,14 @@ export default async function PipelinePage({ searchParams }) {
                   <em className="pl-money-play">{money(counts.money[k.key].inPlay)}</em>
                 </Fragment>
               ))}
+
+              <span className="pl-money-kind pl-money-total">Total</span>
+              <em className="pl-money-total">
+                {money(MONEY_KINDS.reduce((n, k) => n + counts.money[k.key].closed, 0))}
+              </em>
+              <em className="pl-money-total pl-money-play">
+                {money(MONEY_KINDS.reduce((n, k) => n + counts.money[k.key].inPlay, 0))}
+              </em>
             </div>
           </div>
         </div>
