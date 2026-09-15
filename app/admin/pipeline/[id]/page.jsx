@@ -170,13 +170,40 @@ export default async function DealPage({ params, searchParams }) {
 
               {/* Outside the save form: a nested <form> is invalid HTML and the
                   delete would submit the edit instead. */}
-              <form className="pl-danger" action={deleteDealAction}>
-                <input type="hidden" name="id" value={deal.id} />
-                <button className="pl-danger-btn tip" type="submit"
-                  data-tip="Deletes the deal, its contacts, its money and its history. There is no undo.">
-                  Delete this deal
-                </button>
-              </form>
+              {/* Two steps, driven by ?confirm= like the money editor. The
+                  second step lists what will actually be destroyed — a
+                  generic "are you sure?" gets clicked through, a line saying
+                  3 money lines and 7 history entries does not. */}
+              {searchParams?.confirm === 'delete' ? (
+                <div className="pl-danger pl-confirm">
+                  <p className="pl-confirm-what">
+                    Delete <strong>{deal.company}</strong> and everything on it?
+                    {' '}This takes {years.length} money {years.length === 1 ? 'line' : 'lines'},
+                    {' '}{contacts.length} {contacts.length === 1 ? 'contact' : 'contacts'},
+                    {' '}{allies.length} {allies.length === 1 ? 'ally' : 'allies'} and
+                    {' '}{events.length} history {events.length === 1 ? 'entry' : 'entries'} with it.
+                    There is no undo.
+                  </p>
+                  <div className="pl-confirm-row">
+                    <form action={deleteDealAction}>
+                      <input type="hidden" name="id" value={deal.id} />
+                      <button className="dash-btn dash-btn-danger" type="submit">
+                        Yes, delete {deal.company}
+                      </button>
+                    </form>
+                    <Link className="dash-btn dash-btn-ghost" scroll={false}
+                      href={`/admin/pipeline/${deal.id}`}>Cancel</Link>
+                  </div>
+                </div>
+              ) : (
+                <div className="pl-danger">
+                  <Link className="pl-danger-btn tip" scroll={false}
+                    href={`/admin/pipeline/${deal.id}?confirm=delete`}
+                    data-tip="Asks you to confirm first. Deleting takes the deal's contacts, money, allies and history with it.">
+                    Delete this deal
+                  </Link>
+                </div>
+              )}
             </div>
 
             {/* Named so the save and delete redirects can land back here

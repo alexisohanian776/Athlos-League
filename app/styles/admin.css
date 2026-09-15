@@ -839,3 +839,6 @@
   color: var(--ink-3); }
 .pl-ally form { display: flex; }
 .pl-ally-add { display: grid; grid-template-columns: 1fr auto; gap: 6px; }
+.pl-confirm { border-top-color: var(--accent); }
+.pl-confirm-what { font-size: 12.5px; line-height: 1.45; margin: 0 0 8px; }
+.pl-confirm-row { display: flex; gap: 8px; align-items: center; }
