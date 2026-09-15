@@ -6,13 +6,14 @@ import { currentUser } from '@/lib/current-user';
 import { getUserById } from '@/lib/users-db';
 import {
   STAGES, CLOSED_STAGES, MONEY_KINDS, getDeal, listContacts, listYears, listDealEvents,
-  conflictsFor, dealLeadNames, dealCategories,
+  conflictsFor, dealLeadNames, dealCategories, listAllies,
 } from '@/lib/deals-db';
 import DealFields from '@/components/admin/deal-fields';
 import AddMoneyForm, { MoneyInput } from '@/components/admin/money-form';
 import {
   saveDealAction, deleteDealAction, escalateAction,
   saveContactAction, touchContactAction, deleteContactAction,
+  addAllyAction, removeAllyAction,
   saveYearAction, updateYearAction, deleteYearAction, moveStageAction,
 } from '../actions';
 
@@ -46,7 +47,7 @@ export default async function DealPage({ params, searchParams }) {
   const deal = await getDeal(params.id);
   if (!deal) notFound();
 
-  const [me, contacts, years, events, conflicts, leads, categories] = await Promise.all([
+  const [me, contacts, years, events, conflicts, leads, categories, allies] = await Promise.all([
     session ? getUserById(session.id) : null,
     listContacts(deal.id),
     listYears(deal.id),
@@ -54,6 +55,7 @@ export default async function DealPage({ params, searchParams }) {
     conflictsFor(deal.id),
     dealLeadNames(),
     dealCategories(),
+    listAllies(deal.id),
   ]);
 
   const nextYear = new Date().getUTCFullYear() + 1;
@@ -179,6 +181,41 @@ export default async function DealPage({ params, searchParams }) {
 
             {/* Named so the save and delete redirects can land back here
                 rather than at the top of the page. */}
+            <div className="dash-card pl-card" id="allies">
+              <h2 className="pl-card-title">Allies</h2>
+              <p className="pl-allies-why">
+                People on our side who helped this happen — an intro, a nudge, a word in
+                the right ear. Kept so they can be thanked.
+              </p>
+
+              {allies.length > 0 && (
+                <div className="pl-allies">
+                  {allies.map((a) => (
+                    <span className="pl-ally" key={a.id}>
+                      {a.name}
+                      <em>{a.who} · {ago(a.createdAt)}</em>
+                      <form action={removeAllyAction}>
+                        <input type="hidden" name="dealId" value={deal.id} />
+                        <input type="hidden" name="id" value={a.id} />
+                        <button className="pl-x tip tip-end" type="submit"
+                          data-tip={`Take ${a.name} off this deal.`} aria-label={`Remove ${a.name}`}>✕</button>
+                      </form>
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* One text input, so Enter submits it natively — no JavaScript
+                  needed to get "type a name, hit enter". */}
+              <form className="pl-ally-add" action={addAllyAction}>
+                <input type="hidden" name="dealId" value={deal.id} />
+                <input className="dash-input" name="name" maxLength={120} required
+                  placeholder="Add someone who helped — type a name and press Enter"
+                  aria-label="Add an ally" />
+                <button className="dash-btn dash-btn-ghost" type="submit">Add</button>
+              </form>
+            </div>
+
             <div className="dash-card pl-card" id="money">
               <h2 className="pl-card-title">Money</h2>
               {years.length === 0 && <p className="pl-dim">No numbers yet.</p>}

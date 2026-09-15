@@ -8,6 +8,7 @@ import {
   createDeal, updateDeal, deleteDeal, setEscalated,
   upsertContact, touchContact, deleteContact,
   setDealYear, updateDealYear, deleteDealYear,
+  addAlly, removeAlly,
 } from '@/lib/deals-db';
 
 /* The cookie says admin; the row says whether they still are. Every write
@@ -118,6 +119,22 @@ export async function deleteContactAction(formData) {
   await actor();
   const dealId = str(formData, 'dealId');
   await deleteContact(dealId, str(formData, 'id'));
+  refresh(dealId);
+}
+
+export async function addAllyAction(formData) {
+  const me = await actor();
+  const dealId = str(formData, 'dealId');
+  const result = await addAlly(me, dealId, str(formData, 'name'));
+  refresh(dealId);
+  /* No redirect: revalidate re-renders in place and keeps the scroll. */
+  if (result.error) redirect(`/admin/pipeline/${dealId}?error=${encodeURIComponent(result.error)}`);
+}
+
+export async function removeAllyAction(formData) {
+  await actor();
+  const dealId = str(formData, 'dealId');
+  await removeAlly(dealId, str(formData, 'id'));
   refresh(dealId);
 }
 
