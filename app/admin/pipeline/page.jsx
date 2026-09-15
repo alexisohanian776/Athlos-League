@@ -122,6 +122,11 @@ export default async function PipelinePage({ searchParams }) {
                 </Fragment>
               ))}
 
+              {/* One rule across the grid rather than a border on each cell:
+                  the row is baseline-aligned, so a small mono label and a
+                  large display figure have different box heights and their
+                  top edges land at different heights. */}
+              <span className="pl-money-rule" aria-hidden="true" />
               <span className="pl-money-kind pl-money-total">Total</span>
               <em className="pl-money-total">
                 {money(MONEY_KINDS.reduce((n, k) => n + counts.money[k.key].closed, 0))}

@@ -824,5 +824,5 @@
 .pl-money-when { font-family: var(--font-ui); font-weight: 600; font-size: 15px;
   letter-spacing: -.01em; align-self: center; }
 .pl-money-when.is-filtered { color: var(--accent); }
-.pl-money-total { border-top: 1px solid var(--rule); padding-top: 3px; margin-top: 2px; }
+.pl-money-rule { grid-column: 1 / -1; height: 1px; background: var(--rule); margin: 5px 0 3px; }
 .pl-money-grid .pl-money-kind.pl-money-total { color: var(--ink); }
