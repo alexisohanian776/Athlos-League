@@ -5,7 +5,7 @@ import AdminTabs from '@/components/admin/admin-tabs';
 import { currentUser } from '@/lib/current-user';
 import { getUserById } from '@/lib/users-db';
 import {
-  STAGES, CLOSED_STAGES, NO_STAGE, MONEY_KINDS, SORTS, listDeals, dealCounts, dealOwners, dealCategories, dealYearsInUse, recentDealEvents,
+  STAGES, CLOSED_STAGES, NO_STAGE, MONEY_KINDS, SORTS, listDeals, dealCounts, dealOwners, dealLeadNames, dealCategories, dealYearsInUse, recentDealEvents,
 } from '@/lib/deals-db';
 import DealFields from '@/components/admin/deal-fields';
 import { addDealAction } from './actions';
@@ -47,11 +47,12 @@ export default async function PipelinePage({ searchParams }) {
   const dir = searchParams?.dir === 'asc' || searchParams?.dir === 'desc' ? searchParams.dir : '';
 
   const session = await currentUser();
-  const [me, deals, counts, owners, categories, yearsInUse, events] = await Promise.all([
+  const [me, deals, counts, owners, leads, categories, yearsInUse, events] = await Promise.all([
     session ? getUserById(session.id) : null,
     listDeals({ stage, q, owner, category, escalated, year, sort, dir }),
     dealCounts(year),
     dealOwners(),
+    dealLeadNames(),
     dealCategories(),
     dealYearsInUse(),
     recentDealEvents(12),
@@ -233,7 +234,7 @@ export default async function PipelinePage({ searchParams }) {
           <div className="dash-card pl-card">
             <h2 className="pl-card-title">Add a deal</h2>
             <form action={addDealAction}>
-              <DealFields owners={owners} categories={categories} />
+              <DealFields leads={leads} categories={categories} />
               <div className="pl-save">
                 <button className="dash-btn dash-btn-ink" type="submit">Add deal</button>
               </div>

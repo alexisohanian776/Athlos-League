@@ -2,7 +2,7 @@
    reuse rather than an abstraction invented ahead of need. */
 import { STAGES, CLOSED_STAGES } from '@/lib/deals-db';
 
-export default function DealFields({ deal = null, owners = [], categories = [] }) {
+export default function DealFields({ deal = null, leads = [], categories = [] }) {
   return (
     <>
       <div className="pl-grid">
@@ -13,7 +13,7 @@ export default function DealFields({ deal = null, owners = [], categories = [] }
 
         <label className="pl-field">
           <span className="dash-label">Stage</span>
-          <select className="dash-input" name="stage" defaultValue={deal ? (deal.stage || '') : 'engaged'}>
+          <select className="dash-input" name="stage" defaultValue={deal?.stage || ''}>
             {/* Blank is a real state, not a missing value. */}
             <option value="">No stage yet</option>
             {/* Grouped so the closed stages read as outcomes rather than as
@@ -29,12 +29,12 @@ export default function DealFields({ deal = null, owners = [], categories = [] }
 
         <label className="pl-field">
           <span className="dash-label">Sales lead</span>
-          {/* A list, not a select: most leads have no account here, and a new
-              name has to be typeable. */}
+          {/* A list, not a select: the sheet's leads mostly have no account
+              here, and a name nobody has used yet has to be typeable. */}
           <input className="dash-input" name="ownerName" defaultValue={deal?.ownerName || ''}
             list="pl-owners" maxLength={80} />
           <datalist id="pl-owners">
-            {owners.map((o) => <option key={o.name} value={o.name} />)}
+            {leads.map((name) => <option key={name} value={name} />)}
           </datalist>
         </label>
 

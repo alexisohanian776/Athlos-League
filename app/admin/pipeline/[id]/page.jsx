@@ -6,7 +6,7 @@ import { currentUser } from '@/lib/current-user';
 import { getUserById } from '@/lib/users-db';
 import {
   STAGES, CLOSED_STAGES, MONEY_KINDS, getDeal, listContacts, listYears, listDealEvents,
-  conflictsFor, dealOwners, dealCategories,
+  conflictsFor, dealLeadNames, dealCategories,
 } from '@/lib/deals-db';
 import DealFields from '@/components/admin/deal-fields';
 import AddMoneyForm, { MoneyInput } from '@/components/admin/money-form';
@@ -46,13 +46,13 @@ export default async function DealPage({ params, searchParams }) {
   const deal = await getDeal(params.id);
   if (!deal) notFound();
 
-  const [me, contacts, years, events, conflicts, owners, categories] = await Promise.all([
+  const [me, contacts, years, events, conflicts, leads, categories] = await Promise.all([
     session ? getUserById(session.id) : null,
     listContacts(deal.id),
     listYears(deal.id),
     listDealEvents(deal.id),
     conflictsFor(deal.id),
-    dealOwners(),
+    dealLeadNames(),
     dealCategories(),
   ]);
 
@@ -159,7 +159,7 @@ export default async function DealPage({ params, searchParams }) {
               <h2 className="pl-card-title">The deal</h2>
               <form action={saveDealAction}>
                 <input type="hidden" name="id" value={deal.id} />
-                <DealFields deal={deal} owners={owners} categories={categories} />
+                <DealFields deal={deal} leads={leads} categories={categories} />
                 <div className="pl-save">
                   <div className="dash-actions-spacer" />
                   <button className="dash-btn dash-btn-ink" type="submit">Save</button>
